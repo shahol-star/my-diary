@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Diary</title>
+    <title>My Diary - Premium Design</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
@@ -20,7 +20,7 @@
             min-height: 100vh;
         }
         
-        /* App Layout Fixed to Responsive Device Fit */
+        /* App Layout Fixed to Responsive Device Fit (Mobile & Desktop View) */
         .app-container {
             width: 100%;
             max-width: 430px;
@@ -31,13 +31,6 @@
             flex-direction: column;
             overflow-y: auto;
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        }
-        
-        @media (min-height: 700px) and (min-width: 440px) {
-            .app-container {
-                height: 850px;
-                border-radius: 30px;
-            }
         }
 
         /* TOP BLACK HEADER DESIGN */
@@ -461,6 +454,7 @@
                 </div>
             </div>
 
+            <!-- WRITE NEW DIARY -->
             <div id="writeSection" class="hidden" style="display: flex; flex-direction: column; flex-grow: 1; height: 100%;">
                 <div class="back-link" onclick="backToDashboard()" style="padding: 0 25px;">← Back to Menu</div>
                 
@@ -582,13 +576,11 @@
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('diaryDate').value = today;
 
-        // --- LOCAL STORAGE FONT LIFETIME SAVE SYSTEM ---
         function loadSavedFonts() {
             const savedFonts = JSON.parse(localStorage.getItem('myDiaryExportedFonts')) || [];
             const fontSelector = document.getElementById('fontSelector');
             const deleteableFontsList = document.getElementById('deleteableFontsList');
             
-            // ড্রপডাউন প্রথম দুটি অপশন ফিক্সড রেখে ক্লিন করা
             fontSelector.innerHTML = `
                 <option value="'Cinzel Decorative', serif">English (Premium Serif)</option>
                 <option value="'Hind Siliguri', sans-serif">Bangla (Hind Siliguri)</option>
@@ -600,7 +592,6 @@
             }
             
             savedFonts.forEach((font, index) => {
-                // ১. গুগল ফন্টের লিঙ্কটি ডক হেড-এ ইনজেক্ট করা হচ্ছে
                 const linkId = `injected-font-${font.name.replace(/\s+/g, '-')}`;
                 if(!document.getElementById(linkId)){
                     const link = document.createElement('link');
@@ -610,25 +601,22 @@
                     document.head.appendChild(link);
                 }
 
-                // ২. ড্রপডাউন সিলেক্টরে অপশনটি ঢুকানো হচ্ছে
                 const option = document.createElement('option');
                 option.value = `'${font.name}', sans-serif`; 
                 option.innerText = `Custom: ${font.name}`;
                 fontSelector.appendChild(option);
 
-                // ৩. ডিলিট ম্যানেজার লিস্ট তৈরি
                 const fontCard = document.createElement('div');
                 fontCard.className = 'font-item-deleteable';
                 fontCard.style.fontFamily = `'${font.name}', sans-serif`;
                 fontCard.innerText = font.name;
 
-                // LONG PRESS / HOLD DETECTION LOGIC FOR MOBILE & DESKTOP
                 let holdTimer;
                 
                 const onHoldStart = () => {
                     holdTimer = setTimeout(() => {
                         triggerFontDelete(font.name, index);
-                    }, 1000); // Hold for 1 second
+                    }, 1000);
                 };
 
                 const onHoldEnd = () => {
@@ -650,12 +638,10 @@
             if(confirm(`Do you want to completely delete "${fontName}" font? 🗑️`)){
                 let savedFonts = JSON.parse(localStorage.getItem('myDiaryExportedFonts')) || [];
                 
-                // হেড থেকে লিঙ্ক রিমুভ
                 const linkId = `injected-font-${fontName.replace(/\s+/g, '-')}`;
                 const linkElement = document.getElementById(linkId);
                 if(linkElement) linkElement.remove();
 
-                // লোকাল স্টোরেজ আপডেট
                 savedFonts.splice(arrayIndex, 1);
                 localStorage.setItem('myDiaryExportedFonts', JSON.stringify(savedFonts));
                 
@@ -664,10 +650,8 @@
             }
         }
 
-        // অ্যাপ প্রথমবার রান হওয়ার সাথেই সংরক্ষিত ফন্ট লোড হবে
         loadSavedFonts();
 
-        // --- DAILY NOTIFICATION REMINDER SYSTEM (8:00 PM) ---
         function setupDailyReminder() {
             if (!("Notification" in window)) return;
 
@@ -689,7 +673,6 @@
             }, 60000); 
         }
 
-        // --- ON THIS DAY SWEET REMINDER LOGIC ---
         function checkOnThisDayMemories(diaries) {
             if (!diaries || diaries.length === 0) return;
 
@@ -974,7 +957,6 @@
             renderDiaryList(filtered);
         });
 
-        // --- FONT EXPORT & LIFETIME SAVE SYSTEM CLICK LOGIC ---
         document.getElementById('loadFontBtn').addEventListener('click', () => {
             const url = document.getElementById('customFontUrl').value.trim();
             const name = document.getElementById('customFontName').value.trim();
@@ -994,4 +976,4 @@
         });
     </script>
 </body>
-    </html>
+                        </html>
