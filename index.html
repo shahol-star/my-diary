@@ -162,6 +162,16 @@
             background: #fff;
         }
 
+        /* PASSWORD TOGGLE EYE STYLE */
+        .password-toggle-btn {
+            position: absolute;
+            right: 12px;
+            top: 28px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            user-select: none;
+        }
+
         /* BUTTONS */
         .btn-black {
             background: #232323;
@@ -478,6 +488,7 @@
             <div class="input-wrapper">
                 <label>Password</label>
                 <input type="password" id="loginPassword" class="input-field" placeholder="********">
+                <span id="toggleLoginPassword" class="password-toggle-btn">👁️</span>
             </div>
             
             <div style="text-align: right; margin-top: -5px; margin-bottom: 15px;">
@@ -519,10 +530,12 @@
             <div class="input-wrapper">
                 <label>Password</label>
                 <input type="password" id="regPassword" class="input-field" placeholder="********">
+                <span id="toggleRegPassword" class="password-toggle-btn">👁️</span>
             </div>
             <div class="input-wrapper">
                 <label>Confirm Password</label>
                 <input type="password" id="regConfirmPassword" class="input-field" placeholder="********">
+                <span id="toggleRegConfirmPassword" class="password-toggle-btn">👁️</span>
             </div>
             
             <button id="signupBtn" class="btn-black">Register</button>
@@ -537,9 +550,31 @@
                     <div class="menu-item" onclick="showSubSection('writeSection')">▶ WRITE NEW DIARY</div>
                     <div class="menu-item" onclick="showSubSection('listSection')">▶ VIEW PAST MEMORIES</div>
                     <div class="menu-item" onclick="showSubSection('settingsSection')">▶ FONT SETTINGS</div>
+                    <div class="menu-item" onclick="showSubSection('changePasswordSection')">▶ CHANGE PASSWORD</div>
                     <div class="menu-item" onclick="showSubSection('helpSection')">▶ HELP & GUIDE</div>
                     <div class="menu-item" onclick="showSubSection('creditsSection')">▶ CREDITS</div>
                     <div id="logoutBtn" class="menu-item text-red">▶ LOGOUT</div>
+                </div>
+            </div>
+
+            <div id="changePasswordSection" class="hidden" style="padding: 10px 25px;">
+                <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
+                <div style="background: #ffffff; padding: 20px; border-radius: 16px; border: 1px solid #dfdfdf;">
+                    <span style="color:#111; font-size:1.2rem; display:block; font-weight:bold; margin-bottom:15px;">Change Account Password</span>
+                    
+                    <div class="input-wrapper">
+                        <label>Old Password (পুরাতন পাসওয়ার্ড)</label>
+                        <input type="password" id="oldPasswordInput" class="input-field" placeholder="********">
+                        <span id="toggleOldPassword" class="password-toggle-btn">👁️</span>
+                    </div>
+
+                    <div class="input-wrapper">
+                        <label>New Password (নতুন পাসওয়ার্ড)</label>
+                        <input type="password" id="newPasswordInput" class="input-field" placeholder="********">
+                        <span id="toggleNewPassword" class="password-toggle-btn">👁️</span>
+                    </div>
+
+                    <button id="updatePasswordBtn" class="btn-black" style="background:#232323; margin-top:15px;">🔒 UPDATE PASSWORD</button>
                 </div>
             </div>
 
@@ -740,7 +775,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        // রিকোয়ারমেন্ট ৩-এর জন্য EmailAuthProvider, reauthenticateWithCredential এবং updatePassword ইমপোর্ট করা হলো
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, sendPasswordResetEmail, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, doc, deleteDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -762,6 +798,25 @@
 
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('diaryDate').value = today;
+
+        // রিকোয়ারমেন্ট ১: পাসওয়ার্ড শো/হাইড জাভাস্ক্রিপ্ট গ্লোবাল ফাংশন
+        function setupPasswordToggle(toggleId, fieldId) {
+            const toggleElement = document.getElementById(toggleId);
+            const fieldElement = document.getElementById(fieldId);
+            if (toggleElement && fieldElement) {
+                toggleElement.addEventListener('click', () => {
+                    const type = fieldElement.getAttribute('type') === 'password' ? 'text' : 'password';
+                    fieldElement.setAttribute('type', type);
+                    toggleElement.textContent = type === 'password' ? '👁️' : '🙈';
+                });
+            }
+        }
+        // সবগুলো ইনপুটের জন্য শো/হাইড লজিক কল করা হলো
+        setupPasswordToggle('toggleLoginPassword', 'loginPassword');
+        setupPasswordToggle('toggleRegPassword', 'regPassword');
+        setupPasswordToggle('toggleRegConfirmPassword', 'regConfirmPassword');
+        setupPasswordToggle('toggleOldPassword', 'oldPasswordInput');
+        setupPasswordToggle('toggleNewPassword', 'newPasswordInput');
 
         // Help Language Switcher Logic
         window.switchHelpLang = (lang) => {
@@ -923,6 +978,7 @@
             document.getElementById('writeSection').classList.add('hidden');
             document.getElementById('listSection').classList.add('hidden');
             document.getElementById('settingsSection').classList.add('hidden');
+            document.getElementById('changePasswordSection').classList.add('hidden');
             document.getElementById('helpSection').classList.add('hidden');
             document.getElementById('creditsSection').classList.add('hidden');
             
@@ -936,6 +992,7 @@
             document.getElementById('writeSection').classList.add('hidden');
             document.getElementById('listSection').classList.add('hidden');
             document.getElementById('settingsSection').classList.add('hidden');
+            document.getElementById('changePasswordSection').classList.add('hidden');
             document.getElementById('helpSection').classList.add('hidden');
             document.getElementById('creditsSection').classList.add('hidden');
             document.getElementById('dashboardSection').classList.remove('hidden');
@@ -1185,6 +1242,56 @@
             loadSavedFonts();
             backToDashboard();
         });
+
+        // রিকোয়ারমেন্ট ৩: পাসওয়ার্ড চেঞ্জ ও ভ্যালিডেশন জাভাস্ক্রিপ্ট লজিক
+        document.getElementById('updatePasswordBtn').addEventListener('click', async () => {
+            const oldPassword = document.getElementById('oldPasswordInput').value;
+            const newPassword = document.getElementById('newPasswordInput').value;
+            const user = auth.currentUser;
+
+            if (!oldPassword || !newPassword) {
+                return alert('দয়া করে পুরাতন এবং নতুন উভয় পাসওয়ার্ড ফিল্ড পূরণ করুন!');
+            }
+            if (newPassword.length < 6) {
+                return alert('নতুন পাসওয়ার্ডটি কমপক্ষে ৬ ক্যারেক্টারের হতে হবে!');
+            }
+            if (!user || !user.email) {
+                return alert('ইউজার সেশন পাওয়া যায়নি। দয়া করে আবার লগইন করুন।');
+            }
+
+            try {
+                const updateBtn = document.getElementById('updatePasswordBtn');
+                updateBtn.disabled = true; updateBtn.innerText = "Processing...";
+
+                // ১. ইমেইল ও পুরাতন পাসওয়ার্ড দিয়ে ক্যাশ ক্রিডেনশিয়াল তৈরি
+                const credential = EmailAuthProvider.credential(user.email, oldPassword);
+
+                // ২. পুরাতন পাসওয়ার্ড সঠিক কিনা তা Firebase Re-authenticate দিয়ে চেক করা
+                await reauthenticateWithCredential(user, credential);
+
+                // ৩. পুরাতন পাসওয়ার্ড সঠিক হলে নতুন পাসওয়ার্ড সেট করা
+                await updatePassword(user, newPassword);
+
+                alert("পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে! নিরাপত্তা নিশ্চিত করতে ও পুরাতন পাসওয়ার্ড বাতিল করতে অ্যাপ্লিকেশনটি এখন রিলিজ (Sign Out) হবে। নতুন পাসওয়ার্ড দিয়ে আবার লগইন করুন। ✨");
+                
+                // ইনপুট ফিল্ডগুলো খালি করে দেওয়া
+                document.getElementById('oldPasswordInput').value = "";
+                document.getElementById('newPasswordInput').value = "";
+                
+                // সেশন থেকে সাইন আউট করানো (যাতে পুরাতন পাসওয়ার্ড দিয়ে কোনোভাবেই আর অ্যাক্সেস না থাকে)
+                signOut(auth);
+
+            } catch (error) {
+                if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
+                    alert('আপনার দেওয়া পুরাতন পাসওয়ার্ডটি সঠিক নয়! দয়া করে আবার চেষ্টা করুন।');
+                } else {
+                    alert('পাসওয়ার্ড পরিবর্তনে সমস্যা হয়েছে: ' + error.message);
+                }
+            } finally {
+                const updateBtn = document.getElementById('updatePasswordBtn');
+                updateBtn.disabled = false; updateBtn.innerText = "🔒 UPDATE PASSWORD";
+            }
+        });
     </script>
 </body>
-    </html>
+                                                                                                                                </html>
