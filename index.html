@@ -541,6 +541,29 @@
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('diaryDate').value = today;
 
+        // --- LOCAL STORAGE FONT LIFETIME SAVE SYSTEM ---
+        function loadSavedFonts() {
+            const savedFonts = JSON.parse(localStorage.getItem('myDiaryExportedFonts')) || [];
+            const fontSelector = document.getElementById('fontSelector');
+            
+            savedFonts.forEach(font => {
+                // ১. গুগল ফন্টের লিঙ্কটি ডক হেড-এ ইনজেক্ট করা হচ্ছে
+                const link = document.createElement('link');
+                link.rel = 'stylesheet'; 
+                link.href = font.url;
+                document.head.appendChild(link);
+
+                // ২. ড্রপডাউন সিলেক্টরে অপশনটি ঢুকানো হচ্ছে
+                const option = document.createElement('option');
+                option.value = `'${font.name}', sans-serif`; 
+                option.innerText = `Custom: ${font.name}`;
+                fontSelector.appendChild(option);
+            });
+        }
+
+        // অ্যাপ প্রথমবার রান হওয়ার সাথেই সংরক্ষিত ফন্ট লোড হবে
+        loadSavedFonts();
+
         // --- DAILY NOTIFICATION REMINDER SYSTEM (8:00 PM) ---
         function setupDailyReminder() {
             if (!("Notification" in window)) return;
@@ -568,10 +591,9 @@
             if (!diaries || diaries.length === 0) return;
 
             const todayDateObj = new Date();
-            const currentMonthDay = todayDateObj.toISOString().slice(5, 10); // Returns "MM-DD" format (e.g. "06-05")
+            const currentMonthDay = todayDateObj.toISOString().slice(5, 10); 
             const currentYear = todayDateObj.getFullYear();
 
-            // ফিল্টার করে বের করা হচ্ছে যেসব ডায়েরির MM-DD আজকের সাথে মিলে এবং বছর আজকের চেয়ে ছোট
             const pastMemories = diaries.filter(diary => {
                 if (!diary.diaryDate) return false;
                 const diaryMonthDay = diary.diaryDate.slice(5, 10);
@@ -580,14 +602,12 @@
             });
 
             if (pastMemories.length > 0) {
-                // সবচেয়ে প্রাচীন বা যেকোনো ১টি মেমোরি র্যান্ডম সিলেক্ট করা হচ্ছে
                 const luckyMemory = pastMemories[Math.floor(Math.random() * pastMemories.length)];
                 const elapsedYears = currentYear - parseInt(luckyMemory.diaryDate.slice(0, 4));
                 
                 const msgBox = document.getElementById('sweetModalMessage');
                 msgBox.innerHTML = `প্রিয় ডায়েরি ব্যবহারকারী, <br><br>আজ থেকে ঠিক <b>${elapsedYears} বছর আগে</b> আজকের এই বিশেষ দিনে আপনি ডায়েরির পাতায় একটি স্মৃতি বন্দি করেছিলেন। যার শিরোনাম ছিল:<br><br><span style="font-size:1.15rem; color:#d946ef; font-weight:bold;">"${luckyMemory.title}"</span><br><br>আজকের দিনটি কাটুক আরও অনেক হাসিখুশিতে ও নতুন চমৎকার কিছু স্মৃতি তৈরিতে! 🌸✨`;
                 
-                // ড্যাশবোর্ডে থাকা অবস্থায় একটু চমৎকার সারপ্রাইজ দিতে ২ সেকেন্ড পর পপআপ হবে
                 setTimeout(() => {
                     document.getElementById('sweetMemoryModal').classList.remove('hidden');
                 }, 2000);
@@ -606,9 +626,7 @@
         };
 
         window.showSubSection = (sectionId) => {
-            // ড্যাশবোর্ড সেকশন সম্পূর্ণ হাইড করে নির্দিষ্ট সাবসেকশন অন করা হচ্ছে
             document.getElementById('dashboardSection').classList.add('hidden');
-            
             document.getElementById('writeSection').classList.add('hidden');
             document.getElementById('listSection').classList.add('hidden');
             document.getElementById('settingsSection').classList.add('hidden');
@@ -773,7 +791,7 @@
             finally { document.getElementById('saveBtn').disabled = false; document.getElementById('saveBtn').innerText = "💾 SAVE ENTRY"; }
         });
 
-        let isFirstLoad = true; // প্রথমবার অ্যাপ লোড হওয়ার ট্র্যাকার
+        let isFirstLoad = true; 
         function loadDiaryEntries(uid) {
             const q = query(collection(db, "diaries"), where("uid", "==", uid));
 
@@ -796,7 +814,6 @@
 
                 renderDiaryList(allDiaries);
 
-                // শুধুমাত্র প্রথমবার ডেটা সফলভাবে ফেচ হলে "On This Day" চেক করবে
                 if (isFirstLoad) {
                     checkOnThisDayMemories(allDiaries);
                     isFirstLoad = false;
@@ -854,25 +871,34 @@
             renderDiaryList(filtered);
         });
 
+        // --- FONT EXPORT & LIFETIME SAVE SYSTEM CLICK LOGIC ---
         document.getElementById('loadFontBtn').addEventListener('click', () => {
             const url = document.getElementById('customFontUrl').value.trim();
             const name = document.getElementById('customFontName').value.trim();
 
             if(!url || !name) return alert('Both fields are required!');
 
+            // ১. ব্রাউজার কারেন্ট স্ক্রিনে ডাইনামিকালি লোড করা
             const link = document.createElement('link');
-            link.rel = 'stylesheet'; link.href = url;
+            link.rel = 'stylesheet'; 
+            link.href = url;
             document.head.appendChild(link);
 
+            const fontSelector = document.getElementById('fontSelector');
             const option = document.createElement('option');
-            option.value = `'${name}', sans-serif`; option.innerText = `Custom: ${name}`;
+            option.value = `'${name}', sans-serif`; 
+            option.innerText = `Custom: ${name}`;
             fontSelector.appendChild(option);
 
-            alert(`Font "${name}" exported! 🎉`);
+            // ২. লোকাল স্টোরেজে আজীবনের জন্য সেভ করে রাখা
+            const savedFonts = JSON.parse(localStorage.getItem('myDiaryExportedFonts')) || [];
+            savedFonts.push({ url: url, name: name });
+            localStorage.setItem('myDiaryExportedFonts', JSON.stringify(savedFonts));
+
+            alert(`Font "${name}" exported & saved permanently! 🎉`);
             document.getElementById('customFontUrl').value = '';
             document.getElementById('customFontName').value = '';
             
-            // বাগ ফিক্স: সোজাসুজি মেইন ড্যাশবোর্ড মেনুতে ব্যাক করানো হচ্ছে
             backToDashboard();
         });
     </script>
