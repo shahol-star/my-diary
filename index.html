@@ -498,6 +498,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        
+        // অফলাইন ডেটাবেস ফিচারটির জন্য initializeFirestore এবং initializeIndexedDbPersistence মডিউল ইমপোর্ট করা হয়েছে
         import { initializeFirestore, initializeIndexedDbPersistence, collection, addDoc, doc, deleteDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -512,17 +514,20 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         
-        // Firestore Initialization with persistent cache
+        // ফায়ারস্টোর ডাটাবেসকে স্পেশাল মোডে ইনিশিয়ালাইজ করা হলো
         const db = initializeFirestore(app, {
-            localCache: { kind: 'persistent' }
+            localCache: {
+                // ব্রাউজারের চিরস্থায়ী ক্যাশ (IndexedDB) ব্যবহারের নির্দেশ দেওয়া হলো
+                kind: 'persistent' 
+            }
         });
 
-        // Enable Offline Persistence
+        // --- অফলাইন পারসিস্টেন্স বা লোকাল ডাটা ক্যাশিং সক্রিয়করণ লজিক ---
         initializeIndexedDbPersistence(db).catch((err) => {
             if (err.code == 'failed-precondition') {
                 console.warn("Multiple tabs open, persistence can only be enabled in one tab at a time.");
             } else if (err.code == 'unimplemented') {
-                console.warn("The current browser does not support persistence.");
+                console.warn("The current browser does not support all of the features required to enable persistence");
             }
         });
 
@@ -532,12 +537,14 @@
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('diaryDate').value = today;
 
-        // --- DAILY NOTIFICATION REMINDER SYSTEM ---
+        // --- DAILY NOTIFICATION REMINDER SYSTEM (8:00 PM) ---
         function setupDailyReminder() {
             if (!("Notification" in window)) return;
+
             if (Notification.permission === "default") {
                 Notification.requestPermission();
             }
+
             setInterval(() => {
                 const now = new Date();
                 if (now.getHours() === 20 && now.getMinutes() === 0) {
@@ -552,7 +559,6 @@
             }, 60000); 
         }
 
-        // --- NAVIGATION FUNCTIONS ---
         window.navigateTo = (sectionId) => {
             document.getElementById('welcomeSection').classList.add('hidden');
             document.getElementById('loginSection').classList.add('hidden');
@@ -575,24 +581,32 @@
             document.getElementById('dashboardSection').classList.remove('hidden');
         };
 
-        // --- MODAL CONTROLS ---
         window.openDiaryModal = (title, dateStr, content, fontFamily) => {
             const modal = document.getElementById('diaryModal');
-            document.getElementById('modalTitle').innerText = title;
+            const mTitle = document.getElementById('modalTitle');
+            const mBody = document.getElementById('modalBody');
+            
+            mTitle.innerText = title;
             document.getElementById('modalDate').innerText = "Date: " + dateStr;
-            document.getElementById('modalBody').innerText = content;
+            mBody.innerText = content;
+            
             modal.style.fontFamily = fontFamily || "'Cinzel Decorative', serif";
             modal.classList.remove('hidden');
         };
 
-        window.closeDiaryModal = () => document.getElementById('diaryModal').classList.add('hidden');
+        window.closeDiaryModal = () => {
+            document.getElementById('diaryModal').classList.add('hidden');
+        };
+
         window.openForgotModal = () => {
             document.getElementById('forgotEmail').value = "";
             document.getElementById('forgotModal').classList.remove('hidden');
         };
-        window.closeForgotModal = () => document.getElementById('forgotModal').classList.add('hidden');
 
-        // --- DELETE DIARY ---
+        window.closeForgotModal = () => {
+            document.getElementById('forgotModal').classList.add('hidden');
+        };
+
         window.deleteEntry = async (entryId) => {
             if(confirm("Are you sure you want to delete this memory forever? 😢")) {
                 try {
@@ -602,7 +616,6 @@
             }
         };
 
-        // --- AUTH STATE OBSERVER ---
         onAuthStateChanged(auth, (user) => {
             const topHeader = document.getElementById('topHeader');
             const appSection = document.getElementById('appSection');
@@ -625,7 +638,6 @@
             }
         });
 
-        // --- EMAIL SIGN UP ---
         document.getElementById('signupBtn').addEventListener('click', async () => {
             const email = document.getElementById('regEmail').value.trim();
             const password = document.getElementById('regPassword').value;
@@ -642,34 +654,16 @@
             } catch (error) { alert(error.message); }
         });
 
-        // --- EMAIL SIGN IN (FIXED) ---
         document.getElementById('loginBtn').addEventListener('click', async () => {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
-            
             if(!email || !password) return alert('Please fill in all fields!');
 
             try {
-                const loginBtn = document.getElementById('loginBtn');
-                loginBtn.disabled = true; loginBtn.innerText = "Signing in...";
-                
                 await signInWithEmailAndPassword(auth, email, password);
-            } catch (error) { 
-                alert('Login failed: ' + error.message); 
-            } finally {
-                const loginBtn = document.getElementById('loginBtn');
-                loginBtn.disabled = false; loginBtn.innerText = "Sign in";
-            }
+            } catch (error) { alert('Login failed: ' + error.message); }
         });
 
-        // --- GOOGLE SIGN IN ---
-        document.getElementById('googleLoginBtn').addEventListener('click', async () => {
-            try {
-                await signInWithPopup(auth, googleProvider);
-            } catch (error) { alert('Google Sign-in failed: ' + error.message); }
-        });
-
-        // --- PASSWORD RESET ---
         document.getElementById('resetPasswordBtn').addEventListener('click', async () => {
             const email = document.getElementById('forgotEmail').value.trim();
             if (!email) return alert('Please enter your email address!');
@@ -678,7 +672,7 @@
                 const btn = document.getElementById('resetPasswordBtn');
                 btn.disabled = true; btn.innerText = "Sending...";
                 await sendPasswordResetEmail(auth, email);
-                alert('পাসওয়ার্ড রিসেট করার লিঙ্কটি পাঠানো হয়েছে! ইনবক্স বা স্প্যাম ফোল্ডার চেক করুন। ✨');
+                alert('পাসওয়ার্ড রিসেট করার লিঙ্কটি আপনার ইমেইলে পাঠানো হয়েছে! দয়া করে আপনার ইনবক্স অথবা স্প্যাম (Spam) ফোল্ডার চেক করুন। ✨');
                 closeForgotModal();
             } catch (error) {
                 alert('Error: ' + error.message);
@@ -688,17 +682,20 @@
             }
         });
 
-        // --- LOGOUT ---
+        document.getElementById('googleLoginBtn').addEventListener('click', async () => {
+            try {
+                await signInWithPopup(auth, googleProvider);
+            } catch (error) { alert('Google Sign-in failed: ' + error.message); }
+        });
+
         document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
 
-        // --- FONT CHANGING IN ENTRY ---
         const fontSelector = document.getElementById('fontSelector');
         fontSelector.addEventListener('change', () => {
             document.getElementById('diaryContent').style.fontFamily = fontSelector.value;
             document.getElementById('diaryTitle').style.fontFamily = fontSelector.value;
         });
 
-        // --- SAVE DIARY ENTRY ---
         document.getElementById('saveBtn').addEventListener('click', async () => {
             const title = document.getElementById('diaryTitle').value.trim();
             const content = document.getElementById('diaryContent').value.trim();
@@ -711,6 +708,7 @@
                 const saveBtn = document.getElementById('saveBtn');
                 saveBtn.disabled = true; saveBtn.innerText = "Saving...";
 
+                // অফলাইন মোডেও এটি লোকাল ব্রাউজার স্টোরেজে সাথে সাথে সেভ হবে এবং ডাটা সিঙ্ক পেন্ডিং হিসেবে থাকবে
                 await addDoc(collection(db, "diaries"), {
                     uid: auth.currentUser.uid,
                     title: title,
@@ -724,16 +722,17 @@
                 document.getElementById('diaryContent').value = '';
                 document.getElementById('diaryDate').value = today;
                 
+                // অফলাইন অবস্থাতেও ইউজারকে 'Saved securely!' অ্যালার্ট দেখাবে এবং ড্যাশবোর্ডে নিয়ে যাবে
                 alert('Saved securely! (Offline Queue Added) ✨');
                 backToDashboard();
             } catch (error) { alert('Error saving.'); }
             finally { document.getElementById('saveBtn').disabled = false; document.getElementById('saveBtn').innerText = "💾 SAVE ENTRY"; }
         });
 
-        // --- LOAD DIARY ENTRIES ---
         function loadDiaryEntries(uid) {
             const q = query(collection(db, "diaries"), where("uid", "==", uid));
 
+            // onSnapshot অফলাইনেও খুব চমৎকার কাজ করে। এটি লোকাল ডেটা আগে রেন্ডার করে দেয়।
             onSnapshot(q, (snapshot) => {
                 allDiaries = [];
                 snapshot.forEach(doc => {
@@ -743,8 +742,10 @@
                 allDiaries.sort((a, b) => {
                     const dateA = a.diaryDate || "";
                     const dateB = b.diaryDate || "";
-                    if (dateB !== dateA) return dateB.localeCompare(dateA);
-                    
+                    if (dateB !== dateA) {
+                        return dateB.localeCompare(dateA);
+                    }
+                    // অফলাইনে সার্ভার টাইমস্ট্যাম্প না পাওয়ায় টেম্পোরারি নাল ভ্যালু হ্যান্ডেল করার নিখুঁত মেকানিজম
                     const timeA = a.createdAt ? (a.createdAt.toMillis ? a.createdAt.toMillis() : new Date().getTime()) : 0;
                     const timeB = b.createdAt ? (b.createdAt.toMillis ? b.createdAt.toMillis() : new Date().getTime()) : 0;
                     return timeB - timeA;
@@ -756,10 +757,10 @@
             });
         }
 
-        // --- RENDER DIARY LIST ---
         function renderDiaryList(diariesArray) {
             const diaryList = document.getElementById('diaryList');
             if(!diaryList) return;
+            
             diaryList.innerHTML = '';
             
             if (!diariesArray || diariesArray.length === 0) {
@@ -794,7 +795,6 @@
             });
         }
 
-        // --- SEARCH BAR ---
         document.getElementById('diarySearchInput').addEventListener('input', (e) => {
             const searchKey = e.target.value.toLowerCase().trim();
             const filtered = allDiaries.filter(diary => {
@@ -805,7 +805,6 @@
             renderDiaryList(filtered);
         });
 
-        // --- EXPORT CUSTOM FONT ---
         document.getElementById('loadFontBtn').addEventListener('click', () => {
             const url = document.getElementById('customFontUrl').value.trim();
             const name = document.getElementById('customFontName').value.trim();
@@ -827,4 +826,4 @@
         });
     </script>
 </body>
-</html>
+                    </html>
