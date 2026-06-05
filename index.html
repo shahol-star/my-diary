@@ -680,7 +680,7 @@
 
             <div id="listSection" class="hidden" style="padding: 10px 25px;">
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
-                <h3 style="color: #222; margin-bottom: 12px; font-size:1.1rem; text-align: center;">Your Past Memories</h3>
+                <h3 style="color: #22; margin-bottom: 12px; font-size:1.1rem; text-align: center;">Your Past Memories</h3>
                 
                 <div class="input-wrapper">
                     <input type="text" id="diarySearchInput" placeholder="🔍 Search by title or date (e.g. 2026-06-05)..." class="input-field" style="font-family:sans-serif; margin-bottom:15px; background:white;">
@@ -1135,7 +1135,6 @@
                 setupDailyReminder(); 
             } else {
                 currentUserId = null;
-                topHeader.remove('hidden');
                 topHeader.classList.remove('hidden');
                 appSection.classList.add('hidden');
                 navigateTo('welcomeSection');
@@ -1369,4 +1368,4 @@
         });
     </script>
 </body>
-    </html>
+                    </html>
