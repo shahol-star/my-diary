@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Diary - Premium Design</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            background: #111111; 
+            font-family: 'Cinzel Decorative', serif;
+            color: #222222; 
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            background: #f3f3f3; 
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            position: relative;
+            min-height: 750px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* TOP BLACK HEADER DESIGN */
+        .top-banner {
+            background: #232323;
+            padding: 30px 25px;
+            border-bottom-right-radius: 60px;
+            position: relative;
+            color: white;
+            height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .top-banner span {
+            font-size: 0.85rem;
+            color: #999;
+            font-weight: 300;
+        }
+        .header-circle {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            width: 65px;
+            height: 65px;
+            background: #e5e5e5;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.2), 0 4px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+        }
+
+        /* PACMAN ANIMATION */
+        .anim-title-container {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            height: 40px;
+            width: 180px;
+        }
+        .animated-title {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin: 0;
+            z-index: 1;
+        }
+        .chomper {
+            position: absolute;
+            left: -40px;
+            width: 24px;
+            height: 24px;
+            background: #f59e0b;
+            border-radius: 50%;
+            z-index: 2;
+            animation: moveAcross 3s ease-in-out infinite, bite 0.3s ease-in-out infinite alternate;
+        }
+        @keyframes bite {
+            0% { clip-path: polygon(100% 50%, 0% 0%, 0% 100%); }
+            100% { clip-path: polygon(50% 50%, 0% 0%, 0% 100%); transform: rotate(-30deg); }
+        }
+        @keyframes moveAcross {
+            0% { left: -20%; transform: scaleX(-1); }
+            45% { left: 110%; transform: scaleX(-1); }
+            50% { left: 110%; transform: scaleX(1); }
+            95% { left: -20%; transform: scaleX(1); }
+            100% { left: -20%; transform: scaleX(-1); }
+        }
+
+        /* CONTENT AREAS */
+        .content-body {
+            padding: 25px 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            color: #222222; 
+        }
+        .page-title {
+            font-size: 1.6rem;
+            letter-spacing: 1px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #111;
+        }
+
+        /* INPUT STYLES */
+        .input-wrapper {
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .input-wrapper label {
+            display: block;
+            font-size: 0.8rem;
+            color: #555;
+            margin-bottom: 4px;
+            padding-left: 5px;
+        }
+        .input-field {
+            width: 100%;
+            background: #e9e9e9;
+            border: 1px solid #dfdfdf;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            color: #111;
+            outline: none;
+            font-family: inherit;
+            transition: 0.2s;
+        }
+        .input-field:focus {
+            border-color: #232323;
+            background: #fff;
+        }
+
+        /* BUTTONS */
+        .btn-black {
+            background: #232323;
+            color: white;
+            border: none;
+            border-radius: 14px;
+            padding: 12px 30px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: block;
+            margin: 10px auto 0 auto;
+            text-align: center;
+            width: 100%;
+            font-family: inherit;
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .btn-black:hover {
+            background: #444;
+        }
+
+        /* GOOGLE SIGN IN BUTTON */
+        .btn-google {
+            background: white;
+            color: #232323;
+            border: 2px solid #232323;
+            border-radius: 14px;
+            padding: 10px 20px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            margin-top: 12px;
+            font-family: inherit;
+            font-weight: 700;
+        }
+        .btn-google svg {
+            width: 18px;
+            height: 18px;
+            display: block;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 15px 0 5px 0;
+            color: #888;
+            font-size: 0.85rem;
+            position: relative;
+        }
+        .divider::before, .divider::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 38%;
+            height: 1px;
+            background: #dfdfdf;
+        }
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
+
+        .link-text {
+            color: #555;
+            text-align: center;
+            font-size: 0.85rem;
+            margin-top: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+        }
+
+        /* WELCOME LANDING SCREEN */
+        #welcomeSection {
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            padding: 30px 25px;
+        }
+        .btn-group-vertical {
+            width: 100%;
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .btn-outline {
+            background: transparent;
+            color: #232323;
+            border: 2px solid #232323;
+            border-radius: 14px;
+            padding: 12px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            width: 100%;
+            font-family: inherit;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        /* INSIDE APP STYLES */
+        .pro-card { 
+            background: #ffffff; 
+            border: 1px solid #dfdfdf; 
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .menu-item { 
+            cursor: pointer; transition: 0.2s; padding: 15px 20px; 
+            border-bottom: 1px solid #efefef; font-size: 0.95rem; color: #333333;
+            font-weight: bold;
+        }
+        .menu-item:hover { background: #232323; color: white; }
+        .menu-item:last-child { border-bottom: none; }
+        .text-red { color: #dc2626; }
+        .text-red:hover { background: #dc2626; color: white; }
+        .back-link { color: #1e40af; text-decoration: none; display: inline-block; margin-bottom: 15px; cursor: pointer; font-size: 0.9rem; font-weight: bold;}
+        
+        /* PAST MEMORIES TITLE ONLY CARD */
+        .diary-title-card { 
+            background: #ffffff; 
+            padding: 14px; 
+            border-radius: 12px; 
+            border: 1px solid #dfdfdf; 
+            margin-bottom: 10px; 
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .diary-title-card:hover {
+            border-color: #232323;
+            background: #f9f9f9;
+        }
+        .diary-title-text { margin: 0; color: #222222; font-size: 1rem; font-weight: 700; flex-grow: 1; }
+        .diary-date-badge { font-size: 0.75rem; color: #666; font-family: sans-serif; background: #e9e9e9; padding: 4px 8px; border-radius: 6px; margin-left: 10px; white-space: nowrap;}
+        .delete-btn { background: none; border: none; color: #dc2626; cursor: pointer; font-size: 0.95rem; margin-left: 10px; padding: 5px;}
+
+        /* DIARY & FORGOT PASSWORD MODAL */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); display: flex; justify-content: center;
+            align-items: center; z-index: 999; padding: 20px;
+        }
+        .modal-content {
+            background: white; width: 100%; max-width: 360px;
+            border-radius: 20px; padding: 20px; position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            max-height: 80vh; overflow-y: auto;
+        }
+        .close-modal { position: absolute; top: 12px; right: 15px; font-size: 1.2rem; cursor: pointer; color: #666;}
+
+        .hidden { display: none !important; }
+        .back-arrow { font-size: 1.3rem; cursor: pointer; margin-bottom: 15px; display: inline-block; }
+
+        select, input, textarea {
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="mainContainer" class="app-container">
+        
+        <div id="topHeader" class="top-banner">
+            <div class="anim-title-container">
+                <div class="chomper"></div>
+                <h1 class="animated-title">MY DIARY</h1>
+            </div>
+            <span id="headerSubtext">house</span>
+            <div class="header-circle">📝</div>
+        </div>
+
+        <div id="welcomeSection" class="content-body">
+            <div class="welcome-logo" style="font-size:3.5rem; text-align:center; margin-bottom:15px;">📖</div>
+            <h2 style="margin:0; font-size: 1.7rem; text-align:center;">Welcome</h2>
+            <p style="color:#666; font-size:0.85rem; margin-top:5px; font-family: sans-serif; text-align:center;">Secure your daily thoughts and memories lifetime.</p>
+            <div class="btn-group-vertical">
+                <button onclick="navigateTo('loginSection')" class="btn-outline" style="background:#232323; color:white; border:none;">Sign in</button>
+                <button onclick="navigateTo('registerSection')" class="btn-outline">Register</button>
+            </div>
+        </div>
+
+        <div id="loginSection" class="content-body hidden">
+            <span class="back-arrow" onclick="navigateTo('welcomeSection')">←</span>
+            <h1 class="page-title">Login</h1>
+            
+            <div class="input-wrapper">
+                <label>Email</label>
+                <input type="email" id="loginEmail" class="input-field" placeholder="abc@gmail.com" autocapitalize="none" style="text-transform: none;">
+            </div>
+            
+            <div class="input-wrapper">
+                <label>Password</label>
+                <input type="password" id="loginPassword" class="input-field" placeholder="********">
+            </div>
+            
+            <div style="text-align: right; margin-top: -5px; margin-bottom: 15px;">
+                <span onclick="openForgotModal()" style="font-size: 0.8rem; color: #1e40af; cursor: pointer; font-weight: bold; font-family: sans-serif;">Forgot Password?</span>
+            </div>
+            
+            <button id="loginBtn" class="btn-black">Sign in</button>
+
+            <div class="divider">or</div>
+            <button id="googleLoginBtn" class="btn-google">
+                <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+                </svg>
+                Continue with Google
+            </button>
+
+            <span class="link-text" onclick="navigateTo('registerSection')">Create an account</span>
+        </div>
+
+        <div id="registerSection" class="content-body hidden">
+            <span class="back-arrow" onclick="navigateTo('welcomeSection')">←</span>
+            <h1 class="page-title">Sign up</h1>
+            
+            <div class="input-wrapper">
+                <label>First Name</label>
+                <input type="text" id="regFirst" class="input-field" placeholder="Steve">
+            </div>
+            <div class="input-wrapper">
+                <label>Last Name</label>
+                <input type="text" id="regLast" class="input-field" placeholder="Rogers">
+            </div>
+            <div class="input-wrapper">
+                <label>Email</label>
+                <input type="email" id="regEmail" class="input-field" placeholder="abc@gmail.com" autocapitalize="none" style="text-transform: none;">
+            </div>
+            <div class="input-wrapper">
+                <label>Password</label>
+                <input type="password" id="regPassword" class="input-field" placeholder="********">
+            </div>
+            <div class="input-wrapper">
+                <label>Confirm Password</label>
+                <input type="password" id="regConfirmPassword" class="input-field" placeholder="********">
+            </div>
+            
+            <button id="signupBtn" class="btn-black">Register</button>
+            <span class="link-text" onclick="navigateTo('loginSection')">Already have an account? Login</span>
+        </div>
+
+        <div id="appSection" class="content-body hidden">
+            
+            <div id="dashboardSection">
+                <h1 style="color: #232323; text-align: center; margin-bottom: 25px; font-size: 1.8rem;">MAIN MENU</h1>
+                <div class="pro-card">
+                    <div class="menu-item" onclick="showSubSection('writeSection')">▶ WRITE NEW DIARY</div>
+                    <div class="menu-item" onclick="showSubSection('listSection')">▶ VIEW PAST MEMORIES</div>
+                    <div class="menu-item" onclick="showSubSection('settingsSection')">▶ FONT SETTINGS</div>
+                    <div id="logoutBtn" class="menu-item text-red">▶ LOGOUT</div>
+                </div>
+            </div>
+
+            <div id="writeSection" class="hidden">
+                <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
+                <div style="background: #ffffff; padding: 15px; border-radius: 16px; border: 1px solid #dfdfdf;">
+                    <span style="color:#111; display:block; margin-bottom:10px; font-size:1rem; font-weight:bold;">Capture Memory</span>
+                    
+                    <div class="input-wrapper">
+                        <label>Select Date</label>
+                        <input type="date" id="diaryDate" class="input-field" style="font-family:sans-serif;">
+                    </div>
+
+                    <div class="input-wrapper">
+                        <label>Select Language Font</label>
+                        <select id="fontSelector" style="width:100%; padding:8px; background:#f3f3f3; color:black; border:1px solid #dfdfdf; border-radius:8px;">
+                            <option value="'Cinzel Decorative', serif">English (Premium Serif)</option>
+                            <option value="'Hind Siliguri', sans-serif">Bangla (Hind Siliguri)</option>
+                        </select>
+                    </div>
+
+                    <div class="input-wrapper">
+                        <label>Title</label>
+                        <input type="text" id="diaryTitle" placeholder="Title..." class="input-field" style="background:#f3f3f3;">
+                    </div>
+
+                    <div class="input-wrapper">
+                        <label>Content</label>
+                        <textarea id="diaryContent" rows="6" placeholder="What happened today?..." class="input-field" style="background:#f3f3f3; line-height:1.4; height:120px;"></textarea>
+                    </div>
+
+                    <button id="saveBtn" class="btn-black">💾 SAVE ENTRY</button>
+                </div>
+            </div>
+
+            <div id="listSection" class="hidden">
+                <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
+                <h3 style="color: #222; margin-bottom: 12px; font-size:1.1rem;">Your Past Memories</h3>
+                
+                <div class="input-wrapper">
+                    <input type="text" id="diarySearchInput" placeholder="🔍 Search by title or date (e.g. 2026-06-05)..." class="input-field" style="font-family:sans-serif; margin-bottom:15px; background:white;">
+                </div>
+
+                <div id="diaryList"></div>
+            </div>
+
+            <div id="settingsSection" class="hidden">
+                <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
+                <div style="background: #ffffff; padding: 15px; border-radius: 16px; border: 1px solid #dfdfdf;">
+                    <span style="color:#111; font-size:1rem; display:block; font-weight:bold;">Web Font Exporter</span>
+                    <p style="font-size: 0.8rem; color: #555; margin-top: 5px; font-family:'Hind Siliguri', sans-serif;">Google Fonts CSS URL পেস্ট করে নতুন ফন্ট এক্সপোর্ট করুন।</p>
+                    <input type="text" id="customFontUrl" placeholder="https://fonts.googleapis.com/..." class="input-field" style="background:#f3f3f3;">
+                    <input type="text" id="customFontName" placeholder="Font Family Name" class="input-field" style="background:#f3f3f3;">
+                    <button id="loadFontBtn" class="btn-black" style="background:#10b981;">EXPORT & APPLY FONT</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="diaryModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeDiaryModal()">&times;</span>
+            <h3 id="modalTitle" style="margin-top: 5px; color: #111; font-size: 1.2rem;">Title</h3>
+            <p id="modalDate" style="font-size: 0.8rem; color: #666; font-family: sans-serif; border-bottom: 1px solid #eee; padding-bottom: 8px;">Date</p>
+            <p id="modalBody" style="font-size: 0.95rem; color: #333; white-space: pre-wrap; line-height: 1.5; margin-top: 12px;">Content</p>
+        </div>
+    </div>
+
+    <div id="forgotModal" class="modal hidden">
+        <div class="modal-content" style="font-family: 'Hind Siliguri', sans-serif;">
+            <span class="close-modal" onclick="closeForgotModal()">&times;</span>
+            <h3 style="margin-top: 5px; color: #111; font-size: 1.2rem;">Reset Password</h3>
+            <p style="font-size: 0.85rem; color: #555; margin-bottom: 15px;">আপনার অ্যাকাউন্টের ইমেইল ঠিকানাটি লিখুন। আমরা আপনাকে পাসওয়ার্ড রিসেট করার একটি লিঙ্ক পাঠিয়ে দেব।</p>
+            
+            <div class="input-wrapper">
+                <label>Email Address</label>
+                <input type="email" id="forgotEmail" class="input-field" placeholder="abc@gmail.com" autocapitalize="none" style="text-transform: none; background: #f3f3f3;">
+            </div>
+            
+            <button id="resetPasswordBtn" class="btn-black" style="margin-top: 10px;">Send Reset Link</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { initializeFirestore, initializeIndexedDbPersistence, collection, addDoc, doc, deleteDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEzag6WbUzHEHOpSRRkDChfMTwZiwM4UI",
+            authDomain: "diary-725db.firebaseapp.com",
+            projectId: "diary-725db",
+            storageBucket: "diary-725db.firebasestorage.app",
+            messagingSenderId: "1047429761882",
+            appId: "1:1047429761882:web:415064bd40c5b619778163"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        
+        // Firestore Initialization with persistent cache
+        const db = initializeFirestore(app, {
+            localCache: { kind: 'persistent' }
+        });
+
+        // Enable Offline Persistence
+        initializeIndexedDbPersistence(db).catch((err) => {
+            if (err.code == 'failed-precondition') {
+                console.warn("Multiple tabs open, persistence can only be enabled in one tab at a time.");
+            } else if (err.code == 'unimplemented') {
+                console.warn("The current browser does not support persistence.");
+            }
+        });
+
+        const googleProvider = new GoogleAuthProvider();
+        let allDiaries = []; 
+
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('diaryDate').value = today;
+
+        // --- DAILY NOTIFICATION REMINDER SYSTEM ---
+        function setupDailyReminder() {
+            if (!("Notification" in window)) return;
+            if (Notification.permission === "default") {
+                Notification.requestPermission();
+            }
+            setInterval(() => {
+                const now = new Date();
+                if (now.getHours() === 20 && now.getMinutes() === 0) {
+                    if (Notification.permission === "granted") {
+                        new Notification("📝 ডায়েরি লেখার সময় হয়েছে!", {
+                            body: "আজকের সুন্দর মুহূর্তগুলো ডায়েরির পাতায় বন্দি করে রাখুন। ✨",
+                            icon: "📝",
+                            tag: "diary-reminder-" + now.toDateString() 
+                        });
+                    }
+                }
+            }, 60000); 
+        }
+
+        // --- NAVIGATION FUNCTIONS ---
+        window.navigateTo = (sectionId) => {
+            document.getElementById('welcomeSection').classList.add('hidden');
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('registerSection').classList.add('hidden');
+            document.getElementById(sectionId).classList.remove('hidden');
+        };
+
+        window.showSubSection = (sectionId) => {
+            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById(sectionId).classList.remove('hidden');
+            if(sectionId === 'listSection') {
+                renderDiaryList(allDiaries);
+            }
+        };
+
+        window.backToDashboard = () => {
+            document.getElementById('writeSection').classList.add('hidden');
+            document.getElementById('listSection').classList.add('hidden');
+            document.getElementById('settingsSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.remove('hidden');
+        };
+
+        // --- MODAL CONTROLS ---
+        window.openDiaryModal = (title, dateStr, content, fontFamily) => {
+            const modal = document.getElementById('diaryModal');
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDate').innerText = "Date: " + dateStr;
+            document.getElementById('modalBody').innerText = content;
+            modal.style.fontFamily = fontFamily || "'Cinzel Decorative', serif";
+            modal.classList.remove('hidden');
+        };
+
+        window.closeDiaryModal = () => document.getElementById('diaryModal').classList.add('hidden');
+        window.openForgotModal = () => {
+            document.getElementById('forgotEmail').value = "";
+            document.getElementById('forgotModal').classList.remove('hidden');
+        };
+        window.closeForgotModal = () => document.getElementById('forgotModal').classList.add('hidden');
+
+        // --- DELETE DIARY ---
+        window.deleteEntry = async (entryId) => {
+            if(confirm("Are you sure you want to delete this memory forever? 😢")) {
+                try {
+                    await deleteDoc(doc(db, "diaries", entryId));
+                    alert("Deleted successfully!");
+                } catch (error) { alert("Error deleting entry."); }
+            }
+        };
+
+        // --- AUTH STATE OBSERVER ---
+        onAuthStateChanged(auth, (user) => {
+            const topHeader = document.getElementById('topHeader');
+            const appSection = document.getElementById('appSection');
+
+            if (user) {
+                topHeader.classList.add('hidden');
+                document.getElementById('welcomeSection').classList.add('hidden');
+                document.getElementById('loginSection').classList.add('hidden');
+                document.getElementById('registerSection').classList.add('hidden');
+                appSection.classList.remove('hidden');
+                backToDashboard();
+                loadDiaryEntries(user.uid);
+                setupDailyReminder(); 
+            } else {
+                topHeader.classList.remove('hidden');
+                appSection.classList.add('hidden');
+                navigateTo('welcomeSection');
+                document.getElementById('diaryList').innerHTML = '';
+                allDiaries = [];
+            }
+        });
+
+        // --- EMAIL SIGN UP ---
+        document.getElementById('signupBtn').addEventListener('click', async () => {
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirmPass = document.getElementById('regConfirmPassword').value;
+            const first = document.getElementById('regFirst').value.trim();
+            const last = document.getElementById('regLast').value.trim();
+
+            if(!first || !last || !email || !password || !confirmPass) return alert('Please fill in all fields!');
+            if(password !== confirmPass) return alert('Passwords do not match!');
+
+            try {
+                await createUserWithEmailAndPassword(auth, email, password);
+                alert('Account created successfully! ✨');
+            } catch (error) { alert(error.message); }
+        });
+
+        // --- EMAIL SIGN IN (FIXED) ---
+        document.getElementById('loginBtn').addEventListener('click', async () => {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            if(!email || !password) return alert('Please fill in all fields!');
+
+            try {
+                const loginBtn = document.getElementById('loginBtn');
+                loginBtn.disabled = true; loginBtn.innerText = "Signing in...";
+                
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (error) { 
+                alert('Login failed: ' + error.message); 
+            } finally {
+                const loginBtn = document.getElementById('loginBtn');
+                loginBtn.disabled = false; loginBtn.innerText = "Sign in";
+            }
+        });
+
+        // --- GOOGLE SIGN IN ---
+        document.getElementById('googleLoginBtn').addEventListener('click', async () => {
+            try {
+                await signInWithPopup(auth, googleProvider);
+            } catch (error) { alert('Google Sign-in failed: ' + error.message); }
+        });
+
+        // --- PASSWORD RESET ---
+        document.getElementById('resetPasswordBtn').addEventListener('click', async () => {
+            const email = document.getElementById('forgotEmail').value.trim();
+            if (!email) return alert('Please enter your email address!');
+
+            try {
+                const btn = document.getElementById('resetPasswordBtn');
+                btn.disabled = true; btn.innerText = "Sending...";
+                await sendPasswordResetEmail(auth, email);
+                alert('পাসওয়ার্ড রিসেট করার লিঙ্কটি পাঠানো হয়েছে! ইনবক্স বা স্প্যাম ফোল্ডার চেক করুন। ✨');
+                closeForgotModal();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                const btn = document.getElementById('resetPasswordBtn');
+                btn.disabled = false; btn.innerText = "Send Reset Link";
+            }
+        });
+
+        // --- LOGOUT ---
+        document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+
+        // --- FONT CHANGING IN ENTRY ---
+        const fontSelector = document.getElementById('fontSelector');
+        fontSelector.addEventListener('change', () => {
+            document.getElementById('diaryContent').style.fontFamily = fontSelector.value;
+            document.getElementById('diaryTitle').style.fontFamily = fontSelector.value;
+        });
+
+        // --- SAVE DIARY ENTRY ---
+        document.getElementById('saveBtn').addEventListener('click', async () => {
+            const title = document.getElementById('diaryTitle').value.trim();
+            const content = document.getElementById('diaryContent').value.trim();
+            const customDate = document.getElementById('diaryDate').value; 
+            const selectedFont = fontSelector.value;
+
+            if (!title || !content || !customDate) return alert('Title, Content and Date are required!');
+
+            try {
+                const saveBtn = document.getElementById('saveBtn');
+                saveBtn.disabled = true; saveBtn.innerText = "Saving...";
+
+                await addDoc(collection(db, "diaries"), {
+                    uid: auth.currentUser.uid,
+                    title: title,
+                    content: content,
+                    fontFamily: selectedFont,
+                    diaryDate: customDate, 
+                    createdAt: serverTimestamp()
+                });
+
+                document.getElementById('diaryTitle').value = '';
+                document.getElementById('diaryContent').value = '';
+                document.getElementById('diaryDate').value = today;
+                
+                alert('Saved securely! (Offline Queue Added) ✨');
+                backToDashboard();
+            } catch (error) { alert('Error saving.'); }
+            finally { document.getElementById('saveBtn').disabled = false; document.getElementById('saveBtn').innerText = "💾 SAVE ENTRY"; }
+        });
+
+        // --- LOAD DIARY ENTRIES ---
+        function loadDiaryEntries(uid) {
+            const q = query(collection(db, "diaries"), where("uid", "==", uid));
+
+            onSnapshot(q, (snapshot) => {
+                allDiaries = [];
+                snapshot.forEach(doc => {
+                    allDiaries.push({ id: doc.id, ...doc.data() });
+                });
+                
+                allDiaries.sort((a, b) => {
+                    const dateA = a.diaryDate || "";
+                    const dateB = b.diaryDate || "";
+                    if (dateB !== dateA) return dateB.localeCompare(dateA);
+                    
+                    const timeA = a.createdAt ? (a.createdAt.toMillis ? a.createdAt.toMillis() : new Date().getTime()) : 0;
+                    const timeB = b.createdAt ? (b.createdAt.toMillis ? b.createdAt.toMillis() : new Date().getTime()) : 0;
+                    return timeB - timeA;
+                });
+
+                renderDiaryList(allDiaries);
+            }, (error) => {
+                console.error("Firestore Snapshot Error: ", error);
+            });
+        }
+
+        // --- RENDER DIARY LIST ---
+        function renderDiaryList(diariesArray) {
+            const diaryList = document.getElementById('diaryList');
+            if(!diaryList) return;
+            diaryList.innerHTML = '';
+            
+            if (!diariesArray || diariesArray.length === 0) {
+                diaryList.innerHTML = `<p style="text-align:center; color:#666; font-style:italic; font-family:'Hind Siliguri', sans-serif; font-size:0.85rem; padding: 20px 0;">কোনো ডায়েরি তথ্য পাওয়া যায়নি। নতুন ডায়েরি লিখুন।</p>`;
+                return;
+            }
+
+            diariesArray.forEach((data) => {
+                const card = document.createElement('div');
+                card.className = "diary-title-card";
+                card.style.fontFamily = data.fontFamily || "'Cinzel Decorative', serif";
+                
+                card.innerHTML = `
+                    <h4 class="diary-title-text"></h4>
+                    <span class="diary-date-badge"></span>
+                    <button class="delete-btn">🗑️</button>
+                `;
+
+                card.querySelector('.diary-title-text').innerText = data.title || "Untitled";
+                card.querySelector('.diary-date-badge').innerText = data.diaryDate || "";
+
+                card.addEventListener('click', () => {
+                    openDiaryModal(data.title || "Untitled", data.diaryDate || "", data.content || "", data.fontFamily || "");
+                });
+
+                card.querySelector('.delete-btn').addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    deleteEntry(data.id);
+                });
+
+                diaryList.appendChild(card);
+            });
+        }
+
+        // --- SEARCH BAR ---
+        document.getElementById('diarySearchInput').addEventListener('input', (e) => {
+            const searchKey = e.target.value.toLowerCase().trim();
+            const filtered = allDiaries.filter(diary => {
+                const titleMatch = (diary.title || "").toLowerCase().includes(searchKey);
+                const dateMatch = (diary.diaryDate || "").includes(searchKey);
+                return titleMatch || dateMatch;
+            });
+            renderDiaryList(filtered);
+        });
+
+        // --- EXPORT CUSTOM FONT ---
+        document.getElementById('loadFontBtn').addEventListener('click', () => {
+            const url = document.getElementById('customFontUrl').value.trim();
+            const name = document.getElementById('customFontName').value.trim();
+
+            if(!url || !name) return alert('Both fields are required!');
+
+            const link = document.createElement('link');
+            link.rel = 'stylesheet'; link.href = url;
+            document.head.appendChild(link);
+
+            const option = document.createElement('option');
+            option.value = `'${name}', sans-serif`; option.innerText = `Custom: ${name}`;
+            fontSelector.appendChild(option);
+
+            alert(`Font "${name}" exported! 🎉`);
+            document.getElementById('customFontUrl').value = '';
+            document.getElementById('customFontName').value = '';
+            showSubSection('writeSection');
+        });
+    </script>
+</body>
+</html>
