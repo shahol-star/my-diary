@@ -627,7 +627,7 @@
             <div id="changePasswordSection" class="hidden" style="padding: 10px 25px;">
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
                 <div style="background: #ffffff; padding: 20px; border-radius: 16px; border: 1px solid #dfdfdf;">
-                    <span style="color:#111; font-size:1.2rem; display:block; font-weight:bold; margin-bottom:15px;">Change Account Password</span>
+                    <span style="color:#111; font-size:1.2rem; display:block; font-weight:bold; margin-bottom:15px; text-align: center;">Change Account Password</span>
                     
                     <div class="input-wrapper">
                         <label>Old Password</label>
@@ -641,7 +641,7 @@
                         <span id="toggleNewPassword" class="password-toggle-btn">Show</span>
                     </div>
 
-                    <button id="updatePasswordBtn" class="btn-black" style="background:#232323; margin-top:15px;">🔒 UPDATE PASSWORD</button>
+                    <button id="updatePasswordBtn" class="btn-black" style="background:#232323; margin-top:15px;">UPDATE PASSWORD</button>
                 </div>
             </div>
 
@@ -649,7 +649,7 @@
                 <div class="back-link" onclick="backToDashboard()" style="padding: 0 25px;">← Back to Menu</div>
                 
                 <div style="background: #ffffff; padding: 20px 25px; border-top-left-radius: 30px; border-top-right-radius: 30px; border: 1px solid #dfdfdf; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden;">
-                    <span style="color:#111; display:block; margin-bottom:10px; font-size:1rem; font-weight:bold;">Capture Memory</span>
+                    <span style="color:#111; display:block; margin-bottom:10px; font-size:1rem; font-weight:bold; text-align: center;">Capture Memory</span>
                     
                     <div class="input-wrapper">
                         <label>Select Date</label>
@@ -680,7 +680,7 @@
 
             <div id="listSection" class="hidden" style="padding: 10px 25px;">
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
-                <h3 style="color: #222; margin-bottom: 12px; font-size:1.1rem;">Your Past Memories</h3>
+                <h3 style="color: #222; margin-bottom: 12px; font-size:1.1rem; text-align: center;">Your Past Memories</h3>
                 
                 <div class="input-wrapper">
                     <input type="text" id="diarySearchInput" placeholder="🔍 Search by title or date (e.g. 2026-06-05)..." class="input-field" style="font-family:sans-serif; margin-bottom:15px; background:white;">
@@ -692,8 +692,8 @@
             <div id="settingsSection" class="hidden" style="padding: 10px 25px;">
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
                 <div style="background: #ffffff; padding: 15px; border-radius: 16px; border: 1px solid #dfdfdf;">
-                    <span style="color:#111; font-size:1rem; display:block; font-weight:bold;">Web Font Exporter</span>
-                    <p style="font-size: 0.8rem; color: #555; margin-top: 5px; font-family:'Hind Siliguri', sans-serif;">
+                    <span style="color:#111; font-size:1rem; display:block; font-weight:bold; text-align: center;">Web Font Exporter</span>
+                    <p style="font-size: 0.8rem; color: #555; margin-top: 5px; font-family:'Hind Siliguri', sans-serif; text-align: center;">
                         <a href="https://fonts.google.com" target="_blank" class="font-link">Google Fonts</a> CSS URL পেস্ট করে নতুন ফন্ট এক্সপোর্ট করুন।
                     </p>
                     <input type="text" id="customFontUrl" placeholder="https://fonts.googleapis.com/..." class="input-field" style="background:#f3f3f3;">
@@ -858,7 +858,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         const googleProvider = new GoogleAuthProvider();
-        const appleProvider = new OAuthProvider('apple.com'); // Apple Provider ইনিশিয়ালাইজ করা হলো
+        const appleProvider = new OAuthProvider('apple.com'); 
 
         let allDiaries = []; 
         let currentUserId = null;
@@ -866,7 +866,6 @@
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('diaryDate').value = today;
 
-        // পাসওয়ার্ড শো/হাইড জাভাস্ক্রিপ্ট গ্লোবাল ফাংশন (টেক্সট-ভিত্তিক)
         function setupPasswordToggle(toggleId, fieldId) {
             const toggleElement = document.getElementById(toggleId);
             const fieldElement = document.getElementById(fieldId);
@@ -879,14 +878,12 @@
             }
         }
         
-        // সবগুলো পাসওয়ার্ড ফিল্ডের জন্য শো/হাইড লজিক ট্রিপ করা হলো
         setupPasswordToggle('toggleLoginPassword', 'loginPassword');
         setupPasswordToggle('toggleRegPassword', 'regPassword');
         setupPasswordToggle('toggleRegConfirmPassword', 'regConfirmPassword');
         setupPasswordToggle('toggleOldPassword', 'oldPasswordInput');
         setupPasswordToggle('toggleNewPassword', 'newPasswordInput');
 
-        // Help Language Switcher Logic
         window.switchHelpLang = (lang) => {
             const btnBn = document.getElementById('tabBn');
             const btnEn = document.getElementById('tabEn');
@@ -1101,7 +1098,6 @@
             }
         };
 
-        // Google Sign-In হ্যান্ডলার ফাংশন
         async function handleGoogleSignIn() {
             try {
                 await signInWithPopup(auth, googleProvider);
@@ -1110,7 +1106,6 @@
             }
         }
 
-        // Apple Sign-In হ্যান্ডলার ফাংশন
         async function handleAppleSignIn() {
             try {
                 await signInWithPopup(auth, appleProvider);
@@ -1119,7 +1114,6 @@
             }
         }
 
-        // ল্যান্ডিং পেজ এবং লগইন পেজ দুই জায়গার Google ও Apple বাটনেই ইভেন্ট লিসেনার সেট করা হলো
         document.getElementById('welcomeGoogleBtn').addEventListener('click', handleGoogleSignIn);
         document.getElementById('googleLoginBtn').addEventListener('click', handleGoogleSignIn);
         document.getElementById('welcomeAppleBtn').addEventListener('click', handleAppleSignIn);
@@ -1141,6 +1135,7 @@
                 setupDailyReminder(); 
             } else {
                 currentUserId = null;
+                topHeader.remove('hidden');
                 topHeader.classList.remove('hidden');
                 appSection.classList.add('hidden');
                 navigateTo('welcomeSection');
