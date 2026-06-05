@@ -664,6 +664,8 @@
                     </div>
                 </div>
             </div>
+
+            
 <!-- CREDITS SECTION (UPDATED NEW LOOK) -->
 <div id="creditsSection" class="hidden" style="padding: 10px 25px;">
     <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
@@ -674,16 +676,19 @@
             "Every day deserves a page."
         </p>
         
-        <div class="credit-row">
+        <!-- DEVELOPED BY (Centered & Stacked) -->
+        <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center;">
             <span class="credit-label">DEVELOPED BY</span>
-            <span class="credit-value" style="font-family: sans-serif;">Shahol Mahmud</span>
+            <span class="credit-value" style="font-family: sans-serif; text-align: center;">Shahol Mahmud</span>
         </div>
-        <div class="credit-row">
+
+        <!-- APP NAME (Centered & Stacked) -->
+        <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center;">
             <span class="credit-label">APP NAME</span>
-            <span class="credit-value" style="font-family: sans-serif;">DailyDock</span>
+            <span class="credit-value" style="font-family: sans-serif; text-align: center;">DailyDock</span>
         </div>
         
-        <!-- PURPOSE (Centered) -->
+        <!-- PURPOSE (Centered & Stacked) -->
         <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center;">
             <span class="credit-label">PURPOSE</span>
             <span class="credit-value" style="font-family: sans-serif; text-align: center; font-weight: normal; font-size: 0.8rem; color: #555; line-height: 1.4;">
@@ -691,7 +696,7 @@
             </span>
         </div>
         
-        <!-- MISSION (Centered) -->
+        <!-- MISSION (Centered & Stacked) -->
         <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center;">
             <span class="credit-label">MISSION</span>
             <span class="credit-value" style="font-family: sans-serif; text-align: center; font-weight: normal; font-size: 0.8rem; color: #555; line-height: 1.4;">
@@ -699,7 +704,7 @@
             </span>
         </div>
         
-        <!-- SPECIAL THANKS (Centered) -->
+        <!-- SPECIAL THANKS (Centered & Stacked) -->
         <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center;">
             <span class="credit-label">SPECIAL THANKS</span>
             <span class="credit-value" style="font-family: sans-serif; text-align: center; font-weight: normal; font-size: 0.8rem; color: #555; line-height: 1.4;">
@@ -707,14 +712,13 @@
             </span>
         </div>
         
-        <div class="credit-row">
+        <!-- VERSION (Centered & Stacked) -->
+        <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center;">
             <span class="credit-label">VERSION</span>
-            <span class="credit-value" style="font-family: sans-serif;">v1.0.0 (Stable)</span>
+            <span class="credit-value" style="font-family: sans-serif; text-align: center;">v1.0.0 (Stable)</span>
         </div>
     </div>
 </div>
-            
-
     <div id="diaryModal" class="modal hidden">
         <div class="modal-content">
             <span class="close-modal" onclick="closeDiaryModal()">&times;</span>
