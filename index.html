@@ -5,15 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dailydock</title>
     
-    <!-- ========================================== -->
-    <!-- হোম স্ক্রিন ও ব্রাউজার লোগো ফিক্স করার মেটা ট্যাগসমূহ -->
-    <!-- ========================================== -->
     <link rel="icon" type="image/png" sizes="32x32" href="11512.png">
     <link rel="icon" type="image/png" sizes="16x16" href="11512.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="11512.png">
+    <link class="apple-touch-icon" sizes="180x180" href="11512.png">
     <link rel="icon" type="image/jpeg" href="11513.jpg" onerror="this.onerror=null; this.src='11512.png';">
-    <!-- ========================================== -->
-
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
@@ -466,7 +461,7 @@
             <h2 style="margin:0; font-size: 1.7rem; text-align:center;">Welcome</h2>
             <p style="color:#666; font-size:0.85rem; margin-top:5px; font-family: sans-serif; text-align:center;">Secure your daily thoughts and memories lifetime.</p>
             <div class="btn-group-vertical">
-                <button onclick="navigateTo('loginSection')" class="btn-outline" style="background:#232323; color:white; border:none;">Sign in</button>
+                <button onclick="navigateTo('loginSection')" class="btn-black" style="margin-top:0;">Sign in</button>
                 <button onclick="navigateTo('registerSection')" class="btn-outline">Register</button>
             </div>
         </div>
@@ -548,7 +543,6 @@
                 </div>
             </div>
 
-            <!-- WRITE NEW DIARY -->
             <div id="writeSection" class="hidden" style="display: flex; flex-direction: column; flex-grow: 1; height: 100%;">
                 <div class="back-link" onclick="backToDashboard()" style="padding: 0 25px;">← Back to Menu</div>
                 
@@ -611,7 +605,6 @@
                 </div>
             </div>
 
-            <!-- HELP & GUIDE SECTION -->
             <div id="helpSection" class="hidden" style="padding: 10px 25px; font-family:'Hind Siliguri', sans-serif;">
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
                 
@@ -621,7 +614,6 @@
                 </div>
 
                 <div class="help-box">
-                    <!-- Bengali Guide -->
                     <div id="guideBn">
                         <h4>📝 নতুন ডায়েরি লেখা ও সংরক্ষণ</h4>
                         <ul>
@@ -642,7 +634,6 @@
                         </ul>
                     </div>
 
-                    <!-- English Guide -->
                     <div id="guideEn" class="hidden">
                         <h4>📝 Writing & Saving a New Diary</h4>
                         <ul>
@@ -665,73 +656,55 @@
                 </div>
             </div>
 
-            
-<!-- CREDITS SECTION (UPDATED NEW LOOK) -->
-<div id="creditsSection" class="hidden" style="padding: 10px 25px;">
-    <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
-    
-    <div class="credit-card" style="padding-top: 25px; padding-bottom: 25px;">
-        <!-- Quote Tagline (App's Default Font & Black Color) -->
-        <p style="font-size: 1.2rem; font-style: italic; font-weight: bold; color: #111111; margin: 0 0 25px 0; letter-spacing: 0.5px;">
-            "Every day deserves a page."
-        </p>
-        
-        <!-- CREDITS SECTION (UPDATED NEW LOOK) -->
-<div id="creditsSection" class="hidden" style="padding: 10px 25px;">
-    <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
-    
-    <div class="credit-card" style="padding-top: 25px; padding-bottom: 25px;">
-        <!-- Quote Tagline (App's Default Font & Black Color) -->
-        <p style="font-size: 1.2rem; font-style: italic; font-weight: bold; color: #111111; margin: 0 0 25px 0; letter-spacing: 0.5px;">
-            "Every day deserves a page."
-        </p>
-        
-        <!-- DEVELOPED BY -->
-        <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
-            <span class="credit-label">DEVELOPED BY</span>
-            <span class="credit-value" style="font-family: sans-serif; text-align: center;">Shahol Mahmud</span>
-        </div>
+            <div id="creditsSection" class="hidden" style="padding: 10px 25px;">
+                <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
+                
+                <div class="credit-card" style="padding-top: 25px; padding-bottom: 25px;">
+                    <p style="font-size: 1.2rem; font-style: italic; font-weight: bold; color: #111111; margin: 0 0 25px 0; letter-spacing: 0.5px;">
+                        "Every day deserves a page."
+                    </p>
+                    
+                    <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
+                        <span class="credit-label">DEVELOPED BY</span>
+                        <span class="credit-value" style="font-family: sans-serif; text-align: center;">Shahol Mahmud</span>
+                    </div>
 
-        <!-- APP NAME -->
-        <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
-            <span class="credit-label">APP NAME</span>
-            <span class="credit-value" style="font-family: sans-serif; text-align: center;">DailyDock</span>
-        </div>
-        
-        <!-- PURPOSE -->
-        <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
-            <span class="credit-label">PURPOSE</span>
-            <span class="credit-value" style="font-family: sans-serif; text-align: center; font-weight: normal; font-size: 0.85rem; color: #444; line-height: 1.5; max-width: 90%;">
-                DailyDock was created to provide a private and comfortable space where people can record their daily thoughts, experiences, memories, and emotions. Every moment, whether big or small, deserves to be remembered, and DailyDock aims to preserve those moments in a simple and meaningful way.
-            </span>
-        </div>
-        
-        <!-- MISSION -->
-        <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
-            <span class="credit-label">MISSION</span>
-            <span class="credit-value" style="font-family: sans-serif; text-align: center; font-weight: normal; font-size: 0.85rem; color: #444; line-height: 1.5; max-width: 90%;">
-                Our mission is to help people capture their life's journey one page at a time. We believe that personal memories, ideas, and emotions are valuable, and DailyDock exists to make journaling easy, accessible, and enjoyable for everyone.
-            </span>
-        </div>
-        
-        <!-- SPECIAL THANKS -->
-        <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
-            <span class="credit-label">SPECIAL THANKS</span>
-            <span class="credit-value" style="font-family: sans-serif; text-align: center; font-weight: normal; font-size: 0.85rem; color: #444; line-height: 1.5; max-width: 90%;">
-                Special thanks to the incredible advancements in Artificial Intelligence that helped inspire, guide, and shape the development of this project. We are grateful for the AI technologies that assisted with problem-solving, learning, creativity, and innovation throughout the journey of building DailyDock.
-                <br><br>
-                Thank you to everyone who uses DailyDock and trusts us with their memories.
-            </span>
-        </div>
-        
-        <!-- VERSION -->
-        <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center;">
-            <span class="credit-label">VERSION</span>
-            <span class="credit-value" style="font-family: sans-serif; text-align: center;">v1.0.0 (Stable)</span>
-        </div>
-    </div>
-</div>
-    <div id="diaryModal" class="modal hidden">
+                    <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
+                        <span class="credit-label">APP NAME</span>
+                        <span class="credit-value" style="font-family: sans-serif; text-align: center;">DailyDock</span>
+                    </div>
+                    
+                    <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
+                        <span class="credit-label">PURPOSE</span>
+                        <span class="credit-value" style="font-family: sans-serif; text-align: center; font-weight: normal; font-size: 0.85rem; color: #444; line-height: 1.5; max-width: 90%;">
+                            DailyDock was created to provide a private and comfortable space where people can record their daily thoughts, experiences, memories, and emotions. Every moment, whether big or small, deserves to be remembered, and DailyDock aims to preserve those moments in a simple and meaningful way.
+                        </span>
+                    </div>
+                    
+                    <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
+                        <span class="credit-label">MISSION</span>
+                        <span class="credit-value" style="font-family: sans-serif; text-align: center; font-weight: normal; font-size: 0.85rem; color: #444; line-height: 1.5; max-width: 90%;">
+                            Our mission is to help people capture their life's journey one page at a time. We believe that personal memories, ideas, and emotions are valuable, and DailyDock exists to make journaling easy, accessible, and enjoyable for everyone.
+                        </span>
+                    </div>
+                    
+                    <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
+                        <span class="credit-label">SPECIAL THANKS</span>
+                        <span class="credit-value" style="font-family: sans-serif; text-align: center; font-weight: normal; font-size: 0.85rem; color: #444; line-height: 1.5; max-width: 90%;">
+                            Special thanks to the incredible advancements in Artificial Intelligence that helped inspire, guide, and shape the development of this project. We are grateful for the AI technologies that assisted with problem-solving, learning, creativity, and innovation throughout the journey of building DailyDock.
+                            <br><br>
+                            Thank you to everyone who uses DailyDock and trusts us with their memories.
+                        </span>
+                    </div>
+                    
+                    <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center;">
+                        <span class="credit-label">VERSION</span>
+                        <span class="credit-value" style="font-family: sans-serif; text-align: center;">v1.0.0 (Stable)</span>
+                    </div>
+                </div>
+            </div>
+
+        </div> </div> <div id="diaryModal" class="modal hidden">
         <div class="modal-content">
             <span class="close-modal" onclick="closeDiaryModal()">&times;</span>
             <h3 id="modalTitle" style="margin-top: 5px; color: #111; font-size: 1.2rem;">Title</h3>
@@ -1214,4 +1187,4 @@
         });
     </script>
 </body>
-                        </html>
+    </html>
