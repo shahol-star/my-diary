@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dailydock</title>
+    
+    <!-- ========================================== -->
+    <!-- হোম স্ক্রিন ও ব্রাউজার লোগো ফিক্স করার মেটা ট্যাগসমূহ -->
+    <!-- ========================================== -->
+    <link rel="icon" type="image/png" sizes="32x32" href="11512.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="11512.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="11512.png">
+    <link rel="icon" type="image/jpeg" href="11513.jpg" onerror="this.onerror=null; this.src='11512.png';">
+    <!-- ========================================== -->
+
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
@@ -538,6 +548,7 @@
                 </div>
             </div>
 
+            <!-- WRITE NEW DIARY -->
             <div id="writeSection" class="hidden" style="display: flex; flex-direction: column; flex-grow: 1; height: 100%;">
                 <div class="back-link" onclick="backToDashboard()" style="padding: 0 25px;">← Back to Menu</div>
                 
@@ -600,6 +611,7 @@
                 </div>
             </div>
 
+            <!-- HELP & GUIDE SECTION -->
             <div id="helpSection" class="hidden" style="padding: 10px 25px; font-family:'Hind Siliguri', sans-serif;">
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
                 
@@ -609,6 +621,7 @@
                 </div>
 
                 <div class="help-box">
+                    <!-- Bengali Guide -->
                     <div id="guideBn">
                         <h4>📝 নতুন ডায়েরি লেখা ও সংরক্ষণ</h4>
                         <ul>
@@ -629,6 +642,7 @@
                         </ul>
                     </div>
 
+                    <!-- English Guide -->
                     <div id="guideEn" class="hidden">
                         <h4>📝 Writing & Saving a New Diary</h4>
                         <ul>
@@ -651,6 +665,7 @@
                 </div>
             </div>
 
+            <!-- CREDITS SECTION -->
             <div id="creditsSection" class="hidden" style="padding: 10px 25px;">
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
                 
@@ -1172,4 +1187,4 @@
         });
     </script>
 </body>
-    </html>
+                        </html>
