@@ -498,9 +498,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        
-        // অফলাইন ডেটাবেস ফিচারটির জন্য initializeFirestore এবং initializeIndexedDbPersistence মডিউল ইমপোর্ট করা হয়েছে
-        import { initializeFirestore, initializeIndexedDbPersistence, collection, addDoc, doc, deleteDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, doc, deleteDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDEzag6WbUzHEHOpSRRkDChfMTwZiwM4UI",
@@ -513,25 +511,9 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        
-        // ফায়ারস্টোর ডাটাবেসকে স্পেশাল মোডে ইনিশিয়ালাইজ করা হলো
-        const db = initializeFirestore(app, {
-            localCache: {
-                // ব্রাউজারের চিরস্থায়ী ক্যাশ (IndexedDB) ব্যবহারের নির্দেশ দেওয়া হলো
-                kind: 'persistent' 
-            }
-        });
-
-        // --- অফলাইন পারসিস্টেন্স বা লোকাল ডাটা ক্যাশিং সক্রিয়করণ লজিক ---
-        initializeIndexedDbPersistence(db).catch((err) => {
-            if (err.code == 'failed-precondition') {
-                console.warn("Multiple tabs open, persistence can only be enabled in one tab at a time.");
-            } else if (err.code == 'unimplemented') {
-                console.warn("The current browser does not support all of the features required to enable persistence");
-            }
-        });
-
+        const db = getFirestore(app);
         const googleProvider = new GoogleAuthProvider();
+
         let allDiaries = []; 
 
         const today = new Date().toISOString().split('T')[0];
@@ -545,10 +527,13 @@
                 Notification.requestPermission();
             }
 
+            // প্রতি ১ মিনিটে চেক করবে রাত ৮টা বেজেছে কি না
             setInterval(() => {
                 const now = new Date();
+                // রাত ৮টা মানে ২৪ ঘণ্টার ফরমেটে ২০ টা বেজে ০ মিনিট
                 if (now.getHours() === 20 && now.getMinutes() === 0) {
                     if (Notification.permission === "granted") {
+                        // একই নোটিফিকেশন বারবার আটকাতে ট্যাগ ব্যবহার করা হয়েছে
                         new Notification("📝 ডায়েরি লেখার সময় হয়েছে!", {
                             body: "আজকের সুন্দর মুহূর্তগুলো ডায়েরির পাতায় বন্দি করে রাখুন। ✨",
                             icon: "📝",
@@ -628,7 +613,7 @@
                 appSection.classList.remove('hidden');
                 backToDashboard();
                 loadDiaryEntries(user.uid);
-                setupDailyReminder(); 
+                setupDailyReminder(); // ইউজার লগইন থাকলে রিমাইন্ডার চালু হবে
             } else {
                 topHeader.classList.remove('hidden');
                 appSection.classList.add('hidden');
@@ -708,7 +693,6 @@
                 const saveBtn = document.getElementById('saveBtn');
                 saveBtn.disabled = true; saveBtn.innerText = "Saving...";
 
-                // অফলাইন মোডেও এটি লোকাল ব্রাউজার স্টোরেজে সাথে সাথে সেভ হবে এবং ডাটা সিঙ্ক পেন্ডিং হিসেবে থাকবে
                 await addDoc(collection(db, "diaries"), {
                     uid: auth.currentUser.uid,
                     title: title,
@@ -721,9 +705,7 @@
                 document.getElementById('diaryTitle').value = '';
                 document.getElementById('diaryContent').value = '';
                 document.getElementById('diaryDate').value = today;
-                
-                // অফলাইন অবস্থাতেও ইউজারকে 'Saved securely!' অ্যালার্ট দেখাবে এবং ড্যাশবোর্ডে নিয়ে যাবে
-                alert('Saved securely! (Offline Queue Added) ✨');
+                alert('Saved securely! ✨');
                 backToDashboard();
             } catch (error) { alert('Error saving.'); }
             finally { document.getElementById('saveBtn').disabled = false; document.getElementById('saveBtn').innerText = "💾 SAVE ENTRY"; }
@@ -732,22 +714,23 @@
         function loadDiaryEntries(uid) {
             const q = query(collection(db, "diaries"), where("uid", "==", uid));
 
-            // onSnapshot অফলাইনেও খুব চমৎকার কাজ করে। এটি লোকাল ডেটা আগে রেন্ডার করে দেয়।
             onSnapshot(q, (snapshot) => {
                 allDiaries = [];
                 snapshot.forEach(doc => {
                     allDiaries.push({ id: doc.id, ...doc.data() });
                 });
                 
+                // --- রিসেন্ট মেমোরি সবার উপরে সাজানোর লজিক ---
                 allDiaries.sort((a, b) => {
                     const dateA = a.diaryDate || "";
                     const dateB = b.diaryDate || "";
+                    // প্রথমে ডায়েরির তারিখ অনুযায়ী বড় থেকে ছোট (রিসেন্ট আগে) সাজাবে
                     if (dateB !== dateA) {
                         return dateB.localeCompare(dateA);
                     }
-                    // অফলাইনে সার্ভার টাইমস্ট্যাম্প না পাওয়ায় টেম্পোরারি নাল ভ্যালু হ্যান্ডেল করার নিখুঁত মেকানিজম
-                    const timeA = a.createdAt ? (a.createdAt.toMillis ? a.createdAt.toMillis() : new Date().getTime()) : 0;
-                    const timeB = b.createdAt ? (b.createdAt.toMillis ? b.createdAt.toMillis() : new Date().getTime()) : 0;
+                    // তারিখ এক হলে, কোন ডায়েরিটি আগে তৈরি হয়েছে (createdAt timestamp) সেটি দিয়ে সর্ট করবে
+                    const timeA = a.createdAt ? a.createdAt.toMillis() : 0;
+                    const timeB = b.createdAt ? b.createdAt.toMillis() : 0;
                     return timeB - timeA;
                 });
 
@@ -826,4 +809,4 @@
         });
     </script>
 </body>
-                    </html>
+    </html>
