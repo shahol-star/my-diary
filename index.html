@@ -308,6 +308,17 @@
         }
         .close-modal { position: absolute; top: 12px; right: 15px; font-size: 1.2rem; cursor: pointer; color: #666;}
 
+        /* SWEET REMINDER MODAL SPECIAL LOOK */
+        .sweet-modal-header {
+            font-size: 1.3rem;
+            color: #d946ef;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-weight: bold;
+        }
+
         .hidden { display: none !important; }
         .back-arrow { font-size: 1.3rem; cursor: pointer; margin-bottom: 15px; display: inline-block; }
 
@@ -495,6 +506,16 @@
         </div>
     </div>
 
+    <div id="sweetMemoryModal" class="modal hidden">
+        <div class="modal-content" style="font-family: 'Hind Siliguri', sans-serif;">
+            <span class="close-modal" onclick="closeSweetModal()">&times;</span>
+            <div class="sweet-modal-header">✨ স্মৃতিচারণ পপ-আপ ✨</div>
+            <div style="text-align: center; font-size: 2.5rem; margin-bottom: 10px;">🌸</div>
+            <p id="sweetModalMessage" style="font-size: 0.95rem; color: #333; text-align: center; line-height: 1.6; margin-bottom: 15px;"></p>
+            <button onclick="closeSweetModal()" class="btn-black" style="background: #d946ef; width: auto; padding: 10px 25px;">স্মৃতিটি সুন্দর!</button>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -515,6 +536,7 @@
         const googleProvider = new GoogleAuthProvider();
 
         let allDiaries = []; 
+        let currentUserId = null;
 
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('diaryDate').value = today;
@@ -527,13 +549,10 @@
                 Notification.requestPermission();
             }
 
-            // প্রতি ১ মিনিটে চেক করবে রাত ৮টা বেজেছে কি না
             setInterval(() => {
                 const now = new Date();
-                // রাত ৮টা মানে ২৪ ঘণ্টার ফরমেটে ২০ টা বেজে ০ মিনিট
                 if (now.getHours() === 20 && now.getMinutes() === 0) {
                     if (Notification.permission === "granted") {
-                        // একই নোটিফিকেশন বারবার আটকাতে ট্যাগ ব্যবহার করা হয়েছে
                         new Notification("📝 ডায়েরি লেখার সময় হয়েছে!", {
                             body: "আজকের সুন্দর মুহূর্তগুলো ডায়েরির পাতায় বন্দি করে রাখুন। ✨",
                             icon: "📝",
@@ -544,6 +563,41 @@
             }, 60000); 
         }
 
+        // --- ON THIS DAY SWEET REMINDER LOGIC ---
+        function checkOnThisDayMemories(diaries) {
+            if (!diaries || diaries.length === 0) return;
+
+            const todayDateObj = new Date();
+            const currentMonthDay = todayDateObj.toISOString().slice(5, 10); // Returns "MM-DD" format (e.g. "06-05")
+            const currentYear = todayDateObj.getFullYear();
+
+            // ফিল্টার করে বের করা হচ্ছে যেসব ডায়েরির MM-DD আজকের সাথে মিলে এবং বছর আজকের চেয়ে ছোট
+            const pastMemories = diaries.filter(diary => {
+                if (!diary.diaryDate) return false;
+                const diaryMonthDay = diary.diaryDate.slice(5, 10);
+                const diaryYear = parseInt(diary.diaryDate.slice(0, 4));
+                return diaryMonthDay === currentMonthDay && diaryYear < currentYear;
+            });
+
+            if (pastMemories.length > 0) {
+                // সবচেয়ে প্রাচীন বা যেকোনো ১টি মেমোরি র্যান্ডম সিলেক্ট করা হচ্ছে
+                const luckyMemory = pastMemories[Math.floor(Math.random() * pastMemories.length)];
+                const elapsedYears = currentYear - parseInt(luckyMemory.diaryDate.slice(0, 4));
+                
+                const msgBox = document.getElementById('sweetModalMessage');
+                msgBox.innerHTML = `প্রিয় ডায়েরি ব্যবহারকারী, <br><br>আজ থেকে ঠিক <b>${elapsedYears} বছর আগে</b> আজকের এই বিশেষ দিনে আপনি ডায়েরির পাতায় একটি স্মৃতি বন্দি করেছিলেন। যার শিরোনাম ছিল:<br><br><span style="font-size:1.15rem; color:#d946ef; font-weight:bold;">"${luckyMemory.title}"</span><br><br>আজকের দিনটি কাটুক আরও অনেক হাসিখুশিতে ও নতুন চমৎকার কিছু স্মৃতি তৈরিতে! 🌸✨`;
+                
+                // ড্যাশবোর্ডে থাকা অবস্থায় একটু চমৎকার সারপ্রাইজ দিতে ২ সেকেন্ড পর পপআপ হবে
+                setTimeout(() => {
+                    document.getElementById('sweetMemoryModal').classList.remove('hidden');
+                }, 2000);
+            }
+        }
+
+        window.closeSweetModal = () => {
+            document.getElementById('sweetMemoryModal').classList.add('hidden');
+        };
+
         window.navigateTo = (sectionId) => {
             document.getElementById('welcomeSection').classList.add('hidden');
             document.getElementById('loginSection').classList.add('hidden');
@@ -552,7 +606,13 @@
         };
 
         window.showSubSection = (sectionId) => {
+            // ড্যাশবোর্ড সেকশন সম্পূর্ণ হাইড করে নির্দিষ্ট সাবসেকশন অন করা হচ্ছে
             document.getElementById('dashboardSection').classList.add('hidden');
+            
+            document.getElementById('writeSection').classList.add('hidden');
+            document.getElementById('listSection').classList.add('hidden');
+            document.getElementById('settingsSection').classList.add('hidden');
+            
             document.getElementById(sectionId).classList.remove('hidden');
             if(sectionId === 'listSection') {
                 renderDiaryList(allDiaries);
@@ -606,6 +666,7 @@
             const appSection = document.getElementById('appSection');
 
             if (user) {
+                currentUserId = user.uid;
                 topHeader.classList.add('hidden');
                 document.getElementById('welcomeSection').classList.add('hidden');
                 document.getElementById('loginSection').classList.add('hidden');
@@ -613,8 +674,9 @@
                 appSection.classList.remove('hidden');
                 backToDashboard();
                 loadDiaryEntries(user.uid);
-                setupDailyReminder(); // ইউজার লগইন থাকলে রিমাইন্ডার চালু হবে
+                setupDailyReminder(); 
             } else {
+                currentUserId = null;
                 topHeader.classList.remove('hidden');
                 appSection.classList.add('hidden');
                 navigateTo('welcomeSection');
@@ -711,6 +773,7 @@
             finally { document.getElementById('saveBtn').disabled = false; document.getElementById('saveBtn').innerText = "💾 SAVE ENTRY"; }
         });
 
+        let isFirstLoad = true; // প্রথমবার অ্যাপ লোড হওয়ার ট্র্যাকার
         function loadDiaryEntries(uid) {
             const q = query(collection(db, "diaries"), where("uid", "==", uid));
 
@@ -720,21 +783,24 @@
                     allDiaries.push({ id: doc.id, ...doc.data() });
                 });
                 
-                // --- রিসেন্ট মেমোরি সবার উপরে সাজানোর লজিক ---
                 allDiaries.sort((a, b) => {
                     const dateA = a.diaryDate || "";
                     const dateB = b.diaryDate || "";
-                    // প্রথমে ডায়েরির তারিখ অনুযায়ী বড় থেকে ছোট (রিসেন্ট আগে) সাজাবে
                     if (dateB !== dateA) {
                         return dateB.localeCompare(dateA);
                     }
-                    // তারিখ এক হলে, কোন ডায়েরিটি আগে তৈরি হয়েছে (createdAt timestamp) সেটি দিয়ে সর্ট করবে
                     const timeA = a.createdAt ? a.createdAt.toMillis() : 0;
                     const timeB = b.createdAt ? b.createdAt.toMillis() : 0;
                     return timeB - timeA;
                 });
 
                 renderDiaryList(allDiaries);
+
+                // শুধুমাত্র প্রথমবার ডেটা সফলভাবে ফেচ হলে "On This Day" চেক করবে
+                if (isFirstLoad) {
+                    checkOnThisDayMemories(allDiaries);
+                    isFirstLoad = false;
+                }
             }, (error) => {
                 console.error("Firestore Snapshot Error: ", error);
             });
@@ -805,8 +871,10 @@
             alert(`Font "${name}" exported! 🎉`);
             document.getElementById('customFontUrl').value = '';
             document.getElementById('customFontName').value = '';
-            showSubSection('writeSection');
+            
+            // বাগ ফিক্স: সোজাসুজি মেইন ড্যাশবোর্ড মেনুতে ব্যাক করানো হচ্ছে
+            backToDashboard();
         });
     </script>
 </body>
-</html>
+    </html>
