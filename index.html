@@ -13,23 +13,31 @@
             font-family: 'Cinzel Decorative', serif;
             color: #222222; 
             margin: 0;
-            padding: 10px;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
         }
+        
+        /* App Layout Fixed to Responsive Device Fit */
         .app-container {
             width: 100%;
-            max-width: 400px;
+            max-width: 430px;
+            height: 100vh;
             background: #f3f3f3; 
-            border-radius: 30px;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
             position: relative;
-            min-height: 750px;
             display: flex;
             flex-direction: column;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        
+        @media (min-height: 700px) and (min-width: 440px) {
+            .app-container {
+                height: 850px;
+                border-radius: 30px;
+            }
         }
 
         /* TOP BLACK HEADER DESIGN */
@@ -43,6 +51,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            flex-shrink: 0;
         }
         .top-banner span {
             font-size: 0.85rem;
@@ -111,6 +120,7 @@
             display: flex;
             flex-direction: column;
             color: #222222; 
+            overflow-y: auto;
         }
         .page-title {
             font-size: 1.6rem;
@@ -166,6 +176,7 @@
             font-family: inherit;
             font-weight: 700;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            flex-shrink: 0;
         }
         .btn-black:hover {
             background: #444;
@@ -326,6 +337,30 @@
             font-family: inherit;
             font-size: 0.9rem;
         }
+
+        /* CUSTOM FONT LIST SYSTEM FOR DELETION */
+        .custom-font-manager {
+            margin-top: 20px;
+            border-top: 1px dashed #cccccc;
+            padding-top: 15px;
+        }
+        .font-item-deleteable {
+            background: #fdfdfd;
+            border: 1px solid #dddddd;
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 8px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: 0.2s;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .font-item-deleteable:hover {
+            border-color: #dc2626;
+            background: #fff5f5;
+        }
     </style>
 </head>
 <body>
@@ -414,9 +449,9 @@
             <span class="link-text" onclick="navigateTo('loginSection')">Already have an account? Login</span>
         </div>
 
-        <div id="appSection" class="content-body hidden">
+        <div id="appSection" class="content-body hidden" style="padding: 20px 0 0 0;">
             
-            <div id="dashboardSection">
+            <div id="dashboardSection" style="padding: 10px 25px;">
                 <h1 style="color: #232323; text-align: center; margin-bottom: 25px; font-size: 1.8rem;">MAIN MENU</h1>
                 <div class="pro-card">
                     <div class="menu-item" onclick="showSubSection('writeSection')">▶ WRITE NEW DIARY</div>
@@ -426,9 +461,10 @@
                 </div>
             </div>
 
-            <div id="writeSection" class="hidden">
-                <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
-                <div style="background: #ffffff; padding: 15px; border-radius: 16px; border: 1px solid #dfdfdf;">
+            <div id="writeSection" class="hidden" style="display: flex; flex-direction: column; flex-grow: 1; height: 100%;">
+                <div class="back-link" onclick="backToDashboard()" style="padding: 0 25px;">← Back to Menu</div>
+                
+                <div style="background: #ffffff; padding: 20px 25px; border-top-left-radius: 30px; border-top-right-radius: 30px; border: 1px solid #dfdfdf; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden;">
                     <span style="color:#111; display:block; margin-bottom:10px; font-size:1rem; font-weight:bold;">Capture Memory</span>
                     
                     <div class="input-wrapper">
@@ -444,21 +480,21 @@
                         </select>
                     </div>
 
-                    <div class="input-wrapper">
+                    <div class="input-wrapper" style="margin-bottom: 10px;">
                         <label>Title</label>
                         <input type="text" id="diaryTitle" placeholder="Title..." class="input-field" style="background:#f3f3f3;">
                     </div>
 
-                    <div class="input-wrapper">
+                    <div class="input-wrapper" style="flex-grow: 1; display: flex; flex-direction: column; margin-bottom: 15px;">
                         <label>Content</label>
-                        <textarea id="diaryContent" rows="6" placeholder="What happened today?..." class="input-field" style="background:#f3f3f3; line-height:1.4; height:120px;"></textarea>
+                        <textarea id="diaryContent" placeholder="What happened today?..." class="input-field" style="background:#fff; line-height:1.5; flex-grow: 1; height: 100%; resize: none; border: 1px solid #dfdfdf; border-radius: 8px; padding: 12px;"></textarea>
                     </div>
 
-                    <button id="saveBtn" class="btn-black">💾 SAVE ENTRY</button>
+                    <button id="saveBtn" class="btn-black" style="margin-top: 0;">💾 SAVE ENTRY</button>
                 </div>
             </div>
 
-            <div id="listSection" class="hidden">
+            <div id="listSection" class="hidden" style="padding: 10px 25px;">
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
                 <h3 style="color: #222; margin-bottom: 12px; font-size:1.1rem;">Your Past Memories</h3>
                 
@@ -469,7 +505,7 @@
                 <div id="diaryList"></div>
             </div>
 
-            <div id="settingsSection" class="hidden">
+            <div id="settingsSection" class="hidden" style="padding: 10px 25px;">
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
                 <div style="background: #ffffff; padding: 15px; border-radius: 16px; border: 1px solid #dfdfdf;">
                     <span style="color:#111; font-size:1rem; display:block; font-weight:bold;">Web Font Exporter</span>
@@ -477,6 +513,11 @@
                     <input type="text" id="customFontUrl" placeholder="https://fonts.googleapis.com/..." class="input-field" style="background:#f3f3f3;">
                     <input type="text" id="customFontName" placeholder="Font Family Name" class="input-field" style="background:#f3f3f3;">
                     <button id="loadFontBtn" class="btn-black" style="background:#10b981;">EXPORT & APPLY FONT</button>
+                    
+                    <div class="custom-font-manager">
+                        <span style="font-size: 0.85rem; font-weight: bold; color: #333; font-family: 'Hind Siliguri', sans-serif;">এক্সপোর্ট করা ফন্টসমূহ (ডিলিট করতে ১ সেকেন্ড চেপে ধরুন):</span>
+                        <div id="deleteableFontsList" style="margin-top: 5px;"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -545,20 +586,82 @@
         function loadSavedFonts() {
             const savedFonts = JSON.parse(localStorage.getItem('myDiaryExportedFonts')) || [];
             const fontSelector = document.getElementById('fontSelector');
+            const deleteableFontsList = document.getElementById('deleteableFontsList');
             
-            savedFonts.forEach(font => {
+            // ড্রপডাউন প্রথম দুটি অপশন ফিক্সড রেখে ক্লিন করা
+            fontSelector.innerHTML = `
+                <option value="'Cinzel Decorative', serif">English (Premium Serif)</option>
+                <option value="'Hind Siliguri', sans-serif">Bangla (Hind Siliguri)</option>
+            `;
+            deleteableFontsList.innerHTML = '';
+
+            if(savedFonts.length === 0) {
+                deleteableFontsList.innerHTML = `<p style="font-size:0.75rem; color:#888; text-align:center; font-style:italic; margin-top:5px;">কোনো এক্সটার্নাল ফন্ট অ্যাড করা নেই।</p>`;
+            }
+            
+            savedFonts.forEach((font, index) => {
                 // ১. গুগল ফন্টের লিঙ্কটি ডক হেড-এ ইনজেক্ট করা হচ্ছে
-                const link = document.createElement('link');
-                link.rel = 'stylesheet'; 
-                link.href = font.url;
-                document.head.appendChild(link);
+                const linkId = `injected-font-${font.name.replace(/\s+/g, '-')}`;
+                if(!document.getElementById(linkId)){
+                    const link = document.createElement('link');
+                    link.id = linkId;
+                    link.rel = 'stylesheet'; 
+                    link.href = font.url;
+                    document.head.appendChild(link);
+                }
 
                 // ২. ড্রপডাউন সিলেক্টরে অপশনটি ঢুকানো হচ্ছে
                 const option = document.createElement('option');
                 option.value = `'${font.name}', sans-serif`; 
                 option.innerText = `Custom: ${font.name}`;
                 fontSelector.appendChild(option);
+
+                // ৩. ডিলিট ম্যানেজার লিস্ট তৈরি
+                const fontCard = document.createElement('div');
+                fontCard.className = 'font-item-deleteable';
+                fontCard.style.fontFamily = `'${font.name}', sans-serif`;
+                fontCard.innerText = font.name;
+
+                // LONG PRESS / HOLD DETECTION LOGIC FOR MOBILE & DESKTOP
+                let holdTimer;
+                
+                const onHoldStart = () => {
+                    holdTimer = setTimeout(() => {
+                        triggerFontDelete(font.name, index);
+                    }, 1000); // Hold for 1 second
+                };
+
+                const onHoldEnd = () => {
+                    clearTimeout(holdTimer);
+                };
+
+                fontCard.addEventListener('mousedown', onHoldStart);
+                fontCard.addEventListener('touchstart', onHoldStart);
+                fontCard.addEventListener('mouseup', onHoldEnd);
+                fontCard.addEventListener('mouseleave', onHoldEnd);
+                fontCard.addEventListener('touchend', onHoldEnd);
+                fontCard.addEventListener('touchcancel', onHoldEnd);
+
+                deleteableFontsList.appendChild(fontCard);
             });
+        }
+
+        function triggerFontDelete(fontName, arrayIndex) {
+            if(confirm(`Do you want to completely delete "${fontName}" font? 🗑️`)){
+                let savedFonts = JSON.parse(localStorage.getItem('myDiaryExportedFonts')) || [];
+                
+                // হেড থেকে লিঙ্ক রিমুভ
+                const linkId = `injected-font-${fontName.replace(/\s+/g, '-')}`;
+                const linkElement = document.getElementById(linkId);
+                if(linkElement) linkElement.remove();
+
+                // লোকাল স্টোরেজ আপডেট
+                savedFonts.splice(arrayIndex, 1);
+                localStorage.setItem('myDiaryExportedFonts', JSON.stringify(savedFonts));
+                
+                alert(`"${fontName}" font deleted successfully!`);
+                loadSavedFonts();
+            }
         }
 
         // অ্যাপ প্রথমবার রান হওয়ার সাথেই সংরক্ষিত ফন্ট লোড হবে
@@ -878,19 +981,6 @@
 
             if(!url || !name) return alert('Both fields are required!');
 
-            // ১. ব্রাউজার কারেন্ট স্ক্রিনে ডাইনামিকালি লোড করা
-            const link = document.createElement('link');
-            link.rel = 'stylesheet'; 
-            link.href = url;
-            document.head.appendChild(link);
-
-            const fontSelector = document.getElementById('fontSelector');
-            const option = document.createElement('option');
-            option.value = `'${name}', sans-serif`; 
-            option.innerText = `Custom: ${name}`;
-            fontSelector.appendChild(option);
-
-            // ২. লোকাল স্টোরেজে আজীবনের জন্য সেভ করে রাখা
             const savedFonts = JSON.parse(localStorage.getItem('myDiaryExportedFonts')) || [];
             savedFonts.push({ url: url, name: name });
             localStorage.setItem('myDiaryExportedFonts', JSON.stringify(savedFonts));
@@ -899,8 +989,9 @@
             document.getElementById('customFontUrl').value = '';
             document.getElementById('customFontName').value = '';
             
+            loadSavedFonts();
             backToDashboard();
         });
     </script>
 </body>
-</html>
+    </html>
