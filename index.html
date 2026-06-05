@@ -36,6 +36,29 @@
             flex-direction: column;
             overflow-y: auto;
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+        }
+
+        /* Dynamic Overlay for Theme Background to keep text readable */
+        .app-container::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(243, 243, 243, 0.85); /* থিম সেট করলেও পেছনের টেক্সট পরিষ্কার বোঝা যাবে */
+            z-index: 0;
+            pointer-events: none;
+            display: none;
+        }
+        .app-container.has-theme::before {
+            display: block;
+        }
+        
+        /* Ensure content stays above the theme overlay */
+        .top-banner, .content-body {
+            position: relative;
+            z-index: 1;
         }
 
         /* TOP BLACK HEADER DESIGN */
@@ -491,6 +514,24 @@
             font-weight: bold;
             cursor: pointer;
         }
+
+        /* Settings Sub-panels Accordion Layout */
+        .settings-panel-box {
+            background: #ffffff;
+            border: 1px solid #dfdfdf;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .settings-panel-title {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #111;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 5px;
+            font-family: 'Hind Siliguri', sans-serif;
+        }
     </style>
 </head>
 <body>
@@ -522,7 +563,7 @@
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                         <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
                         <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
-                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
                     </svg>
                     Continue with Google
                 </button>
@@ -616,32 +657,10 @@
                 <div class="pro-card">
                     <div class="menu-item" onclick="showSubSection('writeSection')">▶ WRITE NEW DIARY</div>
                     <div class="menu-item" onclick="showSubSection('listSection')">▶ VIEW PAST MEMORIES</div>
-                    <div class="menu-item" onclick="showSubSection('settingsSection')">▶ FONT SETTINGS</div>
-                    <div class="menu-item" onclick="showSubSection('changePasswordSection')">▶ CHANGE PASSWORD</div>
+                    <div class="menu-item" onclick="showSubSection('settingsSection')">▶ SETTINGS</div>
                     <div class="menu-item" onclick="showSubSection('helpSection')">▶ HELP & GUIDE</div>
                     <div class="menu-item" onclick="showSubSection('creditsSection')">▶ CREDITS</div>
                     <div id="logoutBtn" class="menu-item text-red">▶ LOGOUT</div>
-                </div>
-            </div>
-
-            <div id="changePasswordSection" class="hidden" style="padding: 10px 25px;">
-                <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
-                <div style="background: #ffffff; padding: 20px; border-radius: 16px; border: 1px solid #dfdfdf;">
-                    <span style="color:#111; font-size:1.2rem; display:block; font-weight:bold; margin-bottom:15px; text-align: center;">Change Account Password</span>
-                    
-                    <div class="input-wrapper">
-                        <label>Old Password</label>
-                        <input type="password" id="oldPasswordInput" class="input-field" placeholder="********">
-                        <span id="toggleOldPassword" class="password-toggle-btn">Show</span>
-                    </div>
-
-                    <div class="input-wrapper">
-                        <label>New Password</label>
-                        <input type="password" id="newPasswordInput" class="input-field" placeholder="********">
-                        <span id="toggleNewPassword" class="password-toggle-btn">Show</span>
-                    </div>
-
-                    <button id="updatePasswordBtn" class="btn-black" style="background:#232323; margin-top:15px;">UPDATE PASSWORD</button>
                 </div>
             </div>
 
@@ -691,14 +710,41 @@
 
             <div id="settingsSection" class="hidden" style="padding: 10px 25px;">
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
-                <div style="background: #ffffff; padding: 15px; border-radius: 16px; border: 1px solid #dfdfdf;">
-                    <span style="color:#111; font-size:1rem; display:block; font-weight:bold; text-align: center;">Web Font Exporter</span>
-                    <p style="font-size: 0.8rem; color: #555; margin-top: 5px; font-family:'Hind Siliguri', sans-serif; text-align: center;">
+                
+                <div class="settings-panel-box">
+                    <div class="settings-panel-title">🎨 Custom Theme (কাস্টম ব্যাকগ্রাউন্ড)</div>
+                    <p style="font-size: 0.8rem; color: #555; font-family:'Hind Siliguri', sans-serif; margin: 0 0 10px 0;">
+                        আপনার গ্যালারি থেকে যেকোনো ছবি সিলেক্ট করে অ্যাপ্লিকেশনের ব্যাকগ্রাউন্ড থিম হিসেবে ব্যবহার করুন।
+                    </p>
+                    <div class="input-wrapper">
+                        <input type="file" id="themeImageInput" accept="image/*" class="input-field" style="background:#e9e9e9; padding:6px;">
+                    </div>
+                    <button id="removeThemeBtn" class="btn-black" style="background:#dc2626; font-size:0.85rem; padding:8px 15px; margin-top:5px; width:auto;">❌ REMOVE THEME</button>
+                </div>
+
+                <div class="settings-panel-box">
+                    <div class="settings-panel-title">🔑 Change Password (পাসওয়ার্ড পরিবর্তন)</div>
+                    <div class="input-wrapper">
+                        <label>Old Password</label>
+                        <input type="password" id="oldPasswordInput" class="input-field" placeholder="********">
+                        <span id="toggleOldPassword" class="password-toggle-btn">Show</span>
+                    </div>
+                    <div class="input-wrapper">
+                        <label>New Password</label>
+                        <input type="password" id="newPasswordInput" class="input-field" placeholder="********">
+                        <span id="toggleNewPassword" class="password-toggle-btn">Show</span>
+                    </div>
+                    <button id="updatePasswordBtn" class="btn-black" style="background:#232323; font-size:0.9rem; padding:10px;">UPDATE PASSWORD</button>
+                </div>
+
+                <div class="settings-panel-box">
+                    <div class="settings-panel-title">🔤 Web Font Exporter (ফন্ট সেটিংস)</div>
+                    <p style="font-size: 0.8rem; color: #555; font-family:'Hind Siliguri', sans-serif; margin-bottom:10px;">
                         <a href="https://fonts.google.com" target="_blank" class="font-link">Google Fonts</a> CSS URL পেস্ট করে নতুন ফন্ট এক্সপোর্ট করুন।
                     </p>
-                    <input type="text" id="customFontUrl" placeholder="https://fonts.googleapis.com/..." class="input-field" style="background:#f3f3f3;">
-                    <input type="text" id="customFontName" placeholder="Font Family Name" class="input-field" style="background:#f3f3f3;">
-                    <button id="loadFontBtn" class="btn-black" style="background:#10b981;">EXPORT & APPLY FONT</button>
+                    <input type="text" id="customFontUrl" placeholder="https://fonts.googleapis.com/..." class="input-field" style="background:#f3f3f3; margin-bottom:10px;">
+                    <input type="text" id="customFontName" placeholder="Font Family Name" class="input-field" style="background:#f3f3f3; margin-bottom:10px;">
+                    <button id="loadFontBtn" class="btn-black" style="background:#10b981; font-size:0.9rem; padding:10px;">EXPORT & APPLY FONT</button>
                     
                     <div class="custom-font-manager">
                         <span style="font-size: 0.85rem; font-weight: bold; color: #333; font-family: 'Hind Siliguri', sans-serif;">এক্সপোর্ট করা ফন্টসমূহ (ডিলিট করতে ১ সেকেন্ড চেপে ধরুন):</span>
@@ -724,15 +770,23 @@
                             <li><b>ধাপ ৩:</b> ডায়েরির শিরোনাম (Title) এবং বিস্তারিত মনের কথা (Content) লিখে নিচে থাকা "💾 SAVE ENTRY" বাটনে ক্লিক করুন। আপনার স্মৃতিটি ক্লাউডে সংরক্ষিত হয়ে যাবে।</li>
                         </ul>
 
+                        <h4>🎨 কাস্টম ব্যাকগ্রাউন্ড থিম সেটআপ</h4>
+                        <ul>
+                            <li><b>ধাপ ১:</b> "SETTINGS"-এ যান এবং সবার উপরে থাকা "Custom Theme" প্যানেলটি দেখুন।</li>
+                            <li><b>ধাপ ২:</b> ইনপুট ফিল্ডে ক্লিক করে আপনার ফোনের গ্যালারি থেকে যেকোনো পছন্দের ছবি সিলেক্ট করুন। ছবি সিলেক্ট করার সাথে সাথেই সেটি অ্যাপের ব্যাকগ্রাউন্ড থিম হিসেবে স্থায়ীভাবে সেট হয়ে যাবে।</li>
+                            <li><b>থিম রিমুভ:</b> থিম মুছে আগের ডিফল্ট ব্যাকগ্রাউন্ডে ফিরতে "❌ REMOVE THEME" বাটনে ক্লিক করুন।</li>
+                        </ul>
+
                         <h4>🔤 কাস্টম ফন্ট এক্সপোর্ট ও ম্যানেজমেন্ট</h4>
                         <ul>
-                            <li><b>নতুন ফন্ট যোগ:</b> "FONT SETTINGS"-এ যান। <a href="https://fonts.google.com" target="_blank" class="font-link">Google Fonts</a> থেকে আপনার প্রিয় ফন্টের CSS URL এবং সঠিক Family Name কপি করে নির্দিষ্ট বক্সে পেস্ট করে এক্সপোর্ট করুন।</li>
+                            <li><b>নতুন ফন্ট যোগ:</b> "SETTINGS"-এর ফন্ট এক্সপোর্টার বক্সে যান। <a href="https://fonts.google.com" target="_blank" class="font-link">Google Fonts</a> থেকে আপনার প্রিয় ফন্টের CSS URL এবং সঠিক Family Name কপি করে নির্দিষ্ট বক্সে পেস্ট করে এক্সপোর্ট করুন।</li>
                             <li><b>ফন্ট ডিলিট:</b> এক্সপোর্ট করা ফন্ট ডিলিট করতে নিচে থাকা ফন্টটির ওপর ১ সেকেন্ড চেপে (Long Press) ধরে রাখুন।</li>
                         </ul>
 
-                        <h4>🔑 পাসওয়ার্ড ভুলে গেলে করণীয়</h4>
+                        <h4>🔑 পাসওয়ার্ড ভুলে গেলে বা পরিবর্তন করতে চাইলে</h4>
                         <ul>
-                            <li>লগইন স্ক্রিনে থাকা "Forgot Password?" অপশনে ক্লিক করে আপনার রেজিস্টার্ড ইমেইল দিন। ইনবক্স অথবা স্প্যাম ফোল্ডারে পাসওয়ার্ড রিসেট করার একটি সিকিউর লিঙ্ক চলে যাবে। লিঙ্কে ক্লিক করে পাসওয়ার্ড রিসেট করে নিন।</li>
+                            <li><b>পাসওয়ার্ড পরিবর্তন:</b> লগইন থাকা অবস্থায় "SETTINGS" সেকশনের ভেতর থেকে পুরাতন ও নতুন পাসওয়ার্ড দিয়ে পরিবর্তন করতে পারবেন।</li>
+                            <li><b>পাসওয়ার্ড ভুলে গেলে:</b> লগইন স্ক্রিনে থাকা "Forgot Password?" অপশনে ক্লিক করে আপনার রেজিস্টার্ড ইমেইল দিন। ইনবক্স অথবা স্প্যাম ফোল্ডারে পাসওয়ার্ড রিসেট করার একটি সিকিউর লিঙ্ক চলে যাবে।</li>
                         </ul>
                     </div>
 
@@ -744,15 +798,23 @@
                             <li><b>Step 3:</b> Enter a Title and Content, then click the "💾 SAVE ENTRY" button. Your memory will be securely synced to the cloud.</li>
                         </ul>
 
+                        <h4>🎨 Custom Background Theme Setup</h4>
+                        <ul>
+                            <li><b>Step 1:</b> Go to "SETTINGS" and locate the "Custom Theme" panel at the top.</li>
+                            <li><b>Step 2:</b> Click the file field and pick any background image from your gallery. It will instantly apply as your permanent app theme.</li>
+                            <li><b>Remove Theme:</b> Click the "❌ REMOVE THEME" button to roll back to the default minimalist view.</li>
+                        </ul>
+
                         <h4>🔤 Custom Font Exporter & Deletion</h4>
                         <ul>
-                            <li><b>Adding New Fonts:</b> Go to "FONT SETTINGS". Paste the <a href="https://fonts.google.com" target="_blank" class="font-link">Google Fonts</a> CSS URL and its exact Family Name into the inputs, then click "EXPORT & APPLY FONT".</li>
+                            <li><b>Adding New Fonts:</b> Inside "SETTINGS", paste the <a href="https://fonts.google.com" target="_blank" class="font-link">Google Fonts</a> CSS URL and its exact Family Name into the inputs, then click "EXPORT & APPLY FONT".</li>
                             <li><b>Deleting Fonts:</b> To remove an exported font, simply press and hold (Long Press) the font card for 1 second.</li>
                         </ul>
 
-                        <h4>🔑 Password Recovery</h4>
+                        <h4>🔑 Password Management & Recovery</h4>
                         <ul>
-                            <li>Click "Forgot Password?" on the login screen, enter your email, and a password reset link will be sent to your inbox or spam folder safely. Click on the link and reset your password</li>
+                            <li><b>Change Password:</b> You can update your current credentials directly within the "SETTINGS" panel.</li>
+                            <li><b>Password Recovery:</b> Click "Forgot Password?" on the login screen, enter your email, and a password reset link will be sent to your inbox or spam folder safely.</li>
                         </ul>
                     </div>
                 </div>
@@ -903,6 +965,50 @@
             }
         };
 
+        // --- কাস্টম থিম লজিক শুরু ---
+        const container = document.getElementById('mainContainer');
+        const themeInput = document.getElementById('themeImageInput');
+        const removeThemeBtn = document.getElementById('removeThemeBtn');
+
+        // লোড হওয়ার সময় আগের থিম চেক করা
+        function applySavedTheme() {
+            const savedTheme = localStorage.getItem('DailydockCustomTheme');
+            if(savedTheme) {
+                container.style.background = `url(${savedTheme})`;
+                container.classList.add('has-theme');
+            } else {
+                container.style.background = '#f3f3f3';
+                container.classList.remove('has-theme');
+            }
+        }
+
+        // গ্যালারি থেকে নতুন ইমেজ ইনপুট নেওয়া
+        themeInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const base64Image = event.target.result;
+                    localStorage.setItem('DailydockCustomTheme', base64Image);
+                    applySavedTheme();
+                    alert('আপনার কাস্টম থিমটি সফলভাবে সেট করা হয়েছে! 🎉');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // থিম রিমুভ করা
+        removeThemeBtn.addEventListener('click', () => {
+            localStorage.removeItem('DailydockCustomTheme');
+            themeInput.value = '';
+            applySavedTheme();
+            alert('কাস্টম থিম রিমুভ করা হয়েছে। ডিফল্ট থিম অ্যাপ্লাইড! 👍');
+        });
+
+        // ইনিশিয়াল থিম রেন্ডার
+        applySavedTheme();
+        // --- কাস্টম থিম লজিক শেষ ---
+
         function loadSavedFonts() {
             const savedFonts = JSON.parse(localStorage.getItem('DailydockExportedFonts')) || [];
             const fontSelector = document.getElementById('fontSelector');
@@ -1043,7 +1149,6 @@
             document.getElementById('writeSection').classList.add('hidden');
             document.getElementById('listSection').classList.add('hidden');
             document.getElementById('settingsSection').classList.add('hidden');
-            document.getElementById('changePasswordSection').classList.add('hidden');
             document.getElementById('helpSection').classList.add('hidden');
             document.getElementById('creditsSection').classList.add('hidden');
             
@@ -1057,7 +1162,6 @@
             document.getElementById('writeSection').classList.add('hidden');
             document.getElementById('listSection').classList.add('hidden');
             document.getElementById('settingsSection').classList.add('hidden');
-            document.getElementById('changePasswordSection').classList.add('hidden');
             document.getElementById('helpSection').classList.add('hidden');
             document.getElementById('creditsSection').classList.add('hidden');
             document.getElementById('dashboardSection').classList.remove('hidden');
@@ -1368,4 +1472,4 @@
         });
     </script>
 </body>
-                    </html>
+    </html>
