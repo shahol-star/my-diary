@@ -57,14 +57,19 @@
             right: 25px;
             width: 65px;
             height: 65px;
-            background: #e5e5e5;
+            background: #ffffff;
             border-radius: 50%;
             border: 4px solid #fff;
-            box-shadow: inset 0 4px 10px rgba(0,0,0,0.2), 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.1);
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.5rem;
+            overflow: hidden;
+        }
+        .header-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         /* PACMAN ANIMATION */
@@ -441,7 +446,10 @@
                 <h1 class="animated-title">DAILYDOCK</h1>
             </div>
             <span id="headerSubtext">house</span>
-            <div class="header-circle">📝</div>
+            <div class="header-circle">
+                <!-- ১ম ছবির ইমোজি লোগো পরিবর্তন করে ২য় ছবির লোগো দেওয়া হলো -->
+                <img src="11513.jpg" alt="Dailydock Logo">
+            </div>
         </div>
 
         <div id="welcomeSection" class="content-body">
@@ -531,6 +539,7 @@
                 </div>
             </div>
 
+            <!-- WRITE NEW DIARY -->
             <div id="writeSection" class="hidden" style="display: flex; flex-direction: column; flex-grow: 1; height: 100%;">
                 <div class="back-link" onclick="backToDashboard()" style="padding: 0 25px;">← Back to Menu</div>
                 
@@ -593,6 +602,7 @@
                 </div>
             </div>
 
+            <!-- HELP & GUIDE SECTION -->
             <div id="helpSection" class="hidden" style="padding: 10px 25px; font-family:'Hind Siliguri', sans-serif;">
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
                 
@@ -602,6 +612,7 @@
                 </div>
 
                 <div class="help-box">
+                    <!-- Bengali Guide -->
                     <div id="guideBn">
                         <h4>📝 নতুন ডায়েরি লেখা ও সংরক্ষণ</h4>
                         <ul>
@@ -622,6 +633,7 @@
                         </ul>
                     </div>
 
+                    <!-- English Guide -->
                     <div id="guideEn" class="hidden">
                         <h4>📝 Writing & Saving a New Diary</h4>
                         <ul>
@@ -644,6 +656,7 @@
                 </div>
             </div>
 
+            <!-- CREDITS SECTION -->
             <div id="creditsSection" class="hidden" style="padding: 10px 25px;">
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
                 
