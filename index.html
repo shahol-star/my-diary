@@ -1127,7 +1127,7 @@
                 const btn = document.getElementById('resetPasswordBtn');
                 btn.disabled = true; btn.innerText = "Sending...";
                 await sendPasswordResetEmail(auth, email);
-                alert('পাসওয়ার্ড রিসেট করার লিঙ্কটি আপনার ইমেইলে পাঠানো হয়েছে! দয়া করে আপনার ইনবক্স অথবা স্প্যাম (Spam) فোল্ডার চেক করুন। ✨');
+                alert('পাসওয়ার্ড রিসেট করার লিঙ্কটি আপনার ইমেইলে পাঠানো হয়েছে! দয়া করে আপনার ইনবক্স অথবা স্প্যাম (Spam) ফোল্ডার চেক করুন। ✨');
                 closeForgotModal();
             } catch (error) {
                 alert('Error: ' + error.message);
@@ -1313,7 +1313,7 @@
                 }
             } finally {
                 const updateBtn = document.getElementById('updatePasswordBtn');
-                updateBtn.disabled = false; updateBtn.innerText = "🔒 UPDATE PASSWORD";
+                updateBtn.disabled = false; updateBtn.innerText = "UPDATE PASSWORD";
             }
         });
     </script>
