@@ -46,7 +46,7 @@
             content: "";
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(243, 243, 243, 0.45); /* ওভারলে কমিয়ে ০.৪৫ করা হয়েছে যাতে থিম সুন্দর বোঝা যায় */
+            background: rgba(243, 243, 243, 0.45); 
             z-index: 0;
             pointer-events: none;
             display: none;
@@ -710,6 +710,17 @@
 
             <div id="settingsSection" class="hidden" style="padding: 10px 25px;">
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
+                <h3 style="color: #222; margin-bottom: 20px; font-size:1.2rem; text-align: center; font-family:'Hind Siliguri', sans-serif;">⚙️ সেটিংস মেনু</h3>
+                
+                <div class="pro-card">
+                    <div class="menu-item" onclick="showSubSection('fontSettingsPage')">▶ WEB FONT EXPORTER</div>
+                    <div class="menu-item" onclick="showSubSection('themeSettingsPage')">▶ CUSTOM THEME</div>
+                    <div class="menu-item" onclick="showSubSection('passwordSettingsPage')">▶ CHANGE PASSWORD</div>
+                </div>
+            </div>
+
+            <div id="fontSettingsPage" class="hidden" style="padding: 10px 25px;">
+                <div class="back-link" onclick="showSubSection('settingsSection')">← Back to Settings</div>
                 
                 <div class="settings-panel-box">
                     <div class="settings-panel-title">🔤 Web Font Exporter (ফন্ট সেটিংস)</div>
@@ -725,7 +736,11 @@
                         <div id="deleteableFontsList" style="margin-top: 5px;"></div>
                     </div>
                 </div>
+            </div>
 
+            <div id="themeSettingsPage" class="hidden" style="padding: 10px 25px;">
+                <div class="back-link" onclick="showSubSection('settingsSection')">← Back to Settings</div>
+                
                 <div class="settings-panel-box">
                     <div class="settings-panel-title">🎨 Custom Theme (কাস্টম ব্যাকগ্রাউন্ড)</div>
                     <p style="font-size: 0.8rem; color: #555; font-family:'Hind Siliguri', sans-serif; margin: 0 0 10px 0;">
@@ -736,7 +751,11 @@
                     </div>
                     <button id="removeThemeBtn" class="btn-black" style="background:#dc2626; font-size:0.85rem; padding:8px 15px; margin-top:5px; width:auto;">❌ REMOVE THEME</button>
                 </div>
+            </div>
 
+            <div id="passwordSettingsPage" class="hidden" style="padding: 10px 25px;">
+                <div class="back-link" onclick="showSubSection('settingsSection')">← Back to Settings</div>
+                
                 <div class="settings-panel-box">
                     <div class="settings-panel-title">🔑 Change Password (পাসওয়ার্ড পরিবর্তন)</div>
                     <div class="input-wrapper">
@@ -868,7 +887,10 @@
                 </div>
             </div>
 
-        </div> </div> <div id="diaryModal" class="modal hidden">
+        </div> 
+    </div> 
+
+    <div id="diaryModal" class="modal hidden">
         <div class="modal-content">
             <span class="close-modal" onclick="closeDiaryModal()">&times;</span>
             <h3 id="modalTitle" style="margin-top: 5px; color: #111; font-size: 1.2rem;">Title</h3>
@@ -1148,6 +1170,11 @@
             document.getElementById('helpSection').classList.add('hidden');
             document.getElementById('creditsSection').classList.add('hidden');
             
+            // নতুন সেটিংস সাব-পেজগুলোর আইডি হাইড করা নিশ্চিত করা
+            document.getElementById('fontSettingsPage').classList.add('hidden');
+            document.getElementById('themeSettingsPage').classList.add('hidden');
+            document.getElementById('passwordSettingsPage').classList.add('hidden');
+            
             document.getElementById(sectionId).classList.remove('hidden');
             if(sectionId === 'listSection') {
                 renderDiaryList(allDiaries);
@@ -1160,6 +1187,9 @@
             document.getElementById('settingsSection').classList.add('hidden');
             document.getElementById('helpSection').classList.add('hidden');
             document.getElementById('creditsSection').classList.add('hidden');
+            document.getElementById('fontSettingsPage').classList.add('hidden');
+            document.getElementById('themeSettingsPage').classList.add('hidden');
+            document.getElementById('passwordSettingsPage').classList.add('hidden');
             document.getElementById('dashboardSection').classList.remove('hidden');
         };
 
@@ -1468,4 +1498,4 @@
         });
     </script>
 </body>
-    </html>
+                </html>
