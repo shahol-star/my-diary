@@ -41,12 +41,12 @@
             background-repeat: no-repeat !important;
         }
 
-        /* Dynamic Overlay for Theme Background to keep text readable */
+        /* Dynamic Overlay for Theme Background to keep text readable and theme visible */
         .app-container::before {
             content: "";
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(243, 243, 243, 0.85); /* থিম সেট করলেও পেছনের টেক্সট পরিষ্কার বোঝা যাবে */
+            background: rgba(243, 243, 243, 0.45); /* ওভারলে কমিয়ে ০.৪৫ করা হয়েছে যাতে থিম সুন্দর বোঝা যায় */
             z-index: 0;
             pointer-events: none;
             display: none;
@@ -515,7 +515,7 @@
             cursor: pointer;
         }
 
-        /* Settings Sub-panels Accordion Layout */
+        /* Settings Sub-panels Box Layout */
         .settings-panel-box {
             background: #ffffff;
             border: 1px solid #dfdfdf;
@@ -712,6 +712,21 @@
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
                 
                 <div class="settings-panel-box">
+                    <div class="settings-panel-title">🔤 Web Font Exporter (ফন্ট সেটিংস)</div>
+                    <p style="font-size: 0.8rem; color: #555; font-family:'Hind Siliguri', sans-serif; margin-bottom:10px;">
+                        <a href="https://fonts.google.com" target="_blank" class="font-link">Google Fonts</a> CSS URL পেস্ট করে নতুন ফন্ট এক্সপোর্ট করুন।
+                    </p>
+                    <input type="text" id="customFontUrl" placeholder="https://fonts.googleapis.com/..." class="input-field" style="background:#f3f3f3; margin-bottom:10px;">
+                    <input type="text" id="customFontName" placeholder="Font Family Name" class="input-field" style="background:#f3f3f3; margin-bottom:10px;">
+                    <button id="loadFontBtn" class="btn-black" style="background:#10b981; font-size:0.9rem; padding:10px;">EXPORT & APPLY FONT</button>
+                    
+                    <div class="custom-font-manager">
+                        <span style="font-size: 0.85rem; font-weight: bold; color: #333; font-family: 'Hind Siliguri', sans-serif;">এক্সপোর্ট করা ফন্টসমূহ (ডিলিট করতে ১ সেকেন্ড চেপে ধরুন):</span>
+                        <div id="deleteableFontsList" style="margin-top: 5px;"></div>
+                    </div>
+                </div>
+
+                <div class="settings-panel-box">
                     <div class="settings-panel-title">🎨 Custom Theme (কাস্টম ব্যাকগ্রাউন্ড)</div>
                     <p style="font-size: 0.8rem; color: #555; font-family:'Hind Siliguri', sans-serif; margin: 0 0 10px 0;">
                         আপনার গ্যালারি থেকে যেকোনো ছবি সিলেক্ট করে অ্যাপ্লিকেশনের ব্যাকগ্রাউন্ড থিম হিসেবে ব্যবহার করুন।
@@ -736,21 +751,6 @@
                     </div>
                     <button id="updatePasswordBtn" class="btn-black" style="background:#232323; font-size:0.9rem; padding:10px;">UPDATE PASSWORD</button>
                 </div>
-
-                <div class="settings-panel-box">
-                    <div class="settings-panel-title">🔤 Web Font Exporter (ফন্ট সেটিংস)</div>
-                    <p style="font-size: 0.8rem; color: #555; font-family:'Hind Siliguri', sans-serif; margin-bottom:10px;">
-                        <a href="https://fonts.google.com" target="_blank" class="font-link">Google Fonts</a> CSS URL পেস্ট করে নতুন ফন্ট এক্সপোর্ট করুন।
-                    </p>
-                    <input type="text" id="customFontUrl" placeholder="https://fonts.googleapis.com/..." class="input-field" style="background:#f3f3f3; margin-bottom:10px;">
-                    <input type="text" id="customFontName" placeholder="Font Family Name" class="input-field" style="background:#f3f3f3; margin-bottom:10px;">
-                    <button id="loadFontBtn" class="btn-black" style="background:#10b981; font-size:0.9rem; padding:10px;">EXPORT & APPLY FONT</button>
-                    
-                    <div class="custom-font-manager">
-                        <span style="font-size: 0.85rem; font-weight: bold; color: #333; font-family: 'Hind Siliguri', sans-serif;">এক্সপোর্ট করা ফন্টসমূহ (ডিলিট করতে ১ সেকেন্ড চেপে ধরুন):</span>
-                        <div id="deleteableFontsList" style="margin-top: 5px;"></div>
-                    </div>
-                </div>
             </div>
 
             <div id="helpSection" class="hidden" style="padding: 10px 25px; font-family:'Hind Siliguri', sans-serif;">
@@ -772,7 +772,7 @@
 
                         <h4>🎨 কাস্টম ব্যাকগ্রাউন্ড থিম সেটআপ</h4>
                         <ul>
-                            <li><b>ধাপ ১:</b> "SETTINGS"-এ যান এবং সবার উপরে থাকা "Custom Theme" প্যানেলটি দেখুন।</li>
+                            <li><b>ধাপ ১:</b> "SETTINGS"-এ যান এবং নির্দিষ্ট "Custom Theme" প্যানেলটি দেখুন।</li>
                             <li><b>ধাপ ২:</b> ইনপুট ফিল্ডে ক্লিক করে আপনার ফোনের গ্যালারি থেকে যেকোনো পছন্দের ছবি সিলেক্ট করুন। ছবি সিলেক্ট করার সাথে সাথেই সেটি অ্যাপের ব্যাকগ্রাউন্ড থিম হিসেবে স্থায়ীভাবে সেট হয়ে যাবে।</li>
                             <li><b>থিম রিমুভ:</b> থিম মুছে আগের ডিফল্ট ব্যাকগ্রাউন্ডে ফিরতে "❌ REMOVE THEME" বাটনে ক্লিক করুন।</li>
                         </ul>
@@ -800,7 +800,7 @@
 
                         <h4>🎨 Custom Background Theme Setup</h4>
                         <ul>
-                            <li><b>Step 1:</b> Go to "SETTINGS" and locate the "Custom Theme" panel at the top.</li>
+                            <li><b>Step 1:</b> Go to "SETTINGS" and locate the "Custom Theme" panel.</li>
                             <li><b>Step 2:</b> Click the file field and pick any background image from your gallery. It will instantly apply as your permanent app theme.</li>
                             <li><b>Remove Theme:</b> Click the "❌ REMOVE THEME" button to roll back to the default minimalist view.</li>
                         </ul>
@@ -970,7 +970,6 @@
         const themeInput = document.getElementById('themeImageInput');
         const removeThemeBtn = document.getElementById('removeThemeBtn');
 
-        // লোড হওয়ার সময় আগের থিম চেক করা
         function applySavedTheme() {
             const savedTheme = localStorage.getItem('DailydockCustomTheme');
             if(savedTheme) {
@@ -982,7 +981,6 @@
             }
         }
 
-        // গ্যালারি থেকে নতুন ইমেজ ইনপুট নেওয়া
         themeInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if(file) {
@@ -997,7 +995,6 @@
             }
         });
 
-        // থিম রিমুভ করা
         removeThemeBtn.addEventListener('click', () => {
             localStorage.removeItem('DailydockCustomTheme');
             themeInput.value = '';
@@ -1005,7 +1002,6 @@
             alert('কাস্টম থিম রিমুভ করা হয়েছে। ডিফল্ট থিম অ্যাপ্লাইড! 👍');
         });
 
-        // ইনিশিয়াল থিম রেন্ডার
         applySavedTheme();
         // --- কাস্টম থিম লজিক শেষ ---
 
