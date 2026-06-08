@@ -331,37 +331,98 @@
         .text-red:hover { background: #dc2626; color: white; }
         .back-link { color: #1e40af; text-decoration: none; display: inline-block; margin-bottom: 15px; cursor: pointer; font-size: 0.9rem; font-weight: bold;}
         
-        /* PAST MEMORIES TITLE ONLY CARD */
-        .diary-title-card { 
-            background: #ffffff; 
-            padding: 14px; 
-            border-radius: 12px; 
-            border: 1px solid #dfdfdf; 
-            margin-bottom: 10px; 
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-        }
-        .diary-title-card:hover {
-            border-color: #232323;
-            background: #f9f9f9;
-        }
-        .diary-title-text { margin: 0; color: #222222; font-size: 1rem; font-weight: 700; flex-grow: 1; }
-        
-        /* Diary Metadata Block */
-        .diary-meta-block {
+        /* NEW PDF-STYLE DIARY PAGE CONTAINER AND SCROLLBAR DESIGN */
+        .diary-pages-container {
             display: flex;
             flex-direction: column;
-            align-items: flex-end;
-            gap: 2px;
-            margin-left: 10px;
+            gap: 25px;
+            padding-right: 8px;
+            overflow-y: scroll;
+            max-height: calc(100vh - 240px);
         }
-        .diary-date-badge { font-size: 0.75rem; color: #333; font-weight: 600; font-family: sans-serif; background: #e9e9e9; padding: 3px 6px; border-radius: 5px; white-space: nowrap;}
-        .diary-time-badge { font-size: 0.65rem; color: #666; font-family: sans-serif; white-space: nowrap; font-weight: normal; }
-        .delete-btn { background: none; border: none; color: #dc2626; cursor: pointer; font-size: 0.95rem; margin-left: 10px; padding: 5px;}
+
+        /* Custom Scrollbar Styling (ডান পাশের স্ক্রল বার কন্ট্রোলার) */
+        .diary-pages-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .diary-pages-container::-webkit-scrollbar-track {
+            background: #e2e2e2;
+            border-radius: 10px;
+        }
+        .diary-pages-container::-webkit-scrollbar-thumb {
+            background: #888888;
+            border-radius: 10px;
+            border: 1px solid #e2e2e2;
+        }
+        .diary-pages-container::-webkit-scrollbar-thumb:hover {
+            background: #555555;
+        }
+
+        /* PDF Individual Page Setup */
+        .diary-pdf-page {
+            background: #ffffff;
+            border: 1px solid #dcdcdc;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.06);
+            border-radius: 4px;
+            padding: 25px 20px;
+            position: relative;
+            min-height: 380px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .pdf-date {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #111111;
+            margin: 0;
+            font-family: sans-serif;
+            text-align: left;
+        }
+        .pdf-time {
+            font-size: 0.8rem;
+            color: #666666;
+            margin: 3px 0 15px 0;
+            font-family: sans-serif;
+            text-align: left;
+        }
+        .pdf-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #000000;
+            text-align: center;
+            margin: 10px 0 15px 0;
+            line-height: 1.4;
+        }
+        .pdf-content {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #222222;
+            white-space: pre-wrap;
+            flex-grow: 1;
+            margin-bottom: 20px;
+        }
+        .pdf-footer-actions {
+            border-top: 1px dashed #e5e5e5;
+            padding-top: 10px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+        .pdf-action-btn {
+            background: none;
+            border: none;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 5px 8px;
+            font-family: 'Hind Siliguri', sans-serif;
+            transition: 0.2s;
+        }
+        .pdf-edit-btn { color: #1e40af; }
+        .pdf-edit-btn:hover { text-decoration: underline; }
+        .pdf-delete-btn { color: #dc2626; }
+        .pdf-delete-btn:hover { text-decoration: underline; }
 
         /* DIARY & FORGOT PASSWORD MODAL */
         .modal {
@@ -663,15 +724,15 @@
                 </div>
             </div>
 
-            <div id="listSection" class="hidden" style="padding: 10px 25px;">
+            <div id="listSection" class="hidden" style="padding: 10px 25px; display: flex; flex-direction: column; height: 100%;">
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
-                <h3 style="color: #22; margin-bottom: 12px; font-size:1.1rem; text-align: center;">Your Past Memories</h3>
+                <h3 style="color: #222; margin-bottom: 12px; font-size:1.1rem; text-align: center;">Your Past Memories</h3>
                 
-                <div class="input-wrapper">
+                <div class="input-wrapper" style="flex-shrink: 0;">
                     <input type="text" id="diarySearchInput" placeholder="🔍 Search by title or date (e.g. 2026-06-05)..." class="input-field" style="font-family:sans-serif; margin-bottom:15px; background:white;">
                 </div>
 
-                <div id="diaryList"></div>
+                <div id="diaryList" class="diary-pages-container"></div>
             </div>
 
             <div id="settingsSection" class="hidden" style="padding: 10px 25px;">
@@ -855,22 +916,6 @@
 
         </div> 
     </div> 
-
-    <div id="diaryModal" class="modal hidden">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeDiaryModal()">&times;</span>
-            <h3 id="modalTitle" style="margin-top: 5px; color: #111; font-size: 1.2rem;">Title</h3>
-            
-            <div style="border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 12px;">
-                <p id="modalDate" style="font-size: 0.8rem; color: #333; font-weight: bold; font-family: sans-serif; margin: 0;">Date</p>
-                <p id="modalTime" style="font-size: 0.7rem; color: #666; font-family: sans-serif; margin: 2px 0 0 0;">Saved Time</p>
-            </div>
-
-            <p id="modalBody" style="font-size: 0.95rem; color: #333; white-space: pre-wrap; line-height: 1.5; margin-top: 12px; max-height: 250px; overflow-y: auto;">Content</p>
-            
-            <button id="modalEditBtn" class="btn-black" style="background: #1e40af; margin-top: 15px; font-size: 0.85rem; padding: 8px 0; border-radius: 8px;">✏️ EDIT DIARY</button>
-        </div>
-    </div>
 
     <div id="forgotModal" class="modal hidden">
         <div class="modal-content" style="font-family: 'Hind Siliguri', sans-serif;">
@@ -1153,21 +1198,25 @@
             }
             if(sectionId === 'writeSection') {
                 if (!editingDiaryId) {
-                    // Reset writing panel for a completely fresh entry
-                    document.getElementById('writePanelPurpose').innerText = "Capture Memory";
-                    document.getElementById('saveBtn').innerText = "💾 SAVE ENTRY";
-                    document.getElementById('diaryTitle').value = '';
-                    document.getElementById('diaryContent').value = '';
-                    document.getElementById('diaryDate').value = today;
-                    const defaultFont = document.getElementById('fontSelector').value;
-                    document.getElementById('diaryContent').style.fontFamily = defaultFont;
-                    document.getElementById('diaryTitle').style.fontFamily = defaultFont;
+                    // Reset writing panel for a completely fresh entry ( ensures no leftover data from edit )
+                    clearWriteForm();
                 }
             }
         };
 
+        function clearWriteForm() {
+            document.getElementById('writePanelPurpose').innerText = "Capture Memory";
+            document.getElementById('saveBtn').innerText = "💾 SAVE ENTRY";
+            document.getElementById('diaryTitle').value = '';
+            document.getElementById('diaryContent').value = '';
+            document.getElementById('diaryDate').value = today;
+            const defaultFont = document.getElementById('fontSelector').value;
+            document.getElementById('diaryContent').style.fontFamily = defaultFont;
+            document.getElementById('diaryTitle').style.fontFamily = defaultFont;
+        }
+
         window.backToDashboard = () => {
-            editingDiaryId = null; // Clear edit session state on exit
+            editingDiaryId = null; // Clear edit session state on exit to protect write panel
             document.getElementById('writeSection').classList.add('hidden');
             document.getElementById('listSection').classList.add('hidden');
             document.getElementById('settingsSection').classList.add('hidden');
@@ -1195,30 +1244,7 @@
             }
         }
 
-        window.openDiaryModal = (id, title, dateStr, content, fontFamily, rawTime) => {
-            const modal = document.getElementById('diaryModal');
-            const mTitle = document.getElementById('modalTitle');
-            const mBody = document.getElementById('modalBody');
-            const mTime = document.getElementById('modalTime');
-            
-            mTitle.innerText = title;
-            document.getElementById('modalDate').innerText = "Date: " + dateStr;
-            
-            const timeString = formatFirebaseTime(rawTime);
-            mTime.innerText = timeString ? "Saved Time: " + timeString : "Saved Time: Recent Cloud Sync";
-            
-            mBody.innerText = content;
-            modal.style.fontFamily = fontFamily || "'Cinzel Decorative', serif";
-            modal.classList.remove('hidden');
-
-            // Configure Edit action callback specifically bound to this item's structural state
-            const editBtn = document.getElementById('modalEditBtn');
-            editBtn.onclick = () => {
-                closeDiaryModal();
-                initiateDiaryEdit(id, title, dateStr, content, fontFamily);
-            };
-        };
-
+        // EDIT INITIATOR FOR THE PDF PAGE SYSTEM
         function initiateDiaryEdit(id, title, dateStr, content, fontFamily) {
             editingDiaryId = id; 
             
@@ -1239,19 +1265,6 @@
             document.getElementById('saveBtn').innerText = "🔄 UPDATE ENTRY";
             showSubSection('writeSection');
         }
-
-        window.closeDiaryModal = () => {
-            document.getElementById('diaryModal').classList.add('hidden');
-        };
-
-        window.openForgotModal = () => {
-            document.getElementById('forgotEmail').value = "";
-            document.getElementById('forgotModal').classList.remove('hidden');
-        };
-
-        window.closeForgotModal = () => {
-            document.getElementById('forgotModal').classList.add('hidden');
-        };
 
         window.deleteEntry = async (entryId) => {
             if(confirm("Are you sure you want to delete this memory forever? 😢")) {
@@ -1386,9 +1399,7 @@
                 }
 
                 editingDiaryId = null; 
-                document.getElementById('diaryTitle').value = '';
-                document.getElementById('diaryContent').value = '';
-                document.getElementById('diaryDate').value = today;
+                clearWriteForm();
                 backToDashboard();
             } catch (error) { 
                 console.error(error);
@@ -1431,6 +1442,7 @@
             });
         }
 
+        // ADVANCED PDF LAYOUT RENDERER FOR PAST MEMORIES
         function renderDiaryList(diariesArray) {
             const diaryList = document.getElementById('diaryList');
             if(!diaryList) return;
@@ -1443,35 +1455,36 @@
             }
 
             diariesArray.forEach((data) => {
-                const card = document.createElement('div');
-                card.className = "diary-title-card";
-                card.style.fontFamily = data.fontFamily || "'Cinzel Decorative', serif";
+                const page = document.createElement('div');
+                page.className = "diary-pdf-page";
+                page.style.fontFamily = data.fontFamily || "'Cinzel Decorative', serif";
                 
-                card.innerHTML = `
-                    <h4 class="diary-title-text"></h4>
-                    <div class="diary-meta-block">
-                        <span class="diary-date-badge"></span>
-                        <span class="diary-time-badge"></span>
+                // Converting raw firebase server timestamp to clear legible string
+                const formattedTime = formatFirebaseTime(data.createdAt) || "Recent Cloud Sync";
+
+                page.innerHTML = `
+                    <div>
+                        <h2 class="pdf-date">${data.diaryDate || ""}</h2>
+                        <div class="pdf-time">${formattedTime}</div>
+                        <h3 class="pdf-title">${data.title || "Untitled"}</h3>
+                        <div class="pdf-content">${data.content || ""}</div>
                     </div>
-                    <button class="delete-btn">🗑️</button>
+                    <div class="pdf-footer-actions">
+                        <button class="pdf-action-btn pdf-edit-btn">Edit</button>
+                        <button class="pdf-action-btn pdf-delete-btn">Delete</button>
+                    </div>
                 `;
 
-                card.querySelector('.diary-title-text').innerText = data.title || "Untitled";
-                card.querySelector('.diary-date-badge').innerText = data.diaryDate || "";
-                
-                const formattedTime = formatFirebaseTime(data.createdAt);
-                card.querySelector('.diary-time-badge').innerText = formattedTime ? formattedTime : "Syncing...";
-
-                card.addEventListener('click', () => {
-                    openDiaryModal(data.id, data.title || "Untitled", data.diaryDate || "", data.content || "", data.fontFamily || "", data.createdAt);
+                // Handle Page Document Operations Action Listeners Injection
+                page.querySelector('.pdf-edit-btn').addEventListener('click', () => {
+                    initiateDiaryEdit(data.id, data.title || "Untitled", data.diaryDate || "", data.content || "", data.fontFamily || "");
                 });
 
-                card.querySelector('.delete-btn').addEventListener('click', (event) => {
-                    event.stopPropagation();
+                page.querySelector('.pdf-delete-btn').addEventListener('click', () => {
                     deleteEntry(data.id);
                 });
 
-                diaryList.appendChild(card);
+                diaryList.appendChild(page);
             });
         }
 
@@ -1502,6 +1515,15 @@
             loadSavedFonts();
             backToDashboard();
         });
+
+        window.openForgotModal = () => {
+            document.getElementById('forgotEmail').value = "";
+            document.getElementById('forgotModal').classList.remove('hidden');
+        };
+
+        window.closeForgotModal = () => {
+            document.getElementById('forgotModal').classList.add('hidden');
+        };
 
         document.getElementById('updatePasswordBtn').addEventListener('click', async () => {
             const oldPassword = document.getElementById('oldPasswordInput').value;
@@ -1548,4 +1570,4 @@
         });
     </script>
 </body>
-                        </html>
+    </html>
