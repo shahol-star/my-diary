@@ -331,74 +331,119 @@
         .text-red:hover { background: #dc2626; color: white; }
         .back-link { color: #1e40af; text-decoration: none; display: inline-block; margin-bottom: 15px; cursor: pointer; font-size: 0.9rem; font-weight: bold;}
         
-        /* NEW PDF PAGE DESIGN FOR DIARY ENTRIES */
-        .diary-page-container {
+        /* --- NEW PDF PAGE SYSTEM STYLES --- */
+        .memories-container {
             display: flex;
             flex-direction: column;
-            gap: 25px;
-            padding-bottom: 30px;
+            height: 100%;
+            overflow: hidden;
         }
+        .search-sticky-box {
+            position: sticky;
+            top: 0;
+            background: transparent;
+            z-index: 10;
+            padding-bottom: 10px;
+        }
+        .scrollable-pages-area {
+            flex-grow: 1;
+            overflow-y: scroll; /* Force native dynamic scrollbar */
+            padding-right: 5px;
+        }
+        /* Custom visible scrollbar style on desktop/mobile for tracking */
+        .scrollable-pages-area::-webkit-scrollbar {
+            width: 8px;
+        }
+        .scrollable-pages-area::-webkit-scrollbar-track {
+            background: #e9e9e9;
+            border-radius: 4px;
+        }
+        .scrollable-pages-area::-webkit-scrollbar-thumb {
+            background: #888888;
+            border-radius: 4px;
+            border: 1px solid #e9e9e9;
+        }
+        .scrollable-pages-area::-webkit-scrollbar-thumb:hover {
+            background: #555555;
+        }
+        
+        /* Book/PDF Page Design */
         .diary-pdf-page {
             background: #ffffff;
-            border: 1px solid #c0c0c0;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
             border-radius: 4px;
-            padding: 30px 25px;
-            min-height: 400px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.06);
+            padding: 25px 20px;
+            margin-bottom: 25px;
             position: relative;
             display: flex;
             flex-direction: column;
-            transition: transform 0.2s;
+            min-height: 280px;
         }
-        .diary-page-date {
-            font-size: 0.85rem;
-            color: #555555;
-            font-family: sans-serif;
+        .page-top-date {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #111111;
+            margin: 0 0 2px 0;
             text-align: left;
-            margin-bottom: 20px;
-            font-weight: 600;
-            border-bottom: 1px solid #eee;
+        }
+        .page-top-time {
+            font-size: 0.75rem;
+            color: #666666;
+            font-family: sans-serif;
+            margin: 0 0 15px 0;
+            text-align: left;
+            border-bottom: 1px dashed #dddddd;
             padding-bottom: 5px;
         }
-        .diary-page-title {
-            font-size: 1.35rem;
-            font-weight: 700;
-            text-align: center;
-            margin: 0 0 20px 0;
+        .page-center-title {
+            font-size: 1.15rem;
+            font-weight: bold;
             color: #111111;
-            line-height: 1.3;
+            text-align: center;
+            margin: 10px 0 15px 0;
+            letter-spacing: 0.5px;
         }
-        .diary-page-content {
+        .page-content-text {
             font-size: 0.95rem;
             color: #333333;
             line-height: 1.6;
             white-space: pre-wrap;
             flex-grow: 1;
-            text-align: justify;
+            margin-bottom: 20px;
         }
-        .diary-page-footer {
-            margin-top: 15px;
+        .page-footer-actions {
             display: flex;
             justify-content: flex-end;
-            border-top: 1px dashed #eee;
+            gap: 15px;
+            border-top: 1px dashed #eeeeee;
             padding-top: 10px;
+            margin-top: auto;
         }
-        .page-delete-btn {
-            background: #fff5f5;
-            border: 1px solid #feb2b2;
-            color: #dc2626;
+        .page-action-btn {
+            background: none;
+            border: none;
             cursor: pointer;
             font-size: 0.85rem;
-            padding: 5px 12px;
-            border-radius: 6px;
-            font-family: 'Hind Siliguri', sans-serif;
             font-weight: bold;
-            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
         }
-        .page-delete-btn:hover {
-            background: #dc2626;
-            color: white;
-            border-color: #dc2626;
+        .btn-action-edit {
+            color: #1e40af;
+        }
+        .btn-action-edit:hover {
+            background: #eff6ff;
+        }
+        .btn-action-delete {
+            color: #dc2626;
+        }
+        .btn-action-delete:hover {
+            background: #fef2f2;
         }
 
         /* DIARY & FORGOT PASSWORD MODAL */
@@ -654,7 +699,7 @@
             <span class="link-text" onclick="navigateTo('loginSection')">Already have an account? Login</span>
         </div>
 
-        <div id="appSection" class="content-body hidden" style="padding: 20px 0 0 0;">
+        <div id="appSection" class="content-body hidden" style="padding: 20px 0 0 0; height: 100%;">
             
             <div id="dashboardSection" style="padding: 10px 25px;">
                 <h1 style="color: #232323; text-align: center; margin-bottom: 25px; font-size: 1.8rem;">MAIN MENU</h1>
@@ -672,8 +717,10 @@
                 <div class="back-link" onclick="backToDashboard()" style="padding: 0 25px;">← Back to Menu</div>
                 
                 <div style="background: #ffffff; padding: 20px 25px; border-top-left-radius: 30px; border-top-right-radius: 30px; border: 1px solid #dfdfdf; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden;">
-                    <span style="color:#111; display:block; margin-bottom:10px; font-size:1rem; font-weight:bold; text-align: center;">Capture Memory</span>
+                    <span id="writeFormTitle" style="color:#111; display:block; margin-bottom:10px; font-size:1rem; font-weight:bold; text-align: center;">Capture Memory</span>
                     
+                    <input type="hidden" id="editEntryId" value="">
+
                     <div class="input-wrapper">
                         <label>Select Date</label>
                         <input type="date" id="diaryDate" class="input-field" style="font-family:sans-serif;">
@@ -701,14 +748,16 @@
                 </div>
             </div>
 
-            <div id="listSection" class="hidden" style="padding: 10px 25px; display: flex; flex-direction: column; height: 100%;">
+            <div id="listSection" class="hidden" style="padding: 10px 25px; height: 100%; display: flex; flex-direction: column;">
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
                 
-                <div class="input-wrapper" style="position: sticky; top: 0; z-index: 10; background: transparent;">
-                    <input type="text" id="diarySearchInput" placeholder="🔍 Search by title or date (e.g. 2026-06-05)..." class="input-field" style="font-family:sans-serif; margin-bottom:15px; background:white; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                </div>
+                <div class="memories-container">
+                    <div class="search-sticky-box">
+                        <input type="text" id="diarySearchInput" placeholder="🔍 Search by title or date (e.g. 2026-06-05)..." class="input-field" style="font-family:sans-serif; background:white; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    </div>
 
-                <div id="diaryList" class="diary-page-container"></div>
+                    <div id="diaryList" class="scrollable-pages-area"></div>
+                </div>
             </div>
 
             <div id="settingsSection" class="hidden" style="padding: 10px 25px;">
@@ -930,7 +979,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, sendPasswordResetEmail, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, doc, deleteDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, doc, deleteDoc, updateDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDEzag6WbUzHEHOpSRRkDChfMTwZiwM4UI",
@@ -1183,6 +1232,11 @@
         };
 
         window.backToDashboard = () => {
+            // Reset Edit Mode states
+            document.getElementById('editEntryId').value = "";
+            document.getElementById('writeFormTitle').innerText = "Capture Memory";
+            document.getElementById('saveBtn').innerText = "💾 SAVE ENTRY";
+
             document.getElementById('writeSection').classList.add('hidden');
             document.getElementById('listSection').classList.add('hidden');
             document.getElementById('settingsSection').classList.add('hidden');
@@ -1227,6 +1281,25 @@
                     alert("Deleted successfully!");
                 } catch (error) { alert("Error deleting entry."); }
             }
+        };
+
+        // --- NEW EDIT FUNCTION FEATURE ---
+        window.startEditEntry = (id, title, content, dateStr, font) => {
+            document.getElementById('editEntryId').value = id;
+            document.getElementById('diaryTitle').value = title;
+            document.getElementById('diaryContent').value = content;
+            document.getElementById('diaryDate').value = dateStr;
+            
+            const fontSelector = document.getElementById('fontSelector');
+            fontSelector.value = font;
+            
+            document.getElementById('diaryContent').style.fontFamily = font;
+            document.getElementById('diaryTitle').style.fontFamily = font;
+            
+            document.getElementById('writeFormTitle').innerText = "Edit Your Memory";
+            document.getElementById('saveBtn').innerText = "💾 UPDATE ENTRY";
+            
+            showSubSection('writeSection');
         };
 
         async function handleGoogleSignIn() {
@@ -1321,6 +1394,7 @@
             const content = document.getElementById('diaryContent').value.trim();
             const customDate = document.getElementById('diaryDate').value; 
             const selectedFont = fontSelector.value;
+            const editId = document.getElementById('editEntryId').value;
 
             if (!title || !content || !customDate) return alert('Title, Content and Date are required!');
 
@@ -1328,22 +1402,37 @@
                 const saveBtn = document.getElementById('saveBtn');
                 saveBtn.disabled = true; saveBtn.innerText = "Saving...";
 
-                await addDoc(collection(db, "diaries"), {
-                    uid: auth.currentUser.uid,
-                    title: title,
-                    content: content,
-                    fontFamily: selectedFont,
-                    diaryDate: customDate, 
-                    createdAt: serverTimestamp()
-                });
+                if(editId) {
+                    // Update current entry mode
+                    await updateDoc(doc(db, "diaries", editId), {
+                        title: title,
+                        content: content,
+                        fontFamily: selectedFont,
+                        diaryDate: customDate
+                    });
+                    alert('Memory updated successfully! ✨');
+                } else {
+                    // Normal add new entry mode
+                    await addDoc(collection(db, "diaries"), {
+                        uid: auth.currentUser.uid,
+                        title: title,
+                        content: content,
+                        fontFamily: selectedFont,
+                        diaryDate: customDate, 
+                        createdAt: serverTimestamp()
+                    });
+                    alert('Saved securely! ✨');
+                }
 
                 document.getElementById('diaryTitle').value = '';
                 document.getElementById('diaryContent').value = '';
                 document.getElementById('diaryDate').value = today;
-                alert('Saved securely! ✨');
                 backToDashboard();
-            } catch (error) { alert('Error saving.'); }
-            finally { document.getElementById('saveBtn').disabled = false; document.getElementById('saveBtn').innerText = "💾 SAVE ENTRY"; }
+            } catch (error) { alert('Error processing entry save.'); }
+            finally { 
+                document.getElementById('saveBtn').disabled = false; 
+                document.getElementById('saveBtn').innerText = "💾 SAVE ENTRY"; 
+            }
         });
 
         let isFirstLoad = true; 
@@ -1378,7 +1467,7 @@
             });
         }
 
-        // MODIFIED RENDER FUNCTION FOR PDF-BOOK SYSTEM
+        // --- NEW UPDATED RENDER FUNCTION GENERATING PDF PAGES ---
         function renderDiaryList(diariesArray) {
             const diaryList = document.getElementById('diaryList');
             if(!diaryList) return;
@@ -1391,28 +1480,42 @@
             }
 
             diariesArray.forEach((data) => {
-                // Create a single book page
+                // Get Save Time String nicely formatted from data
+                let timeString = "Saved Time: ";
+                if (data.createdAt) {
+                    const dateObject = data.createdAt.toDate();
+                    timeString += dateObject.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                } else {
+                    timeString += new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                }
+
                 const page = document.createElement('div');
                 page.className = "diary-pdf-page";
                 page.style.fontFamily = data.fontFamily || "'Cinzel Decorative', serif";
                 
-                // Formulate HTML inner content as requested
                 page.innerHTML = `
-                    <div class="diary-page-date">${data.diaryDate || ""}</div>
-                    <h2 class="diary-page-title"></h2>
-                    <div class="diary-page-content"></div>
-                    <div class="diary-page-footer">
-                        <button class="page-delete-btn">🗑️ Delete Page</button>
+                    <h2 class="page-top-date"></h2>
+                    <div class="page-top-time"></div>
+                    <div class="page-center-title"></div>
+                    <div class="page-content-text"></div>
+                    <div class="page-footer-actions">
+                        <button class="page-action-btn btn-action-edit">Edit</button>
+                        <button class="page-action-btn btn-action-delete">Delete</button>
                     </div>
                 `;
 
-                // Secure assignment of texts to prevent HTML breaks
-                page.querySelector('.diary-page-title').innerText = data.title || "Untitled";
-                page.querySelector('.diary-page-content').innerText = data.content || "";
+                // Safe text insertion avoiding injection bugs
+                page.querySelector('.page-top-date').innerText = data.diaryDate || "";
+                page.querySelector('.page-top-time').innerText = timeString;
+                page.querySelector('.page-center-title').innerText = data.title || "Untitled";
+                page.querySelector('.page-content-text').innerText = data.content || "";
 
-                // Delete handle
-                page.querySelector('.page-delete-btn').addEventListener('click', (event) => {
-                    event.stopPropagation();
+                // Connect active event configurations
+                page.querySelector('.btn-action-edit').addEventListener('click', () => {
+                    startEditEntry(data.id, data.title || "", data.content || "", data.diaryDate || "", data.fontFamily || "'Cinzel Decorative', serif");
+                });
+
+                page.querySelector('.btn-action-delete').addEventListener('click', () => {
                     deleteEntry(data.id);
                 });
 
@@ -1493,4 +1596,4 @@
         });
     </script>
 </body>
-                            </html>
+                </html>
