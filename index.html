@@ -341,7 +341,7 @@
             max-height: calc(100vh - 240px);
         }
 
-        /* Custom Scrollbar Styling (ডান পাশের স্ক্রল বার কন্ট্রোলার) */
+        /* Custom Scrollbar Styling */
         .diary-pages-container::-webkit-scrollbar {
             width: 8px;
         }
@@ -416,7 +416,7 @@
             font-weight: bold;
             cursor: pointer;
             padding: 5px 8px;
-            font-family: 'Hind Siliguri', sans-serif;
+            font-family: sans-serif; /* অ্যাপের ডিফল্ট বা সিস্টেম ফন্ট ব্যবহার নিশ্চিত করতে পরিবর্তন */
             transition: 0.2s;
         }
         .pdf-edit-btn { color: #1e40af; }
@@ -963,7 +963,7 @@
 
         let allDiaries = []; 
         let currentUserId = null;
-        let editingDiaryId = null; // State controller for managing Edit Mode
+        let editingDiaryId = null; 
 
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('diaryDate').value = today;
@@ -1005,7 +1005,7 @@
             }
         };
 
-        // --- কাস্টম থিম লজিক শুরু ---
+        // --- কাস্টম থিম লজিক ---
         const container = document.getElementById('mainContainer');
         const themeInput = document.getElementById('themeImageInput');
         const removeThemeBtn = document.getElementById('removeThemeBtn');
@@ -1043,7 +1043,6 @@
         });
 
         applySavedTheme();
-        // --- কাস্টম থিম লজিক শেষ ---
 
         function loadSavedFonts() {
             const savedFonts = JSON.parse(localStorage.getItem('DailydockExportedFonts')) || [];
@@ -1198,7 +1197,6 @@
             }
             if(sectionId === 'writeSection') {
                 if (!editingDiaryId) {
-                    // Reset writing panel for a completely fresh entry ( ensures no leftover data from edit )
                     clearWriteForm();
                 }
             }
@@ -1216,7 +1214,7 @@
         }
 
         window.backToDashboard = () => {
-            editingDiaryId = null; // Clear edit session state on exit to protect write panel
+            editingDiaryId = null; 
             document.getElementById('writeSection').classList.add('hidden');
             document.getElementById('listSection').classList.add('hidden');
             document.getElementById('settingsSection').classList.add('hidden');
@@ -1228,7 +1226,6 @@
             document.getElementById('dashboardSection').classList.remove('hidden');
         };
 
-        // Timestamp Conversion helper function (e.g., "09:30 PM")
         function formatFirebaseTime(createdAtTimestamp) {
             if (!createdAtTimestamp) return "";
             try {
@@ -1237,18 +1234,16 @@
                 const minutes = dateObj.getMinutes().toString().padStart(2, '0');
                 const ampm = hours >= 12 ? 'PM' : 'AM';
                 hours = hours % 12;
-                hours = hours ? hours : 12; // convert '0' to '12'
+                hours = hours ? hours : 12; 
                 return `${hours}:${minutes} ${ampm}`;
             } catch(e) {
                 return "";
             }
         }
 
-        // EDIT INITIATOR FOR THE PDF PAGE SYSTEM
         function initiateDiaryEdit(id, title, dateStr, content, fontFamily) {
             editingDiaryId = id; 
             
-            // Render interface data mutations cleanly onto write section
             document.getElementById('writePanelPurpose').innerText = "Edit Your Memory";
             document.getElementById('diaryTitle').value = title;
             document.getElementById('diaryContent').value = content;
@@ -1376,7 +1371,6 @@
                 saveBtn.innerText = editingDiaryId ? "Updating..." : "Saving...";
 
                 if (editingDiaryId) {
-                    // Firebase Firestore Document Update Procedure Execution
                     await updateDoc(doc(db, "diaries", editingDiaryId), {
                         title: title,
                         content: content,
@@ -1386,7 +1380,6 @@
                     });
                     alert('Memory updated securely! 🔄✨');
                 } else {
-                    // Regular Document Addition Execution path
                     await addDoc(collection(db, "diaries"), {
                         uid: auth.currentUser.uid,
                         title: title,
@@ -1442,7 +1435,6 @@
             });
         }
 
-        // ADVANCED PDF LAYOUT RENDERER FOR PAST MEMORIES
         function renderDiaryList(diariesArray) {
             const diaryList = document.getElementById('diaryList');
             if(!diaryList) return;
@@ -1459,7 +1451,6 @@
                 page.className = "diary-pdf-page";
                 page.style.fontFamily = data.fontFamily || "'Cinzel Decorative', serif";
                 
-                // Converting raw firebase server timestamp to clear legible string
                 const formattedTime = formatFirebaseTime(data.createdAt) || "Recent Cloud Sync";
 
                 page.innerHTML = `
@@ -1475,7 +1466,6 @@
                     </div>
                 `;
 
-                // Handle Page Document Operations Action Listeners Injection
                 page.querySelector('.pdf-edit-btn').addEventListener('click', () => {
                     initiateDiaryEdit(data.id, data.title || "Untitled", data.diaryDate || "", data.content || "", data.fontFamily || "");
                 });
@@ -1570,4 +1560,4 @@
         });
     </script>
 </body>
-    </html>
+                        </html>
