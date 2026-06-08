@@ -7,11 +7,9 @@
     
     <link rel="icon" type="image/png" sizes="32x32" href="11512.png">
     <link rel="icon" type="image/png" sizes="16x16" href="11512.png">
-    <link class="apple-touch-icon" sizes="180x180" href="11512.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="11512.png">
     <link rel="icon" type="image/jpeg" href="11513.jpg" onerror="this.onerror=null; this.src='11512.png';">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet">
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     
     <style>
         * { box-sizing: border-box; }
@@ -27,29 +25,7 @@
             min-height: 100vh;
         }
         
-        /* কাস্টম স্ক্রলবার মেকানিজম (ডান পাশের ছোট রেখা) */
-        .app-container::-webkit-scrollbar,
-        .content-body::-webkit-scrollbar,
-        #diaryContent::-webkit-scrollbar {
-            width: 5px;
-        }
-        .app-container::-webkit-scrollbar-track,
-        .content-body::-webkit-scrollbar-track,
-        #diaryContent::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .app-container::-webkit-scrollbar-thumb,
-        .content-body::-webkit-scrollbar-thumb,
-        #diaryContent::-webkit-scrollbar-thumb {
-            background: rgba(35, 35, 35, 0.3);
-            border-radius: 10px;
-        }
-        .app-container::-webkit-scrollbar-thumb:hover,
-        .content-body::-webkit-scrollbar-thumb:hover,
-        #diaryContent::-webkit-scrollbar-thumb:hover {
-            background: rgba(35, 35, 35, 0.6);
-        }
-
+        /* App Layout Fixed to Responsive Device Fit (Mobile & Desktop View) */
         .app-container {
             width: 100%;
             max-width: 430px;
@@ -65,6 +41,7 @@
             background-repeat: no-repeat !important;
         }
 
+        /* Dynamic Overlay for Theme Background to keep text readable and theme visible */
         .app-container::before {
             content: "";
             position: absolute;
@@ -78,11 +55,13 @@
             display: block;
         }
         
+        /* Ensure content stays above the theme overlay */
         .top-banner, .content-body {
             position: relative;
             z-index: 1;
         }
 
+        /* TOP BLACK HEADER DESIGN */
         .top-banner {
             background: #232323;
             padding: 30px 25px;
@@ -116,6 +95,7 @@
             object-fit: cover;
         }
 
+        /* PACMAN ANIMATION */
         .anim-title-container {
             position: relative;
             overflow: hidden;
@@ -154,6 +134,7 @@
             100% { left: -20%; transform: scaleX(-1); }
         }
 
+        /* CONTENT AREAS */
         .content-body {
             padding: 25px 25px;
             flex-grow: 1;
@@ -170,6 +151,7 @@
             color: #111;
         }
 
+        /* INPUT STYLES */
         .input-wrapper {
             margin-bottom: 15px;
             position: relative;
@@ -198,6 +180,7 @@
             background: #fff;
         }
 
+        /* PASSWORD TOGGLE TEXT STYLE */
         .password-toggle-btn {
             position: absolute;
             right: 12px;
@@ -217,6 +200,7 @@
             color: #111;
         }
 
+        /* BUTTONS */
         .btn-black {
             background: #232323;
             color: white;
@@ -239,6 +223,7 @@
             background: #444;
         }
 
+        /* GOOGLE SIGN IN BUTTON */
         .btn-google {
             background: white;
             color: #232323;
@@ -295,6 +280,7 @@
             display: block;
         }
 
+        /* WELCOME LANDING SCREEN */
         #welcomeSection {
             text-align: center;
             justify-content: center;
@@ -326,6 +312,7 @@
             background: rgba(0,0,0,0.05);
         }
 
+        /* INSIDE APP STYLES */
         .pro-card { 
             background: #ffffff; 
             border: 1px solid #dfdfdf; 
@@ -344,98 +331,29 @@
         .text-red:hover { background: #dc2626; color: white; }
         .back-link { color: #1e40af; text-decoration: none; display: inline-block; margin-bottom: 15px; cursor: pointer; font-size: 0.9rem; font-weight: bold;}
         
-        .diary-page-container {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-            padding-bottom: 30px;
-        }
-        .diary-pdf-page {
-            background: #ffffff;
-            border: 1px solid #c0c0c0;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-            border-radius: 4px;
-            padding: 30px 25px;
-            min-height: 400px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.2s;
-        }
-        /* তারিখ ও সময় সেকশনের নতুন আপগ্রেড */
-        .diary-page-date {
-            font-size: 1.15rem;
-            color: #111111;
-            font-family: sans-serif;
-            text-align: left;
-            margin-bottom: 5px;
-            font-weight: 700;
-        }
-        .diary-page-time {
-            font-size: 0.8rem;
-            color: #666666;
-            font-family: sans-serif;
-            text-align: left;
-            margin-bottom: 18px;
-            font-weight: 500;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 8px;
-        }
-        .diary-page-title {
-            font-size: 1.35rem;
-            font-weight: 700;
-            text-align: center;
-            margin: 0 0 20px 0;
-            color: #111111;
-            line-height: 1.3;
-        }
-        .diary-page-content {
-            font-size: 0.95rem;
-            color: #333333;
-            line-height: 1.6;
-            white-space: pre-wrap;
-            flex-grow: 1;
-            text-align: justify;
-        }
-        .diary-page-footer {
-            margin-top: 15px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            border-top: 1px dashed #eee;
-            padding-top: 10px;
-        }
-        .page-delete-btn, .page-edit-btn {
-            border: 1px solid #dfdfdf;
+        /* PAST MEMORIES TITLE ONLY CARD */
+        .diary-title-card { 
+            background: #ffffff; 
+            padding: 14px; 
+            border-radius: 12px; 
+            border: 1px solid #dfdfdf; 
+            margin-bottom: 10px; 
             cursor: pointer;
-            font-size: 0.85rem;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-family: 'Hind Siliguri', sans-serif;
-            font-weight: bold;
             transition: 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
-        .page-delete-btn {
-            background: #fff5f5;
-            border-color: #feb2b2;
-            color: #dc2626;
+        .diary-title-card:hover {
+            border-color: #232323;
+            background: #f9f9f9;
         }
-        .page-delete-btn:hover {
-            background: #dc2626;
-            color: white;
-            border-color: #dc2626;
-        }
-        .page-edit-btn {
-            background: #f0fdf4;
-            border-color: #bbf7d0;
-            color: #16a34a;
-        }
-        .page-edit-btn:hover {
-            background: #16a34a;
-            color: white;
-            border-color: #16a34a;
-        }
+        .diary-title-text { margin: 0; color: #222222; font-size: 1rem; font-weight: 700; flex-grow: 1; }
+        .diary-date-badge { font-size: 0.75rem; color: #666; font-family: sans-serif; background: #e9e9e9; padding: 4px 8px; border-radius: 6px; margin-left: 10px; white-space: nowrap;}
+        .delete-btn { background: none; border: none; color: #dc2626; cursor: pointer; font-size: 0.95rem; margin-left: 10px; padding: 5px;}
 
+        /* DIARY & FORGOT PASSWORD MODAL */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.6); display: flex; justify-content: center;
@@ -449,6 +367,7 @@
         }
         .close-modal { position: absolute; top: 12px; right: 15px; font-size: 1.2rem; cursor: pointer; color: #666;}
 
+        /* SWEET REMINDER MODAL SPECIAL LOOK */
         .sweet-modal-header {
             font-size: 1.3rem;
             color: #d946ef;
@@ -467,6 +386,7 @@
             font-size: 0.9rem;
         }
 
+        /* CUSTOM FONT LIST SYSTEM FOR DELETION */
         .custom-font-manager {
             margin-top: 20px;
             border-top: 1px dashed #cccccc;
@@ -490,6 +410,7 @@
             background: #fff5f5;
         }
 
+        /* HELP & CREDITS BRAND NEW DESIGN SYSTEM */
         .help-tabs {
             display: flex;
             background: #e9e9e9;
@@ -564,6 +485,7 @@
             cursor: pointer;
         }
 
+        /* Settings Sub-panels Box Layout */
         .settings-panel-box {
             background: #ffffff;
             border: 1px solid #dfdfdf;
@@ -702,7 +624,7 @@
                 <div class="back-link" onclick="backToDashboard()" style="padding: 0 25px;">← Back to Menu</div>
                 
                 <div style="background: #ffffff; padding: 20px 25px; border-top-left-radius: 30px; border-top-right-radius: 30px; border: 1px solid #dfdfdf; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden;">
-                    <span id="writePanelTitle" style="color:#111; display:block; margin-bottom:10px; font-size:1rem; font-weight:bold; text-align: center;">Capture Memory</span>
+                    <span style="color:#111; display:block; margin-bottom:10px; font-size:1rem; font-weight:bold; text-align: center;">Capture Memory</span>
                     
                     <div class="input-wrapper">
                         <label>Select Date</label>
@@ -731,14 +653,15 @@
                 </div>
             </div>
 
-            <div id="listSection" class="hidden" style="padding: 10px 25px; display: flex; flex-direction: column; height: 100%;">
+            <div id="listSection" class="hidden" style="padding: 10px 25px;">
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
+                <h3 style="color: #222222; margin-bottom: 12px; font-size:1.1rem; text-align: center;">Your Past Memories</h3>
                 
-                <div class="input-wrapper" style="position: sticky; top: 0; z-index: 10; background: transparent;">
-                    <input type="text" id="diarySearchInput" placeholder="🔍 Search by title or date (e.g. 2026-06-05)..." class="input-field" style="font-family:sans-serif; margin-bottom:15px; background:white; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <div class="input-wrapper">
+                    <input type="text" id="diarySearchInput" placeholder="🔍 Search by title or date (e.g. 2026-06-05)..." class="input-field" style="font-family:sans-serif; margin-bottom:15px; background:white;">
                 </div>
 
-                <div id="diaryList" class="diary-page-container"></div>
+                <div id="diaryList"></div>
             </div>
 
             <div id="settingsSection" class="hidden" style="padding: 10px 25px;">
@@ -831,14 +754,14 @@
 
                         <h4>🔤 কাস্টম ফন্ট এক্সপোর্ট ও ম্যানেজমেন্ট</h4>
                         <ul>
-                            <li><b>নতুন ফন্ট যোগ:</b> "SETTINGS"-এর ফন্ট এক্সপোর্টার বক্সে যান। <a href="https://fonts.google.com" target="_blank" class="font-link">Google Fonts</a> থেকে আপনার প্রিয় ফন্টের CSS URL এবং সঠিক Family Name কপি করে নির্দিষ্ট বক্সে পেস্ট করে এক্সপোর্ট করুন।</li>
+                            <li><b>নতুন ফন্ট যোগ:</b> "SETTINGS"-এর ফন্ট এক্সপোর্টার বক্সে যান। <a href="https://fonts.google.com" target="_blank" class="font-link">Google Fonts</a> থেকে আপনার প্রিয় ফন্টের CSS URL এবং সঠিক Family Name copy করে নির্দিষ্ট বক্সে পেস্ট করে এক্সপোর্ট করুন।</li>
                             <li><b>ফন্ট ডিলিট:</b> এক্সপোর্ট করা ফন্ট ডিলিট করতে নিচে থাকা ফন্টটির ওপর ১ সেকেন্ড চেপে (Long Press) ধরে রাখুন।</li>
                         </ul>
 
                         <h4>🗝️ পাসওয়ার্ড ভুলে গেলে বা পরিবর্তন করতে চাইলে</h4>
                         <ul>
                             <li><b>পাসওয়ার্ড পরিবর্তন:</b> লগইন থাকা অবস্থায় "SETTINGS" সেকশনের ভেতর থেকে পুরাতন ও নতুন পাসওয়ার্ড দিয়ে পরিবর্তন করতে পারবেন।</li>
-                            <li><b>পাসওয়ার্ড ভুলে গেলে:</b> লগইন স্ক্রিনে থাকা "Forgot Password?" অপশনে ক্লিক করে আপনার রেজিস্টার্ড ইমেইল দিন। ইনবক্স অথবা স্প্যাম ফোল্ডারে পাসওয়ার্ড রিসেট করার একটি সিকিউর লিঙ্ক চলে যাবে। লিঙ্কে ক্লিক করে পাসওয়ার্ড রিসেট করে নিন।</li>
+                            <li><b>পাসওয়ার্ড ভুলে গেলে:</b> লগইন স্ক্রিনে থাকা "Forgot Password?" অপশনে ক্লিক করে আপনার রেজিস্টার্ড ইমেইল দিন। ইনবক্স অথবা স্প্যাম ফোল্ডারে পাসওয়ার্ড রিসেট করার একটি সিকিউর লিঙ্ক চলে যাবে।লিঙ্কে ক্লিক করে পাসওয়ার্ড রিসেট করে নিন।</li>
                         </ul>
                     </div>
 
@@ -866,7 +789,7 @@
                         <h4>🗝️ Password Management & Recovery</h4>
                         <ul>
                             <li><b>Change Password:</b> You can update your current credentials directly within the "SETTINGS" panel.</li>
-                            <li><b>Password Recovery:</b> Click "Forgot Password?" on the login screen, enter your email, and a password reset link will be sent to your inbox or spam folder safely. Click the link and reset your password.</li>
+                            <li><b>Password Recovery:</b> Click "Forgot Password?" on the login screen, enter your email, and a password reset link will be sent to your inbox or spam folder safely.Click the link and reset your password.</li>
                         </ul>
                     </div>
                 </div>
@@ -960,7 +883,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, sendPasswordResetEmail, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, doc, deleteDoc, updateDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, doc, deleteDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDEzag6WbUzHEHOpSRRkDChfMTwZiwM4UI",
@@ -978,42 +901,9 @@
 
         let allDiaries = []; 
         let currentUserId = null;
-        let editEntryId = null; // এডিট ট্র্যাক করার ভ্যারিয়েবল
 
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('diaryDate').value = today;
-
-        // --- CRYPTO HELPER FUNCTIONS (অটো এনক্রিপশন ও ডিক্রিপশন ইঞ্জিন) ---
-        function encryptData(text, key) {
-            return CryptoJS.AES.encrypt(text, key).toString();
-        }
-
-        function decryptData(cipherText, key) {
-            if (!cipherText) return "";
-            if (!cipherText.startsWith("U2FsdGVkX19")) { 
-                return cipherText; 
-            }
-            try {
-                const bytes = CryptoJS.AES.decrypt(cipherText, key);
-                const originalText = bytes.toString(CryptoJS.enc.Utf8);
-                return originalText || "[Decryption Error]";
-            } catch (e) {
-                return "[Encrypted Data]";
-            }
-        }
-
-        // টাইমস্ট্যাম্প থেকে হিউম্যান রিডেবল সময় ফরম্যাট মেকার (e.g. 09:30 PM)
-        function formatTime(createdAtTimestamp) {
-            if (!createdAtTimestamp) return "Just now";
-            const date = createdAtTimestamp.toDate ? createdAtTimestamp.toDate() : new Date(createdAtTimestamp);
-            let hours = date.getHours();
-            let minutes = date.getMinutes();
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12;
-            hours = hours ? hours : 12; 
-            minutes = minutes < 10 ? '0' + minutes : minutes;
-            return hours + ':' + minutes + ' ' + ampm;
-        }
 
         function setupPasswordToggle(toggleId, fieldId) {
             const toggleElement = document.getElementById(toggleId);
@@ -1052,6 +942,7 @@
             }
         };
 
+        // --- কাস্টম থিম লজিক শুরু ---
         const container = document.getElementById('mainContainer');
         const themeInput = document.getElementById('themeImageInput');
         const removeThemeBtn = document.getElementById('removeThemeBtn');
@@ -1089,6 +980,7 @@
         });
 
         applySavedTheme();
+        // --- কাস্টম থিম লজিক শেষ ---
 
         function loadSavedFonts() {
             const savedFonts = JSON.parse(localStorage.getItem('DailydockExportedFonts')) || [];
@@ -1241,9 +1133,6 @@
             if(sectionId === 'listSection') {
                 renderDiaryList(allDiaries);
             }
-            if(sectionId === 'writeSection' && !editEntryId) {
-                resetWritePanel();
-            }
         };
 
         window.backToDashboard = () => {
@@ -1256,17 +1145,7 @@
             document.getElementById('themeSettingsPage').classList.add('hidden');
             document.getElementById('passwordSettingsPage').classList.add('hidden');
             document.getElementById('dashboardSection').classList.remove('hidden');
-            resetWritePanel();
         };
-
-        function resetWritePanel() {
-            editEntryId = null;
-            document.getElementById('writePanelTitle').innerText = "Capture Memory";
-            document.getElementById('saveBtn').innerText = "💾 SAVE ENTRY";
-            document.getElementById('diaryTitle').value = '';
-            document.getElementById('diaryContent').value = '';
-            document.getElementById('diaryDate').value = today;
-        }
 
         window.openDiaryModal = (title, dateStr, content, fontFamily) => {
             const modal = document.getElementById('diaryModal');
@@ -1301,27 +1180,6 @@
                     alert("Deleted successfully!");
                 } catch (error) { alert("Error deleting entry."); }
             }
-        };
-
-        // এডিট ইঞ্জিন এক্টিভেশন লজিক
-        window.startEditEntry = (id) => {
-            const item = allDiaries.find(d => d.id === id);
-            if(!item) return;
-
-            editEntryId = id;
-            
-            document.getElementById('writePanelTitle').innerText = "Edit Memory";
-            document.getElementById('saveBtn').innerText = "🔄 UPDATE ENTRY";
-            
-            document.getElementById('diaryDate').value = item.diaryDate || today;
-            document.getElementById('fontSelector').value = item.fontFamily || "'Cinzel Decorative', serif";
-            document.getElementById('diaryTitle').value = item.title || "";
-            document.getElementById('diaryContent').value = item.content || "";
-            
-            document.getElementById('diaryContent').style.fontFamily = item.fontFamily || "'Cinzel Decorative', serif";
-            document.getElementById('diaryTitle').style.fontFamily = item.fontFamily || "'Cinzel Decorative', serif";
-
-            showSubSection('writeSection');
         };
 
         async function handleGoogleSignIn() {
@@ -1411,7 +1269,6 @@
             document.getElementById('diaryTitle').style.fontFamily = fontSelector.value;
         });
 
-        // --- সেভ এবং এডিট আপডেট হ্যান্ডলার ইন্টিগ্রেশন ---
         document.getElementById('saveBtn').addEventListener('click', async () => {
             const title = document.getElementById('diaryTitle').value.trim();
             const content = document.getElementById('diaryContent').value.trim();
@@ -1422,41 +1279,24 @@
 
             try {
                 const saveBtn = document.getElementById('saveBtn');
-                saveBtn.disabled = true; saveBtn.innerText = editEntryId ? "Updating..." : "Saving...";
+                saveBtn.disabled = true; saveBtn.innerText = "Saving...";
 
-                const cryptoKey = auth.currentUser.uid;
-                const secureTitle = encryptData(title, cryptoKey);
-                const secureContent = encryptData(content, cryptoKey);
+                await addDoc(collection(db, "diaries"), {
+                    uid: auth.currentUser.uid,
+                    title: title,
+                    content: content,
+                    fontFamily: selectedFont,
+                    diaryDate: customDate, 
+                    createdAt: serverTimestamp()
+                });
 
-                if (editEntryId) {
-                    // ডায়েরি আপডেট মেকানিজম (ফায়ারস্টোর)
-                    await updateDoc(doc(db, "diaries", editEntryId), {
-                        title: secureTitle,
-                        content: secureContent,
-                        fontFamily: selectedFont,
-                        diaryDate: customDate
-                    });
-                    alert('Memory updated successfully! 🔄');
-                } else {
-                    // নতুন ডায়েরি ক্রিয়েট মেকানিজম
-                    await addDoc(collection(db, "diaries"), {
-                        uid: auth.currentUser.uid,
-                        title: secureTitle,
-                        content: secureContent,
-                        fontFamily: selectedFont,
-                        diaryDate: customDate, 
-                        createdAt: serverTimestamp()
-                    });
-                    alert('Saved securely! ✨');
-                }
-
-                resetWritePanel();
+                document.getElementById('diaryTitle').value = '';
+                document.getElementById('diaryContent').value = '';
+                document.getElementById('diaryDate').value = today;
+                alert('Saved securely! ✨');
                 backToDashboard();
-            } catch (error) { alert('Error processing entry.'); }
-            finally { 
-                document.getElementById('saveBtn').disabled = false; 
-                document.getElementById('saveBtn').innerText = "💾 SAVE ENTRY"; 
-            }
+            } catch (error) { alert('Error saving.'); }
+            finally { document.getElementById('saveBtn').disabled = false; document.getElementById('saveBtn').innerText = "💾 SAVE ENTRY"; }
         });
 
         let isFirstLoad = true; 
@@ -1465,19 +1305,8 @@
 
             onSnapshot(q, (snapshot) => {
                 allDiaries = [];
-                const cryptoKey = uid;
-
                 snapshot.forEach(doc => {
-                    const rawData = doc.data();
-                    const decryptedTitle = decryptData(rawData.title, cryptoKey);
-                    const decryptedContent = decryptData(rawData.content, cryptoKey);
-
-                    allDiaries.push({ 
-                        id: doc.id, 
-                        ...rawData,
-                        title: decryptedTitle,
-                        content: decryptedContent
-                    });
+                    allDiaries.push({ id: doc.id, ...doc.data() });
                 });
                 
                 allDiaries.sort((a, b) => {
@@ -1502,7 +1331,6 @@
             });
         }
 
-        // রেন্ডার ফাংশনে তারিখ, সময় এবং এডিট বাটন অ্যাড
         function renderDiaryList(diariesArray) {
             const diaryList = document.getElementById('diaryList');
             if(!diaryList) return;
@@ -1510,47 +1338,34 @@
             diaryList.innerHTML = '';
             
             if (!diariesArray || diariesArray.length === 0) {
-                diaryList.innerHTML = `<p style="text-align:center; color:#666; font-style:italic; font-family:'Hind Siliguri', sans-serif; font-size:0.85rem; padding: 20px 0;">কোনো ডায়েরি পাওয়া যায়নি। নতুন ডায়েরি লিখুন</p>`;
+                diaryList.innerHTML = `<p style="text-align:center; color:#666; font-style:italic; font-family:'Hind Siliguri', sans-serif; font-size:0.85rem; padding: 20px 0;">কোনো ডায়েরি পাওয়া যায়নি।নতুন ডায়েরি লিখুন</p>`;
                 return;
             }
 
             diariesArray.forEach((data) => {
-                const page = document.createElement('div');
-                page.className = "diary-pdf-page";
-                page.style.fontFamily = data.fontFamily || "'Cinzel Decorative', serif";
+                const card = document.createElement('div');
+                card.className = "diary-title-card";
+                card.style.fontFamily = data.fontFamily || "'Cinzel Decorative', serif";
                 
-                const timeString = formatTime(data.createdAt);
-
-                page.innerHTML = `
-                    <div class="diary-page-date">${data.diaryDate || ""}</div>
-                    <div class="diary-page-time">🕒 ${timeString}</div>
-                    <h2 class="diary-page-title"></h2>
-                    <div class="diary-page-content"></div>
-                    <div class="diary-page-footer">
-                        <button class="page-edit-btn">Edit</button>
-                        <button class="page-delete-btn">Delete Page</button>
-                    </div>
+                card.innerHTML = `
+                    <h4 class="diary-title-text"></h4>
+                    <span class="diary-date-badge"></span>
+                    <button class="delete-btn">🗑️</button>
                 `;
 
-                page.querySelector('.diary-page-title').innerText = data.title || "Untitled";
-                page.querySelector('.diary-page-content').innerText = data.content || "";
+                card.querySelector('.diary-title-text').innerText = data.title || "Untitled";
+                card.querySelector('.diary-date-badge').innerText = data.diaryDate || "";
 
-                // পুরো পেজে ক্লিক করলে মডাল ভিউ দেখাবে (বাটন ছাড়া)
-                page.addEventListener('click', () => {
-                    openDiaryModal(data.title, data.diaryDate + " (" + timeString + ")", data.content, data.fontFamily);
+                card.addEventListener('click', () => {
+                    openDiaryModal(data.title || "Untitled", data.diaryDate || "", data.content || "", data.fontFamily || "");
                 });
 
-                page.querySelector('.page-edit-btn').addEventListener('click', (event) => {
-                    event.stopPropagation(); // মডাল ওপেন হওয়া আটকাবে
-                    startEditEntry(data.id);
-                });
-
-                page.querySelector('.page-delete-btn').addEventListener('click', (event) => {
+                card.querySelector('.delete-btn').addEventListener('click', (event) => {
                     event.stopPropagation();
                     deleteEntry(data.id);
                 });
 
-                diaryList.appendChild(page);
+                diaryList.appendChild(card);
             });
         }
 
@@ -1602,13 +1417,16 @@
                 updateBtn.disabled = true; updateBtn.innerText = "Processing...";
 
                 const credential = EmailAuthProvider.credential(user.email, oldPassword);
+
                 await reauthenticateWithCredential(user, credential);
+
                 await updatePassword(user, newPassword);
 
-                alert("পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে! নিরাপত্তা নিশ্চিত করতে ও পুরাতন পাসওয়ার্ড বাতিল করতে应用程序টি এখন রিলিজ (Sign Out) হবে। নতুন পাসওয়ার্ড দিয়ে আবার লগইন করুন। ✨");
+                alert("পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে! নিরাপত্তা নিশ্চিত করতে ও পুরাতন পাসওয়ার্ড বাতিল করতে অ্যাপ্লিকেশনটি এখন রিলিজ (Sign Out) হবে। নতুন পাসওয়ার্ড দিয়ে আবার লগইন করুন। ✨");
                 
                 document.getElementById('oldPasswordInput').value = "";
                 document.getElementById('newPasswordInput').value = "";
+                
                 signOut(auth);
 
             } catch (error) {
@@ -1624,4 +1442,4 @@
         });
     </script>
 </body>
-                    </html>
+    </html>
