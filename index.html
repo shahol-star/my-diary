@@ -331,27 +331,75 @@
         .text-red:hover { background: #dc2626; color: white; }
         .back-link { color: #1e40af; text-decoration: none; display: inline-block; margin-bottom: 15px; cursor: pointer; font-size: 0.9rem; font-weight: bold;}
         
-        /* PAST MEMORIES TITLE ONLY CARD */
-        .diary-title-card { 
-            background: #ffffff; 
-            padding: 14px; 
-            border-radius: 12px; 
-            border: 1px solid #dfdfdf; 
-            margin-bottom: 10px; 
-            cursor: pointer;
-            transition: 0.2s;
+        /* NEW PDF PAGE DESIGN FOR DIARY ENTRIES */
+        .diary-page-container {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            flex-direction: column;
+            gap: 25px;
+            padding-bottom: 30px;
         }
-        .diary-title-card:hover {
-            border-color: #232323;
-            background: #f9f9f9;
+        .diary-pdf-page {
+            background: #ffffff;
+            border: 1px solid #c0c0c0;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            border-radius: 4px;
+            padding: 30px 25px;
+            min-height: 400px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s;
         }
-        .diary-title-text { margin: 0; color: #222222; font-size: 1rem; font-weight: 700; flex-grow: 1; }
-        .diary-date-badge { font-size: 0.75rem; color: #666; font-family: sans-serif; background: #e9e9e9; padding: 4px 8px; border-radius: 6px; margin-left: 10px; white-space: nowrap;}
-        .delete-btn { background: none; border: none; color: #dc2626; cursor: pointer; font-size: 0.95rem; margin-left: 10px; padding: 5px;}
+        .diary-page-date {
+            font-size: 0.85rem;
+            color: #555555;
+            font-family: sans-serif;
+            text-align: left;
+            margin-bottom: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .diary-page-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            text-align: center;
+            margin: 0 0 20px 0;
+            color: #111111;
+            line-height: 1.3;
+        }
+        .diary-page-content {
+            font-size: 0.95rem;
+            color: #333333;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            flex-grow: 1;
+            text-align: justify;
+        }
+        .diary-page-footer {
+            margin-top: 15px;
+            display: flex;
+            justify-content: flex-end;
+            border-top: 1px dashed #eee;
+            padding-top: 10px;
+        }
+        .page-delete-btn {
+            background: #fff5f5;
+            border: 1px solid #feb2b2;
+            color: #dc2626;
+            cursor: pointer;
+            font-size: 0.85rem;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .page-delete-btn:hover {
+            background: #dc2626;
+            color: white;
+            border-color: #dc2626;
+        }
 
         /* DIARY & FORGOT PASSWORD MODAL */
         .modal {
@@ -653,15 +701,14 @@
                 </div>
             </div>
 
-            <div id="listSection" class="hidden" style="padding: 10px 25px;">
+            <div id="listSection" class="hidden" style="padding: 10px 25px; display: flex; flex-direction: column; height: 100%;">
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
-                <h3 style="color: #22; margin-bottom: 12px; font-size:1.1rem; text-align: center;">Your Past Memories</h3>
                 
-                <div class="input-wrapper">
-                    <input type="text" id="diarySearchInput" placeholder="🔍 Search by title or date (e.g. 2026-06-05)..." class="input-field" style="font-family:sans-serif; margin-bottom:15px; background:white;">
+                <div class="input-wrapper" style="position: sticky; top: 0; z-index: 10; background: transparent;">
+                    <input type="text" id="diarySearchInput" placeholder="🔍 Search by title or date (e.g. 2026-06-05)..." class="input-field" style="font-family:sans-serif; margin-bottom:15px; background:white; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
                 </div>
 
-                <div id="diaryList"></div>
+                <div id="diaryList" class="diary-page-container"></div>
             </div>
 
             <div id="settingsSection" class="hidden" style="padding: 10px 25px;">
@@ -1125,7 +1172,6 @@
             document.getElementById('helpSection').classList.add('hidden');
             document.getElementById('creditsSection').classList.add('hidden');
             
-            // নতুন সেটিংস সাব-পেজগুলোর আইডি হাইড করা নিশ্চিত করা
             document.getElementById('fontSettingsPage').classList.add('hidden');
             document.getElementById('themeSettingsPage').classList.add('hidden');
             document.getElementById('passwordSettingsPage').classList.add('hidden');
@@ -1332,6 +1378,7 @@
             });
         }
 
+        // MODIFIED RENDER FUNCTION FOR PDF-BOOK SYSTEM
         function renderDiaryList(diariesArray) {
             const diaryList = document.getElementById('diaryList');
             if(!diaryList) return;
@@ -1339,34 +1386,37 @@
             diaryList.innerHTML = '';
             
             if (!diariesArray || diariesArray.length === 0) {
-                diaryList.innerHTML = `<p style="text-align:center; color:#666; font-style:italic; font-family:'Hind Siliguri', sans-serif; font-size:0.85rem; padding: 20px 0;">কোনো ডায়েরি পাওয়া যায়নি।নতুন ডায়েরি লিখুন</p>`;
+                diaryList.innerHTML = `<p style="text-align:center; color:#666; font-style:italic; font-family:'Hind Siliguri', sans-serif; font-size:0.85rem; padding: 20px 0;">কোনো ডায়েরি পাওয়া যায়নি। নতুন ডায়েরি লিখুন</p>`;
                 return;
             }
 
             diariesArray.forEach((data) => {
-                const card = document.createElement('div');
-                card.className = "diary-title-card";
-                card.style.fontFamily = data.fontFamily || "'Cinzel Decorative', serif";
+                // Create a single book page
+                const page = document.createElement('div');
+                page.className = "diary-pdf-page";
+                page.style.fontFamily = data.fontFamily || "'Cinzel Decorative', serif";
                 
-                card.innerHTML = `
-                    <h4 class="diary-title-text"></h4>
-                    <span class="diary-date-badge"></span>
-                    <button class="delete-btn">🗑️</button>
+                // Formulate HTML inner content as requested
+                page.innerHTML = `
+                    <div class="diary-page-date">${data.diaryDate || ""}</div>
+                    <h2 class="diary-page-title"></h2>
+                    <div class="diary-page-content"></div>
+                    <div class="diary-page-footer">
+                        <button class="page-delete-btn">🗑️ Delete Page</button>
+                    </div>
                 `;
 
-                card.querySelector('.diary-title-text').innerText = data.title || "Untitled";
-                card.querySelector('.diary-date-badge').innerText = data.diaryDate || "";
+                // Secure assignment of texts to prevent HTML breaks
+                page.querySelector('.diary-page-title').innerText = data.title || "Untitled";
+                page.querySelector('.diary-page-content').innerText = data.content || "";
 
-                card.addEventListener('click', () => {
-                    openDiaryModal(data.title || "Untitled", data.diaryDate || "", data.content || "", data.fontFamily || "");
-                });
-
-                card.querySelector('.delete-btn').addEventListener('click', (event) => {
+                // Delete handle
+                page.querySelector('.page-delete-btn').addEventListener('click', (event) => {
                     event.stopPropagation();
                     deleteEntry(data.id);
                 });
 
-                diaryList.appendChild(card);
+                diaryList.appendChild(page);
             });
         }
 
@@ -1443,4 +1493,4 @@
         });
     </script>
 </body>
-                </html>
+    </html>
