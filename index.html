@@ -1151,13 +1151,18 @@
             if(sectionId === 'listSection') {
                 renderDiaryList(allDiaries);
             }
-            if(sectionId === 'writeSection' && !editingDiaryId) {
-                // Reset writing panel only if we're creating a fresh entry
-                document.getElementById('writePanelPurpose').innerText = "Capture Memory";
-                document.getElementById('saveBtn').innerText = "💾 SAVE ENTRY";
-                document.getElementById('diaryTitle').value = '';
-                document.getElementById('diaryContent').value = '';
-                document.getElementById('diaryDate').value = today;
+            if(sectionId === 'writeSection') {
+                if (!editingDiaryId) {
+                    // Reset writing panel for a completely fresh entry
+                    document.getElementById('writePanelPurpose').innerText = "Capture Memory";
+                    document.getElementById('saveBtn').innerText = "💾 SAVE ENTRY";
+                    document.getElementById('diaryTitle').value = '';
+                    document.getElementById('diaryContent').value = '';
+                    document.getElementById('diaryDate').value = today;
+                    const defaultFont = document.getElementById('fontSelector').value;
+                    document.getElementById('diaryContent').style.fontFamily = defaultFont;
+                    document.getElementById('diaryTitle').style.fontFamily = defaultFont;
+                }
             }
         };
 
@@ -1543,4 +1548,4 @@
         });
     </script>
 </body>
-    </html>
+                        </html>
