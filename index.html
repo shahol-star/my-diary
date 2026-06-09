@@ -370,7 +370,23 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            overflow: hidden;
         }
+
+        /* Very low opacity white overlay for continuous text readability over diary images */
+        .diary-pdf-page::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255, 255, 255, 0.15);
+            z-index: -1;
+            pointer-events: none;
+        }
+
         .pdf-date {
             font-size: 1.4rem;
             font-weight: bold;
@@ -416,7 +432,7 @@
             font-weight: bold;
             cursor: pointer;
             padding: 5px 8px;
-            font-family: sans-serif; /* অ্যাপের ডিফল্ট বা সিস্টেম ফন্ট ব্যবহার নিশ্চিত করতে পরিবর্তন */
+            font-family: 'Hind Siliguri', sans-serif;
             transition: 0.2s;
         }
         .pdf-edit-btn { color: #1e40af; }
@@ -711,6 +727,11 @@
                     </div>
 
                     <div class="input-wrapper" style="margin-bottom: 10px;">
+                        <label>Select Background Image (Optional)</label>
+                        <input type="file" id="diaryImageInput" accept="image/*" class="input-field" style="background:#f3f3f3; padding: 6px;">
+                    </div>
+
+                    <div class="input-wrapper" style="margin-bottom: 10px;">
                         <label>Title</label>
                         <input type="text" id="diaryTitle" placeholder="Title..." class="input-field" style="background:#f3f3f3;">
                     </div>
@@ -812,27 +833,27 @@
                         <h4>📝 নতুন ডায়েরি লেখা ও সংরক্ষণ</h4>
                         <ul>
                             <li><b>ধাপ ১:</b> মেইন মেনু থেকে "WRITE NEW DIARY" অপশনে যান।</li>
-                            <li><b>ধাপ ২:</b> ক্যালেন্ডার থেকে নির্দিষ্ট তারিখ এবং আপনার লেখার ভাষা অনুযায়ী ফন্ট (ইংরেজি বা বাংলা) সিলেক্ট করুন।</li>
-                            <li><b>ধাপ ৩:</b> ডায়েরির শিরোনাম (Title) এবং বিস্তারিত মনের কথা (Content) লিখে নিচে থাকা "💾 SAVE ENTRY" বাটনে ক্লিক করুন। আপনার স্মৃতিটি ক্লাউডে সংরক্ষিত হয়ে যাবে।</li>
+                            <li><b>ধাপ ২:</b> ক্যালেন্ডার থেকে নির্দিষ্ট তারিখ এবং লেখার ভাষা অনুযায়ী ফন্ট সিলেক্ট করুন। নিজের ছবি ব্যাকগ্রাউন্ডে দিতে গ্যালারি থেকে ইমেজ পছন্দ করতে পারেন।</li>
+                            <li><b>ধাপ ৩:</b> ডায়েরির শিরোনাম (Title) এবং বিস্তারিত মনের কথা (Content) লিখে নিচে থাকা "💾 SAVE ENTRY" বাটনে ক্লিক করুন।</li>
                         </ul>
 
                         <h4>🎨 কাস্টম ব্যাকগ্রাউন্ড থিম সেটআপ</h4>
                         <ul>
                             <li><b>ধাপ ১:</b> "SETTINGS"-এ যান এবং নির্দিষ্ট "Custom Theme" প্যানেলটি দেখুন।</li>
-                            <li><b>ধাপ ২:</b> ইনপুট ফিল্ডে ক্লিক করে আপনার ফোনের গ্যালারি থেকে যেকোনো পছন্দের ছবি সিলেক্ট করুন। ছবি সিলেক্ট করার সাথে সাথেই সেটি অ্যাপের ব্যাকগ্রাউন্ড থিম হিসেবে স্থায়ীভাবে সেট হয়ে যাবে।</li>
+                            <li><b>ধাপ ২:</b> ইনপুট ফিল্ডে ক্লিক করে আপনার ফোনের গ্যালারি থেকে যেকোনো পছন্দের ছবি সিলেক্ট করুন।</li>
                             <li><b>থিম রিমুভ:</b> থিম মুছে আগের ডিফল্ট ব্যাকগ্রাউন্ডে ফিরতে "❌ REMOVE THEME" বাটনে ক্লিক করুন।</li>
                         </ul>
 
                         <h4>🔤 কাস্টম ফন্ট এক্সপোর্ট ও ম্যানেজমেন্ট</h4>
                         <ul>
-                            <li><b>নতুন ফন্ট যোগ:</b> "SETTINGS"-এর ফন্ট এক্সপোর্টার বক্সে যান। <a href="https://fonts.google.com" target="_blank" class="font-link">Google Fonts</a> থেকে আপনার প্রিয় ফন্টের CSS URL এবং সঠিক Family Name kopi করে নির্দিষ্ট বক্সে পেস্ট করে এক্সপোর্ট করুন।</li>
+                            <li><b>নতুন ফন্ট যোগ:</b> "SETTINGS"-এর ফন্ট এক্সপোর্টার বক্সে যান। <a href="https://fonts.google.com" target="_blank" class="font-link">Google Fonts</a> থেকে আপনার প্রিয় ফন্টের CSS URL এবং সঠিক Family Name কপি করে নির্দিষ্ট বক্সে পেস্ট করে এক্সপোর্ট করুন।</li>
                             <li><b>ফন্ট ডিলিট:</b> এক্সপোর্ট করা ফন্ট ডিলিট করতে নিচে থাকা ফন্টটির ওপর ১ সেকেন্ড চেপে (Long Press) ধরে রাখুন।</li>
                         </ul>
 
                         <h4>🗝️ পাসওয়ার্ড ভুলে গেলে বা পরিবর্তন করতে চাইলে</h4>
                         <ul>
                             <li><b>পাসওয়ার্ড পরিবর্তন:</b> লগইন থাকা অবস্থায় "SETTINGS" সেকশনের ভেতর থেকে পুরাতন ও নতুন পাসওয়ার্ড দিয়ে পরিবর্তন করতে পারবেন।</li>
-                            <li><b>পাসওয়ার্ড ভুলে গেলে:</b> লগইন স্ক্রিনে থাকা "Forgot Password?" অপশনে ক্লিক করে আপনার রেজিস্টার্ড ইমেইল দিন। ইনবক্স অথবা স্প্যাম ফোল্ডারে পাসওয়ার্ড রিসেট করার একটি সিকিউর লিঙ্ক চলে যাবে।লিঙ্কে ক্লিক করে পাসওয়ার্ড রিসেট করে নিন।</li>
+                            <li><b>পাসওয়ার্ড ভুলে গেলে:</b> লগইন স্ক্রিনে থাকা "Forgot Password?" অপশনে ক্লিক করে আপনার রেজিস্টার্ড ইমেইল দিন।</li>
                         </ul>
                     </div>
 
@@ -840,15 +861,15 @@
                         <h4>📝 Writing & Saving a New Diary</h4>
                         <ul>
                             <li><b>Step 1:</b> Navigate to "WRITE NEW DIARY" from the Main Menu.</li>
-                            <li><b>Step 2:</b> Select the specific date and choose your preferred language font from the dropdown.</li>
-                            <li><b>Step 3:</b> Enter a Title and Content, then click the "💾 SAVE ENTRY" button. Your memory will be securely synced to the cloud.</li>
+                            <li><b>Step 2:</b> Select the specific date, choose your preferred language font, and optionally upload a background image from your gallery.</li>
+                            <li><b>Step 3:</b> Enter a Title and Content, then click the "💾 SAVE ENTRY" button.</li>
                         </ul>
 
                         <h4>🎨 Custom Background Theme Setup</h4>
                         <ul>
                             <li><b>Step 1:</b> Go to "SETTINGS" and locate the "Custom Theme" panel.</li>
-                            <li><b>Step 2:</b> Click the file field and pick any background image from your gallery. It will instantly apply as your permanent app theme.</li>
-                            <li><b>Remove Theme:</b> Click the "❌ REMOVE THEME" button to roll back to the default minimalist view.</li>
+                            <li><b>Step 2:</b> Click the file field and pick any background image from your gallery.</li>
+                            <li><b>Remove Theme:</b> Click the "❌ REMOVE THEME" button to roll back to the default view.</li>
                         </ul>
 
                         <h4>🔤 Custom Font Exporter & Deletion</h4>
@@ -860,7 +881,7 @@
                         <h4>🗝️ Password Management & Recovery</h4>
                         <ul>
                             <li><b>Change Password:</b> You can update your current credentials directly within the "SETTINGS" panel.</li>
-                            <li><b>Password Recovery:</b> Click "Forgot Password?" on the login screen, enter your email, and a password reset link will be sent to your inbox or spam folder safely.Click the link and reset your password.</li>
+                            <li><b>Password Recovery:</b> Click "Forgot Password?" on the login screen, enter your email, and a password reset link will be sent to your inbox.</li>
                         </ul>
                     </div>
                 </div>
@@ -887,23 +908,21 @@
                     <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
                         <span class="credit-label">PURPOSE</span>
                         <span class="credit-value" style="font-family: sans-serif; text-align: center; font-weight: normal; font-size: 0.85rem; color: #444; line-height: 1.5; max-width: 90%;">
-                            DailyDock was created to provide a private and comfortable space where people can record their daily thoughts, experiences, memories, and emotions. Every moment, whether big or small, deserves to be remembered, and DailyDock aims to preserve those moments in a simple and meaningful way.
+                            DailyDock was created to provide a private and comfortable space where people can record their daily thoughts, experiences, memories, and emotions.
                         </span>
                     </div>
                     
                     <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
                         <span class="credit-label">MISSION</span>
                         <span class="credit-value" style="font-family: sans-serif; text-align: center; font-weight: normal; font-size: 0.85rem; color: #444; line-height: 1.5; max-width: 90%;">
-                            Our mission is to help people capture their life's journey one page at a time. We believe that personal memories, ideas, and emotions are valuable, and DailyDock exists to make journaling easy, accessible, and enjoyable for everyone.
+                            Our mission is to help people capture their life's journey one page at a time.
                         </span>
                     </div>
                     
                     <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
                         <span class="credit-label">SPECIAL THANKS</span>
                         <span class="credit-value" style="font-family: sans-serif; text-align: center; font-weight: normal; font-size: 0.85rem; color: #444; line-height: 1.5; max-width: 90%;">
-                            Special thanks to the incredible advancements in Artificial Intelligence that helped inspire, guide, and shape the development of this project. We are grateful for the AI technologies that assisted with problem-solving, learning, creativity, and innovation throughout the journey of building DailyDock.
-                            <br><br>
-                            Thank you to everyone who uses DailyDock and trusts us with their memories.
+                            Special thanks to the incredible advancements in Artificial Intelligence that helped inspire, guide, and shape the development of this project.
                         </span>
                     </div>
                     
@@ -964,6 +983,7 @@
         let allDiaries = []; 
         let currentUserId = null;
         let editingDiaryId = null; 
+        let temporaryBase64Image = ""; // Holds the selected diary image base64 data
 
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('diaryDate').value = today;
@@ -1005,7 +1025,7 @@
             }
         };
 
-        // --- কাস্টম থিম লজিক ---
+        // --- Custom Theme Setup ---
         const container = document.getElementById('mainContainer');
         const themeInput = document.getElementById('themeImageInput');
         const removeThemeBtn = document.getElementById('removeThemeBtn');
@@ -1044,6 +1064,19 @@
 
         applySavedTheme();
 
+        // --- Handle Diary Page Specific Custom Image Converter ---
+        const diaryImageInput = document.getElementById('diaryImageInput');
+        diaryImageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    temporaryBase64Image = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
         function loadSavedFonts() {
             const savedFonts = JSON.parse(localStorage.getItem('DailydockExportedFonts')) || [];
             const fontSelector = document.getElementById('fontSelector');
@@ -1080,16 +1113,12 @@
                 fontCard.innerText = font.name;
 
                 let holdTimer;
-                
                 const onHoldStart = () => {
                     holdTimer = setTimeout(() => {
                         triggerFontDelete(font.name, index);
                     }, 1000);
                 };
-
-                const onHoldEnd = () => {
-                    clearTimeout(holdTimer);
-                };
+                const onHoldEnd = () => { clearTimeout(holdTimer); };
 
                 fontCard.addEventListener('mousedown', onHoldStart);
                 fontCard.addEventListener('touchstart', onHoldStart);
@@ -1105,14 +1134,12 @@
         function triggerFontDelete(fontName, arrayIndex) {
             if(confirm(`Do you want to completely delete "${fontName}" font? 🗑️`)){
                 let savedFonts = JSON.parse(localStorage.getItem('DailydockExportedFonts')) || [];
-                
                 const linkId = `injected-font-${fontName.replace(/\s+/g, '-')}`;
                 const linkElement = document.getElementById(linkId);
                 if(linkElement) linkElement.remove();
 
                 savedFonts.splice(arrayIndex, 1);
                 localStorage.setItem('DailydockExportedFonts', JSON.stringify(savedFonts));
-                
                 alert(`"${fontName}" font deleted successfully!`);
                 loadSavedFonts();
             }
@@ -1122,10 +1149,7 @@
 
         function setupDailyReminder() {
             if (!("Notification" in window)) return;
-
-            if (Notification.permission === "default") {
-                Notification.requestPermission();
-            }
+            if (Notification.permission === "default") { Notification.requestPermission(); }
 
             setInterval(() => {
                 const now = new Date();
@@ -1192,13 +1216,9 @@
             document.getElementById('passwordSettingsPage').classList.add('hidden');
             
             document.getElementById(sectionId).classList.remove('hidden');
-            if(sectionId === 'listSection') {
-                renderDiaryList(allDiaries);
-            }
+            if(sectionId === 'listSection') { renderDiaryList(allDiaries); }
             if(sectionId === 'writeSection') {
-                if (!editingDiaryId) {
-                    clearWriteForm();
-                }
+                if (!editingDiaryId) { clearWriteForm(); }
             }
         };
 
@@ -1207,6 +1227,8 @@
             document.getElementById('saveBtn').innerText = "💾 SAVE ENTRY";
             document.getElementById('diaryTitle').value = '';
             document.getElementById('diaryContent').value = '';
+            document.getElementById('diaryImageInput').value = '';
+            temporaryBase64Image = ""; 
             document.getElementById('diaryDate').value = today;
             const defaultFont = document.getElementById('fontSelector').value;
             document.getElementById('diaryContent').style.fontFamily = defaultFont;
@@ -1234,20 +1256,19 @@
                 const minutes = dateObj.getMinutes().toString().padStart(2, '0');
                 const ampm = hours >= 12 ? 'PM' : 'AM';
                 hours = hours % 12;
-                hours = hours ? hours : 12; 
+                hours = hours ? hours : 12;
                 return `${hours}:${minutes} ${ampm}`;
-            } catch(e) {
-                return "";
-            }
+            } catch(e) { return ""; }
         }
 
-        function initiateDiaryEdit(id, title, dateStr, content, fontFamily) {
+        function initiateDiaryEdit(id, title, dateStr, content, fontFamily, existingImg) {
             editingDiaryId = id; 
-            
             document.getElementById('writePanelPurpose').innerText = "Edit Your Memory";
             document.getElementById('diaryTitle').value = title;
             document.getElementById('diaryContent').value = content;
             document.getElementById('diaryDate').value = dateStr;
+            document.getElementById('diaryImageInput').value = '';
+            temporaryBase64Image = existingImg || ""; 
             
             const selector = document.getElementById('fontSelector');
             if([...selector.options].some(opt => opt.value === fontFamily)) {
@@ -1256,7 +1277,6 @@
             
             document.getElementById('diaryContent').style.fontFamily = fontFamily;
             document.getElementById('diaryTitle').style.fontFamily = fontFamily;
-            
             document.getElementById('saveBtn').innerText = "🔄 UPDATE ENTRY";
             showSubSection('writeSection');
         }
@@ -1271,11 +1291,7 @@
         };
 
         async function handleGoogleSignIn() {
-            try {
-                await signInWithPopup(auth, googleProvider);
-            } catch (error) { 
-                alert('Google Sign-in failed: ' + error.message); 
-            }
+            try { await signInWithPopup(auth, googleProvider); } catch (error) { alert('Google Sign-in failed: ' + error.message); }
         }
 
         document.getElementById('welcomeGoogleBtn').addEventListener('click', handleGoogleSignIn);
@@ -1326,9 +1342,7 @@
             const password = document.getElementById('loginPassword').value;
             if(!email || !password) return alert('Please fill in all fields!');
 
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-            } catch (error) { alert('Login failed: ' + error.message); }
+            try { await signInWithEmailAndPassword(auth, email, password); } catch (error) { alert('Login failed: ' + error.message); }
         });
 
         document.getElementById('resetPasswordBtn').addEventListener('click', async () => {
@@ -1341,9 +1355,7 @@
                 await sendPasswordResetEmail(auth, email);
                 alert('পাসওয়ার্ড রিসেট করার লিঙ্কটি আপনার ইমেইলে পাঠানো হয়েছে! দয়া করে আপনার ইনবক্স অথবা স্প্যাম (Spam) ফোল্ডার চেক করুন। ✨');
                 closeForgotModal();
-            } catch (error) {
-                alert('Error: ' + error.message);
-            } finally {
+            } catch (error) { alert('Error: ' + error.message); } finally {
                 const btn = document.getElementById('resetPasswordBtn');
                 btn.disabled = false; btn.innerText = "Send Reset Link";
             }
@@ -1376,6 +1388,7 @@
                         content: content,
                         fontFamily: selectedFont,
                         diaryDate: customDate,
+                        diaryImage: temporaryBase64Image, // Save updated image
                         lastEditedAt: serverTimestamp()
                     });
                     alert('Memory updated securely! 🔄✨');
@@ -1386,6 +1399,7 @@
                         content: content,
                         fontFamily: selectedFont,
                         diaryDate: customDate, 
+                        diaryImage: temporaryBase64Image, // Save initial custom background image
                         createdAt: serverTimestamp()
                     });
                     alert('Saved securely! ✨');
@@ -1409,16 +1423,12 @@
 
             onSnapshot(q, (snapshot) => {
                 allDiaries = [];
-                snapshot.forEach(doc => {
-                    allDiaries.push({ id: doc.id, ...doc.data() });
-                });
+                snapshot.forEach(doc => { allDiaries.push({ id: doc.id, ...doc.data() }); });
                 
                 allDiaries.sort((a, b) => {
                     const dateA = a.diaryDate || "";
                     const dateB = b.diaryDate || "";
-                    if (dateB !== dateA) {
-                        return dateB.localeCompare(dateA);
-                    }
+                    if (dateB !== dateA) { return dateB.localeCompare(dateA); }
                     const timeA = a.createdAt ? a.createdAt.toMillis() : 0;
                     const timeB = b.createdAt ? b.createdAt.toMillis() : 0;
                     return timeB - timeA;
@@ -1430,19 +1440,16 @@
                     checkOnThisDayMemories(allDiaries);
                     isFirstLoad = false;
                 }
-            }, (error) => {
-                console.error("Firestore Snapshot Error: ", error);
-            });
+            }, (error) => { console.error("Firestore Snapshot Error: ", error); });
         }
 
         function renderDiaryList(diariesArray) {
             const diaryList = document.getElementById('diaryList');
             if(!diaryList) return;
-            
             diaryList.innerHTML = '';
             
             if (!diariesArray || diariesArray.length === 0) {
-                diaryList.innerHTML = `<p style="text-align:center; color:#666; font-style:italic; font-family:'Hind Siliguri', sans-serif; font-size:0.85rem; padding: 20px 0;">কোনো ডায়েরি পাওয়া যায়নি।নতুন ডায়েরি লিখুন</p>`;
+                diaryList.innerHTML = `<p style="text-align:center; color:#666; font-style:italic; font-family:'Hind Siliguri', sans-serif; font-size:0.85rem; padding: 20px 0;">কোনো ডায়েরি পাওয়া যায়নি। নতুন ডায়েরি লিখুন</p>`;
                 return;
             }
 
@@ -1450,6 +1457,13 @@
                 const page = document.createElement('div');
                 page.className = "diary-pdf-page";
                 page.style.fontFamily = data.fontFamily || "'Cinzel Decorative', serif";
+                
+                // If a background image was uploaded for this entry, safely apply it
+                if(data.diaryImage) {
+                    page.style.backgroundImage = `url(${data.diaryImage})`;
+                } else {
+                    page.style.backgroundImage = 'none';
+                }
                 
                 const formattedTime = formatFirebaseTime(data.createdAt) || "Recent Cloud Sync";
 
@@ -1467,13 +1481,10 @@
                 `;
 
                 page.querySelector('.pdf-edit-btn').addEventListener('click', () => {
-                    initiateDiaryEdit(data.id, data.title || "Untitled", data.diaryDate || "", data.content || "", data.fontFamily || "");
+                    initiateDiaryEdit(data.id, data.title || "Untitled", data.diaryDate || "", data.content || "", data.fontFamily || "", data.diaryImage || "");
                 });
 
-                page.querySelector('.pdf-delete-btn').addEventListener('click', () => {
-                    deleteEntry(data.id);
-                });
-
+                page.querySelector('.pdf-delete-btn').addEventListener('click', () => { deleteEntry(data.id); });
                 diaryList.appendChild(page);
             });
         }
@@ -1511,48 +1522,34 @@
             document.getElementById('forgotModal').classList.remove('hidden');
         };
 
-        window.closeForgotModal = () => {
-            document.getElementById('forgotModal').classList.add('hidden');
-        };
+        window.closeForgotModal = () => { document.getElementById('forgotModal').classList.add('hidden'); };
 
         document.getElementById('updatePasswordBtn').addEventListener('click', async () => {
             const oldPassword = document.getElementById('oldPasswordInput').value;
             const newPassword = document.getElementById('newPasswordInput').value;
             const user = auth.currentUser;
 
-            if (!oldPassword || !newPassword) {
-                return alert('দয়া করে পুরাতন এবং নতুন উভয় পাসওয়ার্ড ফিল্ড পূরণ করুন!');
-            }
-            if (newPassword.length < 6) {
-                return alert('নতুন পাসওয়ার্ডটি কমপক্ষে ৬ ক্যারেক্টারের হতে হবে!');
-            }
-            if (!user || !user.email) {
-                return alert('ইউজার সেশন পাওয়া যায়নি। দয়া করে আবার লগইন করুন।');
-            }
+            if (!oldPassword || !newPassword) { return alert('দয়া করে পুরাতন এবং নতুন উভয় পাসওয়ার্ড ফিল্ড পূরণ করুন!'); }
+            if (newPassword.length < 6) { return alert('নতুন পাসওয়ার্ডটি কমপক্ষে ৬ ক্যারেক্টারের হতে হবে!'); }
+            if (!user || !user.email) { return alert('ইউজার সেশন পাওয়া যায়নি। দয়া করে আবার লগইন করুন।'); }
 
             try {
                 const updateBtn = document.getElementById('updatePasswordBtn');
                 updateBtn.disabled = true; updateBtn.innerText = "Processing...";
 
                 const credential = EmailAuthProvider.credential(user.email, oldPassword);
-
                 await reauthenticateWithCredential(user, credential);
-
                 await updatePassword(user, newPassword);
 
-                alert("পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে! নিরাপত্তা নিশ্চিত করতে ও পুরাতন পাসওয়ার্ড বাতিল করতে অ্যাপ্লিকেশনটি এখন রিলিজ (Sign Out) হবে। নতুন পাসওয়ার্ড দিয়ে আবার লগইন করুন। ✨");
+                alert("পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে! নিরাপত্তা নিশ্চিত করতে অ্যাপ্লিকেশনটি এখন রিলিজ (Sign Out) হবে। নতুন পাসওয়ার্ড দিয়ে আবার লগইন করুন। ✨");
                 
                 document.getElementById('oldPasswordInput').value = "";
                 document.getElementById('newPasswordInput').value = "";
-                
                 signOut(auth);
-
             } catch (error) {
                 if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
                     alert('আপনার দেওয়া পুরাতন পাসওয়ার্ডটি সঠিক নয়! দয়া করে আবার চেষ্টা করুন।');
-                } else {
-                    alert('পাসওয়ার্ড পরিবর্তনে সমস্যা হয়েছে: ' + error.message);
-                }
+                } else { alert('পাসওয়ার্ড পরিবর্তনে সমস্যা হয়েছে: ' + error.message); }
             } finally {
                 const updateBtn = document.getElementById('updatePasswordBtn');
                 updateBtn.disabled = false; updateBtn.innerText = "UPDATE PASSWORD";
@@ -1560,4 +1557,4 @@
         });
     </script>
 </body>
-                        </html>
+    </html>
