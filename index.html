@@ -375,6 +375,7 @@
             background-repeat: no-repeat;
             z-index: 1;
             overflow: hidden;
+            margin-bottom: 15px;
         }
 
         /* Very low opacity white overlay for continuous text readability over diary images */
@@ -432,7 +433,7 @@
             font-weight: bold;
             cursor: pointer;
             padding: 5px 8px;
-            font-family: 'Hind Siliguri', sans-serif;
+            font-family: 'Cinzel Decorative', serif; /* Default app font applied */
             transition: 0.2s;
         }
         .pdf-edit-btn { color: #1e40af; }
@@ -588,6 +589,13 @@
             border-bottom: 1px solid #f0f0f0;
             padding-bottom: 5px;
             font-family: 'Hind Siliguri', sans-serif;
+        }
+        .diary-entry-group {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
@@ -846,7 +854,7 @@
 
                         <h4>🔤 কাস্টম ফন্ট এক্সপোর্ট ও ম্যানেজমেন্ট</h4>
                         <ul>
-                            <li><b>নতুন ফন্ট যোগ:</b> "SETTINGS"-এর ফন্ট এক্সপোর্টার বক্সে যান। <a href="https://fonts.google.com" target="_blank" class="font-link">Google Fonts</a> থেকে আপনার প্রিয় ফন্টের CSS URL এবং সঠিক Family Name কপি করে নির্দিষ্ট বক্সে পেস্ট করে এক্সপোর্ট করুন।</li>
+                            <li><b>নতুন ফন্ট যোগ:</b> "SETTINGS"-এর ফন্ট এক্সপোর্টার বক্সে যান। <a href="https://fonts.google.com" target="_blank" class="font-link">Google Fonts</a> থেকে আপনার প্রিয় ফন্টের CSS URL এবং সঠিক Family Name kopi করে নির্দিষ্ট বক্সে পেস্ট করে এক্সপোর্ট করুন।</li>
                             <li><b>ফন্ট ডিলিট:</b> এক্সপোর্ট করা ফন্ট ডিলিট করতে নিচে থাকা ফন্টটির ওপর ১ সেকেন্ড চেপে (Long Press) ধরে রাখুন।</li>
                         </ul>
 
@@ -1041,17 +1049,45 @@
             }
         }
 
+        // Image compressor function to resolve Firebase quota/size issues
+        function compressAndStoreImage(file, callback) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    // Set max threshold
+                    const MAX_WIDTH = 800;
+                    if (width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Convert to base64 with lower quality factor (0.65)
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.65);
+                    callback(compressedBase64);
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
         themeInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if(file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const base64Image = event.target.result;
-                    localStorage.setItem('DailydockCustomTheme', base64Image);
+                compressAndStoreImage(file, (compressedBase64) => {
+                    localStorage.setItem('DailydockCustomTheme', compressedBase64);
                     applySavedTheme();
                     alert('আপনার কাস্টম থিমটি সফলভাবে সেট করা হয়েছে! 🎉');
-                };
-                reader.readAsDataURL(file);
+                });
             }
         });
 
@@ -1064,16 +1100,14 @@
 
         applySavedTheme();
 
-        // --- Handle Diary Page Specific Custom Image Converter ---
+        // --- Handle Diary Page Specific Custom Image Converter with Compression ---
         const diaryImageInput = document.getElementById('diaryImageInput');
         diaryImageInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if(file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    temporaryBase64Image = event.target.result;
-                };
-                reader.readAsDataURL(file);
+                compressAndStoreImage(file, (compressedBase64) => {
+                    temporaryBase64Image = compressedBase64;
+                });
             }
         });
 
@@ -1388,7 +1422,7 @@
                         content: content,
                         fontFamily: selectedFont,
                         diaryDate: customDate,
-                        diaryImage: temporaryBase64Image, // Save updated image
+                        diaryImage: temporaryBase64Image, 
                         lastEditedAt: serverTimestamp()
                     });
                     alert('Memory updated securely! 🔄✨');
@@ -1399,7 +1433,7 @@
                         content: content,
                         fontFamily: selectedFont,
                         diaryDate: customDate, 
-                        diaryImage: temporaryBase64Image, // Save initial custom background image
+                        diaryImage: temporaryBase64Image, 
                         createdAt: serverTimestamp()
                     });
                     alert('Saved securely! ✨');
@@ -1443,6 +1477,7 @@
             }, (error) => { console.error("Firestore Snapshot Error: ", error); });
         }
 
+        // Smart dynamic multi-page algorithm to handle text overflow properly
         function renderDiaryList(diariesArray) {
             const diaryList = document.getElementById('diaryList');
             if(!diaryList) return;
@@ -1454,38 +1489,77 @@
             }
 
             diariesArray.forEach((data) => {
-                const page = document.createElement('div');
-                page.className = "diary-pdf-page";
-                page.style.fontFamily = data.fontFamily || "'Cinzel Decorative', serif";
+                const maxChunkSize = 800; // Character limit configuration per single page block
+                const textContent = data.content || "";
+                let chunks = [];
                 
-                // If a background image was uploaded for this entry, safely apply it
-                if(data.diaryImage) {
-                    page.style.backgroundImage = `url(${data.diaryImage})`;
+                if(textContent.length <= maxChunkSize) {
+                    chunks.push(textContent);
                 } else {
-                    page.style.backgroundImage = 'none';
+                    for (let i = 0; i < textContent.length; i += maxChunkSize) {
+                        chunks.push(textContent.substring(i, i + maxChunkSize));
+                    }
                 }
-                
-                const formattedTime = formatFirebaseTime(data.createdAt) || "Recent Cloud Sync";
 
-                page.innerHTML = `
-                    <div>
-                        <h2 class="pdf-date">${data.diaryDate || ""}</h2>
-                        <div class="pdf-time">${formattedTime}</div>
-                        <h3 class="pdf-title">${data.title || "Untitled"}</h3>
-                        <div class="pdf-content">${data.content || ""}</div>
-                    </div>
-                    <div class="pdf-footer-actions">
-                        <button class="pdf-action-btn pdf-edit-btn">Edit</button>
-                        <button class="pdf-action-btn pdf-delete-btn">Delete</button>
-                    </div>
-                `;
+                // Create a container block for this grouped entry
+                const groupContainer = document.createElement('div');
+                groupContainer.className = "diary-entry-group";
 
-                page.querySelector('.pdf-edit-btn').addEventListener('click', () => {
-                    initiateDiaryEdit(data.id, data.title || "Untitled", data.diaryDate || "", data.content || "", data.fontFamily || "", data.diaryImage || "");
+                chunks.forEach((chunkText, index) => {
+                    const page = document.createElement('div');
+                    page.className = "diary-pdf-page";
+                    page.style.fontFamily = data.fontFamily || "'Cinzel Decorative', serif";
+                    
+                    if(data.diaryImage) {
+                        page.style.backgroundImage = `url(${data.diaryImage})`;
+                    } else {
+                        page.style.backgroundImage = 'none';
+                    }
+                    
+                    const formattedTime = formatFirebaseTime(data.createdAt) || "Recent Cloud Sync";
+                    const isLastPage = (index === chunks.length - 1);
+
+                    if(index === 0) {
+                        // First standard layout configuration structure
+                        page.innerHTML = `
+                            <div>
+                                <h2 class="pdf-date">${data.diaryDate || ""}</h2>
+                                <div class="pdf-time">${formattedTime}</div>
+                                <h3 class="pdf-title">${data.title || "Untitled"}</h3>
+                                <div class="pdf-content">${chunkText}</div>
+                            </div>
+                            <div class="pdf-footer-actions id-placeholder"></div>
+                        `;
+                    } else {
+                        // Next blank metadata layout mode structure
+                        page.innerHTML = `
+                            <div>
+                                <div class="pdf-content" style="margin-top:15px;">${chunkText}</div>
+                            </div>
+                            <div class="pdf-footer-actions id-placeholder"></div>
+                        `;
+                    }
+
+                    // Render actions button architecture specifically inside final index
+                    if(isLastPage) {
+                        const targetFooter = page.querySelector('.id-placeholder');
+                        targetFooter.innerHTML = `
+                            <button class="pdf-action-btn pdf-edit-btn">Edit</button>
+                            <button class="pdf-action-btn pdf-delete-btn">Delete</button>
+                        `;
+                        targetFooter.querySelector('.pdf-edit-btn').addEventListener('click', () => {
+                            initiateDiaryEdit(data.id, data.title || "Untitled", data.diaryDate || "", data.content || "", data.fontFamily || "", data.diaryImage || "");
+                        });
+                        targetFooter.querySelector('.pdf-delete-btn').addEventListener('click', () => { deleteEntry(data.id); });
+                    } else {
+                        const targetFooter = page.querySelector('.id-placeholder');
+                        targetFooter.style.borderTop = "none";
+                    }
+
+                    groupContainer.appendChild(page);
                 });
 
-                page.querySelector('.pdf-delete-btn').addEventListener('click', () => { deleteEntry(data.id); });
-                diaryList.appendChild(page);
+                diaryList.appendChild(groupContainer);
             });
         }
 
@@ -1557,4 +1631,4 @@
         });
     </script>
 </body>
-    </html>
+                                                                     </html>
