@@ -358,15 +358,14 @@
             background: #555555;
         }
 
-        /* PDF Individual Page Setup - FIXED SCROLLING & CHOPPING */
+        /* PDF Individual Page Setup - FIXED HEIGHT & NO OVERFLOW CHOPPING */
         .diary-pdf-page-wrapper {
             background: #ffffff;
             border: 1px solid #dcdcdc;
             box-shadow: 0 5px 15px rgba(0,0,0,0.06);
             border-radius: 4px;
             padding: 25px 20px;
-            min-height: 480px; 
-            height: auto;
+            height: 480px; /* Fixed screen height constraint */
             width: 100%;
             position: relative;
             display: flex;
@@ -392,16 +391,16 @@
         .pdf-main-body {
             display: flex;
             flex-direction: column;
-            height: auto;
+            height: 100%;
+            overflow: hidden;
             position: relative;
             z-index: 2;
         }
         
-        /* কলাম প্রোপার্টি বাতিল করে লেখা অটো-পেজ ব্রেক করার জন্য ফিক্স */
         .pdf-content-flow-container {
             flex-grow: 1;
             width: 100%;
-            height: auto;
+            height: 100%;
             overflow: hidden;
             padding-right: 5px;
         }
@@ -454,13 +453,18 @@
             font-weight: bold;
             cursor: pointer;
             padding: 5px 8px;
-            font-family: sans-serif;
+            font-family: sans-serif !important; /* Forces app default font */
             transition: 0.2s;
         }
         .pdf-edit-btn { color: #1e40af; }
         .pdf-edit-btn:hover { text-decoration: underline; }
         .pdf-delete-btn { color: #dc2626; }
         .pdf-delete-btn:hover { text-decoration: underline; }
+
+        /* Sort dropdown locked to app default font */
+        #diarySortSelector, label[for="diarySortSelector"] {
+            font-family: sans-serif !important;
+        }
 
         /* DIARY & FORGOT PASSWORD MODAL */
         .modal {
@@ -826,8 +830,8 @@
                 </div>
 
                 <div class="input-wrapper" style="flex-shrink: 0; display:flex; align-items:center; gap:10px; margin-bottom:15px;">
-                    <label style="margin:0; white-space:nowrap; font-family:'Hind Siliguri', sans-serif; font-weight:bold; font-size:0.85rem;">Sort by:</label>
-                    <select id="diarySortSelector" style="flex-grow:1; padding:8px; background:white; color:black; border:1px solid #dfdfdf; border-radius:8px; font-family:'Hind Siliguri', sans-serif; font-size:0.85rem;">
+                    <label id="sortLabel" style="margin:0; white-space:nowrap; font-weight:bold; font-size:0.85rem;">Sort by:</label>
+                    <select id="diarySortSelector" style="flex-grow:1; padding:8px; background:white; color:black; border:1px solid #dfdfdf; border-radius:8px; font-size:0.85rem;">
                         <option value="newest">Newest First (নতুন লেখা আগে)</option>
                         <option value="oldest">Oldest First (পুরাতন লেখা আগে)</option>
                     </select>
@@ -1054,6 +1058,8 @@
             <button onclick="closeSweetModal()" class="btn-black" style="background: #d946ef; width: auto; padding: 10px 25px;">স্মৃতিটি সুন্দর!</button>
         </div>
     </div>
+
+    <div id="paginationSandbox" style="position: absolute; top: -9999px; left: -9999px; width: 324px; padding: 0; visibility: hidden; white-space: pre-wrap; word-wrap: break-word;"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -1705,6 +1711,35 @@
         document.getElementById('diarySortSelector').addEventListener('change', sortAndRenderDiaries);
         document.getElementById('diarySearchInput').addEventListener('input', sortAndRenderDiaries);
 
+        /* INTELLIGENT COMPUTE ENGINE FOR ADVANCED TEXT SPLITTING (PAGINATION SYSTEM) */
+        function paginateText(text, maxPixelHeight, fontStyleString) {
+            const sandbox = document.getElementById('paginationSandbox');
+            sandbox.style.fontFamily = fontStyleString;
+            sandbox.style.fontSize = "0.95rem";
+            sandbox.style.lineHeight = "1.6";
+            
+            const words = text.split(/(\s+)/);
+            let pages = [];
+            let currentPageText = "";
+
+            for (let i = 0; i < words.length; i++) {
+                let testText = currentPageText + words[i];
+                sandbox.innerText = testText;
+                
+                if (sandbox.offsetHeight > maxPixelHeight && currentPageText !== "") {
+                    pages.push(currentPageText);
+                    currentPageText = words[i];
+                } else {
+                    currentPageText = testText;
+                }
+            }
+            if (currentPageText !== "") {
+                pages.push(currentPageText);
+            }
+            if (pages.length === 0) pages.push("");
+            return pages;
+        }
+
         function renderDiaryList(diariesArray) {
             const diaryList = document.getElementById('diaryList');
             if(!diaryList) return;
@@ -1717,40 +1752,69 @@
             }
 
             diariesArray.forEach((data) => {
-                const pageWrapper = document.createElement('div');
-                pageWrapper.className = "diary-pdf-page-wrapper";
-                pageWrapper.style.fontFamily = data.fontFamily || "'Cinzel Decorative', serif";
+                const fontFamilyStr = data.fontFamily || "'Cinzel Decorative', serif";
+                const rawContent = data.content || "";
                 
-                if(data.pageBg) {
-                    pageWrapper.style.background = `url(${data.pageBg})`;
-                }
+                // Maximum safe height inside .pdf-content area for perfect chopping box fitment
+                // Total page height 480px minus padding, header space, title box height yields roughly 245px max bounding size.
+                const maxTextBlockHeight = 245; 
+                
+                const storyPages = paginateText(rawContent, maxTextBlockHeight, fontFamilyStr);
+                const totalPagesCount = storyPages.length;
 
-                const formattedTime = formatFirebaseTime(data.createdAt) || "Recent Cloud Sync";
+                storyPages.forEach((pageContentText, index) => {
+                    const isLastPage = (index === totalPagesCount - 1);
+                    const pageWrapper = document.createElement('div');
+                    pageWrapper.className = "diary-pdf-page-wrapper";
+                    pageWrapper.style.fontFamily = fontFamilyStr;
+                    
+                    if(data.pageBg) {
+                        pageWrapper.style.background = `url(${data.pageBg})`;
+                    }
 
-                pageWrapper.innerHTML = `
-                    <div class="pdf-main-body">
-                        <div class="pdf-content-flow-container">
-                            <h2 class="pdf-date">${data.diaryDate || ""}</h2>
-                            <div class="pdf-time">${formattedTime}</div>
-                            <h3 class="pdf-title">${data.title || "Untitled"}</h3>
-                            <div class="pdf-content">${data.content || ""}</div>
+                    const formattedTime = formatFirebaseTime(data.createdAt) || "Recent Cloud Sync";
+                    
+                    // Conditionally load header text only on the first page of split pages
+                    const headerHTML = (index === 0) ? `
+                        <h2 class="pdf-date">${data.diaryDate || ""}</h2>
+                        <div class="pdf-time">${formattedTime}</div>
+                        <h3 class="pdf-title">${data.title || "Untitled"}</h3>
+                    ` : `
+                        <h2 class="pdf-date" style="font-size:0.9rem; opacity:0.6; margin-bottom:15px;">${data.diaryDate || ""} (Continued...) Page ${index + 1}/${totalPagesCount}</h2>
+                    `;
+
+                    // Conditionally load action buttons only on the final page block
+                    const footerHTML = isLastPage ? `
+                        <div class="pdf-footer-actions">
+                            <button class="pdf-action-btn pdf-edit-btn">Edit</button>
+                            <button class="pdf-action-btn pdf-delete-btn">Delete</button>
                         </div>
-                    </div>
-                    <div class="pdf-footer-actions">
-                        <button class="pdf-action-btn pdf-edit-btn">Edit</button>
-                        <button class="pdf-action-btn pdf-delete-btn">Delete</button>
-                    </div>
-                `;
+                    ` : `
+                        <div style="text-align:right; font-size:0.75rem; color:#666; font-family:sans-serif; border-top:1px dashed #ddd; padding-top:5px; margin-top:auto;">Turn page for more...</div>
+                    `;
 
-                pageWrapper.querySelector('.pdf-edit-btn').addEventListener('click', () => {
-                    initiateDiaryEdit(data.id, data.title || "Untitled", data.diaryDate || "", data.content || "", data.fontFamily || "", data.pageBg || "");
+                    pageWrapper.innerHTML = `
+                        <div class="pdf-main-body">
+                            <div class="pdf-content-flow-container">
+                                ${headerHTML}
+                                <div class="pdf-content">${pageContentText}</div>
+                            </div>
+                        </div>
+                        ${footerHTML}
+                    `;
+
+                    if (isLastPage) {
+                        pageWrapper.querySelector('.pdf-edit-btn').addEventListener('click', () => {
+                            initiateDiaryEdit(data.id, data.title || "Untitled", data.diaryDate || "", data.content || "", data.fontFamily || "", data.pageBg || "");
+                        });
+
+                        pageWrapper.querySelector('.pdf-delete-btn').addEventListener('click', () => {
+                            deleteEntry(data.id);
+                        });
+                    }
+
+                    diaryList.appendChild(pageWrapper);
                 });
-
-                pageWrapper.querySelector('.pdf-delete-btn').addEventListener('click', () => {
-                    deleteEntry(data.id);
-                });
-
-                diaryList.appendChild(pageWrapper);
             });
         }
 
@@ -1826,4 +1890,4 @@
         });
     </script>
 </body>
-    </html>
+                    </html>
