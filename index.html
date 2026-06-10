@@ -338,10 +338,10 @@
             gap: 25px;
             padding-right: 8px;
             overflow-y: scroll;
-            max-height: calc(100vh - 240px);
+            max-height: calc(100vh - 270px);
         }
 
-        /* Custom Scrollbar Styling */
+        /* Custom Scrollbar Styling (ডান পাশের স্ক্রল বার কন্ট্রোলার) */
         .diary-pages-container::-webkit-scrollbar {
             width: 8px;
         }
@@ -358,36 +358,41 @@
             background: #555555;
         }
 
-        /* PDF Individual Page Setup */
-        .diary-pdf-page {
+        /* PDF Individual Page Setup (Fixed Ideal Size & Pure Auto CSS Pagination Multi-Page View) */
+        .diary-pdf-page-wrapper {
             background: #ffffff;
             border: 1px solid #dcdcdc;
             box-shadow: 0 5px 15px rgba(0,0,0,0.06);
             border-radius: 4px;
             padding: 25px 20px;
+            height: 480px; /* ফিক্সড আদর্শ সাইজ */
+            width: 100%;
             position: relative;
-            min-height: 380px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            z-index: 1;
             overflow: hidden;
-            margin-bottom: 15px;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
         }
-
-        /* Balanced 65% opacity white overlay for standard contrast and text readability */
-        .diary-pdf-page::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(255, 255, 255, 0.65);
-            z-index: -1;
-            pointer-events: none;
+        /* Custom Internal Pagination CSS to flow long content to subsequent Virtual Columns/Pages automatically */
+        .pdf-main-body {
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - 40px);
+            overflow: hidden;
         }
-
+        .pdf-content-flow-container {
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+            column-width: 350px; /* অটোমেটিক কলাম ব্রেক এর মাধ্যমে মাল্টি-পেজ তৈরি */
+            column-gap: 40px;
+            column-fill: auto;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
         .pdf-date {
             font-size: 1.4rem;
             font-weight: bold;
@@ -416,8 +421,8 @@
             line-height: 1.6;
             color: #222222;
             white-space: pre-wrap;
-            flex-grow: 1;
             margin-bottom: 20px;
+            break-inside: avoid;
         }
         .pdf-footer-actions {
             border-top: 1px dashed #e5e5e5;
@@ -425,6 +430,9 @@
             display: flex;
             justify-content: flex-end;
             gap: 15px;
+            background: inherit;
+            position: relative;
+            z-index: 5;
         }
         .pdf-action-btn {
             background: none;
@@ -433,7 +441,7 @@
             font-weight: bold;
             cursor: pointer;
             padding: 5px 8px;
-            font-family: 'Cinzel Decorative', serif; /* Default app font applied */
+            font-family: 'Hind Siliguri', sans-serif;
             transition: 0.2s;
         }
         .pdf-edit-btn { color: #1e40af; }
@@ -590,12 +598,51 @@
             padding-bottom: 5px;
             font-family: 'Hind Siliguri', sans-serif;
         }
-        .diary-entry-group {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.2);
+
+        /* --- BACKGROUND PHOTO CROPPING BOX UX INTERFACE SYSTEM --- */
+        .cropper-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 10000; padding: 20px;
+        }
+        .cropper-workspace {
+            position: relative;
+            max-width: 100%;
+            max-height: 70vh;
+            overflow: hidden;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .cropper-img {
+            max-width: 100%;
+            max-height: 70vh;
+            display: block;
+            user-select: none;
+            pointer-events: none;
+        }
+        .cropper-box {
+            position: absolute;
+            border: 2px dashed #ffffff;
+            box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.6);
+            cursor: move;
+            display: block;
+            touch-action: none;
+        }
+        .cropper-box::after {
+            content: "PAGE BG BOX";
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(255,255,255,0.8);
+            font-size: 11px;
+            font-weight: bold;
+            background: rgba(0,0,0,0.5);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: sans-serif;
+            white-space: nowrap;
         }
     </style>
 </head>
@@ -718,7 +765,7 @@
             <div id="writeSection" class="hidden" style="display: flex; flex-direction: column; flex-grow: 1; height: 100%;">
                 <div class="back-link" onclick="backToDashboard()" style="padding: 0 25px;">← Back to Menu</div>
                 
-                <div style="background: #ffffff; padding: 20px 25px; border-top-left-radius: 30px; border-top-right-radius: 30px; border: 1px solid #dfdfdf; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden;">
+                <div style="background: #ffffff; padding: 20px 25px; border-top-left-radius: 30px; border-top-right-radius: 30px; border: 1px solid #dfdfdf; display: flex; flex-direction: column; flex-grow: 1; overflow-y: auto;">
                     <span id="writePanelPurpose" style="color:#111; display:block; margin-bottom:10px; font-size:1rem; font-weight:bold; text-align: center;">Capture Memory</span>
                     
                     <div class="input-wrapper">
@@ -735,21 +782,22 @@
                     </div>
 
                     <div class="input-wrapper" style="margin-bottom: 10px;">
-                        <label>Select Background Image (Optional)</label>
-                        <input type="file" id="diaryImageInput" accept="image/*" class="input-field" style="background:#f3f3f3; padding: 6px;">
-                    </div>
-
-                    <div class="input-wrapper" style="margin-bottom: 10px;">
                         <label>Title</label>
                         <input type="text" id="diaryTitle" placeholder="Title..." class="input-field" style="background:#f3f3f3;">
                     </div>
 
-                    <div class="input-wrapper" style="flex-grow: 1; display: flex; flex-direction: column; margin-bottom: 15px;">
-                        <label>Content</label>
-                        <textarea id="diaryContent" placeholder="What happened today?..." class="input-field" style="background:#fff; line-height:1.5; flex-grow: 1; height: 100%; resize: none; border: 1px solid #dfdfdf; border-radius: 8px; padding: 12px;"></textarea>
+                    <div class="input-wrapper" style="margin-bottom: 15px;">
+                        <label>Select Content Background (Optional Cropped Photo)</label>
+                        <input type="file" id="diaryPageBgInput" accept="image/*" class="input-field" style="background:#f3f3f3; padding:6px;">
+                        <button id="removePageBgBtn" class="btn-black hidden" style="background:#dc2626; font-size:0.8rem; padding:6px 12px; margin-top:5px; width:auto; font-family:'Hind Siliguri', sans-serif;">❌ রিমুভ পেজ ব্যাকগ্রাউন্ড</button>
                     </div>
 
-                    <button id="saveBtn" class="btn-black" style="margin-top: 0;">💾 SAVE ENTRY</button>
+                    <div class="input-wrapper" style="min-height: 200px; display: flex; flex-direction: column; margin-bottom: 15px;">
+                        <label>Content</label>
+                        <textarea id="diaryContent" placeholder="What happened today?..." class="input-field" style="background:#fff; line-height:1.5; flex-grow: 1; min-height: 180px; resize: none; border: 1px solid #dfdfdf; border-radius: 8px; padding: 12px;"></textarea>
+                    </div>
+
+                    <button id="saveBtn" class="btn-black" style="margin-top: 0; flex-shrink:0;">💾 SAVE ENTRY</button>
                 </div>
             </div>
 
@@ -757,8 +805,16 @@
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
                 <h3 style="color: #222; margin-bottom: 12px; font-size:1.1rem; text-align: center;">Your Past Memories</h3>
                 
-                <div class="input-wrapper" style="flex-shrink: 0;">
-                    <input type="text" id="diarySearchInput" placeholder="🔍 Search by title or date (e.g. 2026-06-05)..." class="input-field" style="font-family:sans-serif; margin-bottom:15px; background:white;">
+                <div class="input-wrapper" style="flex-shrink: 0; margin-bottom: 10px;">
+                    <input type="text" id="diarySearchInput" placeholder="🔍 Search by title or date (e.g. 2026-06-05)..." class="input-field" style="font-family:sans-serif; background:white;">
+                </div>
+
+                <div class="input-wrapper" style="flex-shrink: 0; display:flex; align-items:center; gap:10px; margin-bottom:15px;">
+                    <label style="margin:0; white-space:nowrap; font-family:'Hind Siliguri', sans-serif; font-weight:bold; font-size:0.85rem;">Sort by:</label>
+                    <select id="diarySortSelector" style="flex-grow:1; padding:8px; background:white; color:black; border:1px solid #dfdfdf; border-radius:8px; font-family:'Hind Siliguri', sans-serif; font-size:0.85rem;">
+                        <option value="newest">Newest First (নতুন লেখা আগে)</option>
+                        <option value="oldest">Oldest First (পুরাতন লেখা আগে)</option>
+                    </select>
                 </div>
 
                 <div id="diaryList" class="diary-pages-container"></div>
@@ -841,14 +897,14 @@
                         <h4>📝 নতুন ডায়েরি লেখা ও সংরক্ষণ</h4>
                         <ul>
                             <li><b>ধাপ ১:</b> মেইন মেনু থেকে "WRITE NEW DIARY" অপশনে যান।</li>
-                            <li><b>ধাপ ২:</b> ক্যালেন্ডার থেকে নির্দিষ্ট তারিখ এবং লেখার ভাষা অনুযায়ী ফন্ট সিলেক্ট করুন। নিজের ছবি ব্যাকগ্রাউন্ডে দিতে গ্যালারি থেকে ইমেজ পছন্দ করতে পারেন।</li>
-                            <li><b>ধাপ ৩:</b> ডায়েরির শিরোনাম (Title) এবং বিস্তারিত মনের কথা (Content) লিখে নিচে থাকা "💾 SAVE ENTRY" বাটনে ক্লিক করুন।</li>
+                            <li><b>ধাপ ২:</b> ক্যালেন্ডার থেকে নির্দিষ্ট তারিখ এবং আপনার লেখার ভাষা অনুযায়ী ফন্ট (ইংরেজি বা বাংলা) সিলেক্ট করুন।</li>
+                            <li><b>ধাপ ৩:</b> ডায়েরির শিরোনাম (Title) এবং বিস্তারিত মনের কথা (Content) লিখে নিচে থাকা "💾 SAVE ENTRY" বাটনে ক্লিক করুন। আপনার স্মৃতিটি ক্লাউডে সংরক্ষিত হয়ে যাবে।</li>
                         </ul>
 
                         <h4>🎨 কাস্টম ব্যাকগ্রাউন্ড থিম সেটআপ</h4>
                         <ul>
                             <li><b>ধাপ ১:</b> "SETTINGS"-এ যান এবং নির্দিষ্ট "Custom Theme" প্যানেলটি দেখুন।</li>
-                            <li><b>ধাপ ২:</b> ইনপুট ফিল্ডে ক্লিক করে আপনার ফোনের গ্যালারি থেকে যেকোনো পছন্দের ছবি সিলেক্ট করুন।</li>
+                            <li><b>ধাপ ২:</b> ইনপুট ফিল্ডে ক্লিক করে আপনার ফোনের গ্যালারি থেকে যেকোনো পছন্দের ছবি সিলেক্ট করুন। ছবি সিলেক্ট করার সাথে সাথেই সেটি অ্যাপের ব্যাকগ্রাউন্ড থিম হিসেবে স্থায়ীভাবে সেট হয়ে যাবে।</li>
                             <li><b>থিম রিমুভ:</b> থিম মুছে আগের ডিফল্ট ব্যাকগ্রাউন্ডে ফিরতে "❌ REMOVE THEME" বাটনে ক্লিক করুন।</li>
                         </ul>
 
@@ -861,7 +917,7 @@
                         <h4>🗝️ পাসওয়ার্ড ভুলে গেলে বা পরিবর্তন করতে চাইলে</h4>
                         <ul>
                             <li><b>পাসওয়ার্ড পরিবর্তন:</b> লগইন থাকা অবস্থায় "SETTINGS" সেকশনের ভেতর থেকে পুরাতন ও নতুন পাসওয়ার্ড দিয়ে পরিবর্তন করতে পারবেন।</li>
-                            <li><b>পাসওয়ার্ড ভুলে গেলে:</b> লগইন স্ক্রিনে থাকা "Forgot Password?" অপশনে ক্লিক করে আপনার রেজিস্টার্ড ইমেইল দিন।</li>
+                            <li><b>পাসওয়ার্ড ভুলে গেলে:</b> লগইন স্ক্রিনে থাকা "Forgot Password?" অপশনে ক্লিক করে আপনার রেজিস্টার্ড ইমেইল দিন। ইনবক্স অথবা স্প্যাম ফোল্ডারে পাসওয়ার্ড রিসেট করার একটি সিকিউর লিঙ্ক চলে যাবে।লিঙ্কে ক্লিক করে পাসওয়ার্ড রিসেট করে নিন।</li>
                         </ul>
                     </div>
 
@@ -869,15 +925,15 @@
                         <h4>📝 Writing & Saving a New Diary</h4>
                         <ul>
                             <li><b>Step 1:</b> Navigate to "WRITE NEW DIARY" from the Main Menu.</li>
-                            <li><b>Step 2:</b> Select the specific date, choose your preferred language font, and optionally upload a background image from your gallery.</li>
-                            <li><b>Step 3:</b> Enter a Title and Content, then click the "💾 SAVE ENTRY" button.</li>
+                            <li><b>Step 2:</b> Select the specific date and choose your preferred language font from the dropdown.</li>
+                            <li><b>Step 3:</b> Enter a Title and Content, then click the "💾 SAVE ENTRY" button. Your memory will be securely synced to the cloud.</li>
                         </ul>
 
                         <h4>🎨 Custom Background Theme Setup</h4>
                         <ul>
                             <li><b>Step 1:</b> Go to "SETTINGS" and locate the "Custom Theme" panel.</li>
-                            <li><b>Step 2:</b> Click the file field and pick any background image from your gallery.</li>
-                            <li><b>Remove Theme:</b> Click the "❌ REMOVE THEME" button to roll back to the default view.</li>
+                            <li><b>Step 2:</b> Click the file field and pick any background image from your gallery. It will instantly apply as your permanent app theme.</li>
+                            <li><b>Remove Theme:</b> Click the "❌ REMOVE THEME" button to roll back to the default minimalist view.</li>
                         </ul>
 
                         <h4>🔤 Custom Font Exporter & Deletion</h4>
@@ -889,7 +945,7 @@
                         <h4>🗝️ Password Management & Recovery</h4>
                         <ul>
                             <li><b>Change Password:</b> You can update your current credentials directly within the "SETTINGS" panel.</li>
-                            <li><b>Password Recovery:</b> Click "Forgot Password?" on the login screen, enter your email, and a password reset link will be sent to your inbox.</li>
+                            <li><b>Password Recovery:</b> Click "Forgot Password?" on the login screen, enter your email, and a password reset link will be sent to your inbox or spam folder safely.Click the link and reset your password.</li>
                         </ul>
                     </div>
                 </div>
@@ -916,21 +972,23 @@
                     <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
                         <span class="credit-label">PURPOSE</span>
                         <span class="credit-value" style="font-family: sans-serif; text-align: center; font-weight: normal; font-size: 0.85rem; color: #444; line-height: 1.5; max-width: 90%;">
-                            DailyDock was created to provide a private and comfortable space where people can record their daily thoughts, experiences, memories, and emotions.
+                            DailyDock was created to provide a private and comfortable space where people can record their daily thoughts, experiences, memories, and emotions. Every moment, whether big or small, deserves to be remembered, and DailyDock aims to preserve those moments in a simple and meaningful way.
                         </span>
                     </div>
                     
                     <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
                         <span class="credit-label">MISSION</span>
                         <span class="credit-value" style="font-family: sans-serif; text-align: center; font-weight: normal; font-size: 0.85rem; color: #444; line-height: 1.5; max-width: 90%;">
-                            Our mission is to help people capture their life's journey one page at a time.
+                            Our mission is to help people capture their life's journey one page at a time. We believe that personal memories, ideas, and emotions are valuable, and DailyDock exists to make journaling easy, accessible, and enjoyable for everyone.
                         </span>
                     </div>
                     
                     <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
                         <span class="credit-label">SPECIAL THANKS</span>
                         <span class="credit-value" style="font-family: sans-serif; text-align: center; font-weight: normal; font-size: 0.85rem; color: #444; line-height: 1.5; max-width: 90%;">
-                            Special thanks to the incredible advancements in Artificial Intelligence that helped inspire, guide, and shape the development of this project.
+                            Special thanks to the incredible advancements in Artificial Intelligence that helped inspire, guide, and shape the development of this project. We are grateful for the AI technologies that assisted with problem-solving, learning, creativity, and innovation throughout the journey of building DailyDock.
+                            <br><br>
+                            Thank you to everyone who uses DailyDock and trusts us with their memories.
                         </span>
                     </div>
                     
@@ -943,6 +1001,18 @@
 
         </div> 
     </div> 
+
+    <div id="cropperModal" class="cropper-modal hidden">
+        <h3 style="color:white; margin:0 0 10px 0; font-family:'Hind Siliguri', sans-serif;">ছবির অংশ ড্র্যাগ করে ব্যাকগ্রাউন্ড সিলেক্ট করুন</h3>
+        <div class="cropper-workspace" id="cropperWorkspace">
+            <img id="cropperSourceImg" class="cropper-img" src="" alt="Source">
+            <div id="cropperTargetBox" class="cropper-box"></div>
+        </div>
+        <div style="margin-top:15px; display:flex; gap:15px; width:100%; max-width:360px;">
+            <button id="cancelCropBtn" class="btn-black" style="background:#555; margin:0;">বাতিল</button>
+            <button id="confirmCropBtn" class="btn-black" style="background:#10b981; margin:0;">সিলেক্ট করুন</button>
+        </div>
+    </div>
 
     <div id="forgotModal" class="modal hidden">
         <div class="modal-content" style="font-family: 'Hind Siliguri', sans-serif;">
@@ -990,8 +1060,8 @@
 
         let allDiaries = []; 
         let currentUserId = null;
-        let editingDiaryId = null; 
-        let temporaryBase64Image = ""; // Holds the selected diary image base64 data
+        let editingDiaryId = null; // State controller for managing Edit Mode
+        let currentSelectedPageBgBase64 = ""; // Holds base64 cropped string data for active diary item
 
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('diaryDate').value = today;
@@ -1033,7 +1103,7 @@
             }
         };
 
-        // --- Custom Theme Setup ---
+        // --- কাস্টম থিম লজিক শুরু ---
         const container = document.getElementById('mainContainer');
         const themeInput = document.getElementById('themeImageInput');
         const removeThemeBtn = document.getElementById('removeThemeBtn');
@@ -1049,45 +1119,17 @@
             }
         }
 
-        // Image compressor function to resolve Firebase quota/size issues
-        function compressAndStoreImage(file, callback) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    let width = img.width;
-                    let height = img.height;
-                    
-                    // Set max threshold
-                    const MAX_WIDTH = 800;
-                    if (width > MAX_WIDTH) {
-                        height *= MAX_WIDTH / width;
-                        width = MAX_WIDTH;
-                    }
-                    
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    // Convert to base64 with lower quality factor (0.65)
-                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.65);
-                    callback(compressedBase64);
-                };
-                img.src = event.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
         themeInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if(file) {
-                compressAndStoreImage(file, (compressedBase64) => {
-                    localStorage.setItem('DailydockCustomTheme', compressedBase64);
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const base64Image = event.target.result;
+                    localStorage.setItem('DailydockCustomTheme', base64Image);
                     applySavedTheme();
                     alert('আপনার কাস্টম থিমটি সফলভাবে সেট করা হয়েছে! 🎉');
-                });
+                };
+                reader.readAsDataURL(file);
             }
         });
 
@@ -1099,17 +1141,140 @@
         });
 
         applySavedTheme();
+        // --- কাস্টম থিম লজিক শেষ ---
 
-        // --- Handle Diary Page Specific Custom Image Converter with Compression ---
-        const diaryImageInput = document.getElementById('diaryImageInput');
-        diaryImageInput.addEventListener('change', (e) => {
+        // --- কাস্টম পেজ ব্যাকগ্রাউন্ড ইন্টেলিজেন্ট ক্রপার সিস্টেম লজিক শুরু ---
+        const pageBgInput = document.getElementById('diaryPageBgInput');
+        const cropperModal = document.getElementById('cropperModal');
+        const cropperSourceImg = document.getElementById('cropperSourceImg');
+        const cropperTargetBox = document.getElementById('cropperTargetBox');
+        const cropperWorkspace = document.getElementById('cropperWorkspace');
+        const cancelCropBtn = document.getElementById('cancelCropBtn');
+        const confirmCropBtn = document.getElementById('confirmCropBtn');
+        const removePageBgBtn = document.getElementById('removePageBgBtn');
+
+        let cropState = { isDragging: false, startX: 0, startY: 0, initialLeft: 0, initialTop: 0 };
+        let sourceImgRealSize = { width: 0, height: 0 };
+
+        pageBgInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if(file) {
-                compressAndStoreImage(file, (compressedBase64) => {
-                    temporaryBase64Image = compressedBase64;
-                });
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    cropperSourceImg.src = event.target.result;
+                    cropperModal.classList.remove('hidden');
+                    
+                    // Setup cropper dimensions after image loads safely
+                    cropperSourceImg.onload = function() {
+                        sourceImgRealSize.width = cropperSourceImg.naturalWidth;
+                        sourceImgRealSize.height = cropperSourceImg.naturalHeight;
+
+                        // Calculate aspect ratio matching ideal page box (width:100% (~364px) to height:480px ratio => approx 0.76)
+                        const workspaceRect = cropperSourceImg.getBoundingClientRect();
+                        const targetWidth = workspaceRect.width * 0.75;
+                        const targetHeight = targetWidth * (480 / 364); 
+
+                        // Handle extreme landscape fits safely
+                        let finalW = targetWidth;
+                        let finalH = targetHeight;
+                        if(finalH > workspaceRect.height) {
+                            finalH = workspaceRect.height * 0.8;
+                            finalW = finalH * (364 / 480);
+                        }
+
+                        cropperTargetBox.style.width = finalW + 'px';
+                        cropperTargetBox.style.height = finalH + 'px';
+                        cropperTargetBox.style.left = (workspaceRect.width - finalW) / 2 + 'px';
+                        cropperTargetBox.style.top = (workspaceRect.height - finalH) / 2 + 'px';
+                    };
+                };
+                reader.readAsDataURL(file);
             }
         });
+
+        // Event listeners for Dragging Box on image workspace area (Mouse and Touch Controls)
+        const startDrag = (e) => {
+            cropState.isDragging = true;
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+            cropState.startX = clientX;
+            cropState.startY = clientY;
+            cropState.initialLeft = parseFloat(cropperTargetBox.style.left) || 0;
+            cropState.initialTop = parseFloat(cropperTargetBox.style.top) || 0;
+            if(e.cancelable) e.preventDefault();
+        };
+
+        const doDrag = (e) => {
+            if(!cropState.isDragging) return;
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+            const deltaX = clientX - cropState.startX;
+            const deltaY = clientY - cropState.startY;
+
+            const imgRect = cropperSourceImg.getBoundingClientRect();
+            const boxRect = cropperTargetBox.getBoundingClientRect();
+
+            let newLeft = cropState.initialLeft + deltaX;
+            let newTop = cropState.initialTop + deltaY;
+
+            // Constrain movement parameters strictly inside the visible source image boundary
+            if(newLeft < 0) newLeft = 0;
+            if(newTop < 0) newTop = 0;
+            if(newLeft + boxRect.width > imgRect.width) newLeft = imgRect.width - boxRect.width;
+            if(newTop + boxRect.height > imgRect.height) newTop = imgRect.height - boxRect.height;
+
+            cropperTargetBox.style.left = newLeft + 'px';
+            cropperTargetBox.style.top = newTop + 'px';
+        };
+
+        const endDrag = () => { cropState.isDragging = false; };
+
+        cropperTargetBox.addEventListener('mousedown', startDrag);
+        cropperTargetBox.addEventListener('touchstart', startDrag, { passive: false });
+        window.addEventListener('mousemove', doDrag);
+        window.addEventListener('touchmove', doDrag, { passive: false });
+        window.addEventListener('mouseup', endDrag);
+        window.addEventListener('touchend', endDrag);
+
+        cancelCropBtn.addEventListener('click', () => {
+            cropperModal.classList.add('hidden');
+            pageBgInput.value = '';
+        });
+
+        confirmCropBtn.addEventListener('click', () => {
+            const imgRect = cropperSourceImg.getBoundingClientRect();
+            const boxRect = cropperTargetBox.getBoundingClientRect();
+
+            // Calculate precise positional scaling factor maps
+            const scaleX = sourceImgRealSize.width / imgRect.width;
+            const scaleY = sourceImgRealSize.height / imgRect.height;
+
+            const cropX = (boxRect.left - imgRect.left) * scaleX;
+            const cropY = (boxRect.top - imgRect.top) * scaleY;
+            const cropW = boxRect.width * scaleX;
+            const cropH = boxRect.height * scaleY;
+
+            // Execute final image data extraction utilizing HTML5 Canvas API elements
+            const canvas = document.createElement('canvas');
+            canvas.width = 364; 
+            canvas.height = 480; 
+            const ctx = canvas.getContext('2d');
+
+            ctx.drawImage(cropperSourceImg, cropX, cropY, cropW, cropH, 0, 0, 364, 480);
+            
+            currentSelectedPageBgBase64 = canvas.toDataURL('image/jpeg', 0.85);
+            removePageBgBtn.classList.remove('hidden');
+            cropperModal.classList.add('hidden');
+            alert('ছবির অংশটুকু পেজের ব্যাকগ্রাউন্ড হিসেবে সিলেক্ট করা হয়েছে! 👍');
+        });
+
+        removePageBgBtn.addEventListener('click', () => {
+            currentSelectedPageBgBase64 = "";
+            pageBgInput.value = '';
+            removePageBgBtn.classList.add('hidden');
+            alert('পেজ ব্যাকগ্রাউন্ড রিমুভ করা হয়েছে।');
+        });
+        // --- কাস্টম পেজ ব্যাকগ্রাউন্ড ইন্টেলিজেন্ট ক্রপার সিস্টেম লজিক শেষ ---
 
         function loadSavedFonts() {
             const savedFonts = JSON.parse(localStorage.getItem('DailydockExportedFonts')) || [];
@@ -1147,12 +1312,16 @@
                 fontCard.innerText = font.name;
 
                 let holdTimer;
+                
                 const onHoldStart = () => {
                     holdTimer = setTimeout(() => {
                         triggerFontDelete(font.name, index);
                     }, 1000);
                 };
-                const onHoldEnd = () => { clearTimeout(holdTimer); };
+
+                const onHoldEnd = () => {
+                    clearTimeout(holdTimer);
+                };
 
                 fontCard.addEventListener('mousedown', onHoldStart);
                 fontCard.addEventListener('touchstart', onHoldStart);
@@ -1168,12 +1337,14 @@
         function triggerFontDelete(fontName, arrayIndex) {
             if(confirm(`Do you want to completely delete "${fontName}" font? 🗑️`)){
                 let savedFonts = JSON.parse(localStorage.getItem('DailydockExportedFonts')) || [];
+                
                 const linkId = `injected-font-${fontName.replace(/\s+/g, '-')}`;
                 const linkElement = document.getElementById(linkId);
                 if(linkElement) linkElement.remove();
 
                 savedFonts.splice(arrayIndex, 1);
                 localStorage.setItem('DailydockExportedFonts', JSON.stringify(savedFonts));
+                
                 alert(`"${fontName}" font deleted successfully!`);
                 loadSavedFonts();
             }
@@ -1183,7 +1354,10 @@
 
         function setupDailyReminder() {
             if (!("Notification" in window)) return;
-            if (Notification.permission === "default") { Notification.requestPermission(); }
+
+            if (Notification.permission === "default") {
+                Notification.requestPermission();
+            }
 
             setInterval(() => {
                 const now = new Date();
@@ -1250,9 +1424,13 @@
             document.getElementById('passwordSettingsPage').classList.add('hidden');
             
             document.getElementById(sectionId).classList.remove('hidden');
-            if(sectionId === 'listSection') { renderDiaryList(allDiaries); }
+            if(sectionId === 'listSection') {
+                sortAndRenderDiaries();
+            }
             if(sectionId === 'writeSection') {
-                if (!editingDiaryId) { clearWriteForm(); }
+                if (!editingDiaryId) {
+                    clearWriteForm();
+                }
             }
         };
 
@@ -1261,9 +1439,10 @@
             document.getElementById('saveBtn').innerText = "💾 SAVE ENTRY";
             document.getElementById('diaryTitle').value = '';
             document.getElementById('diaryContent').value = '';
-            document.getElementById('diaryImageInput').value = '';
-            temporaryBase64Image = ""; 
             document.getElementById('diaryDate').value = today;
+            document.getElementById('diaryPageBgInput').value = '';
+            removePageBgBtn.classList.add('hidden');
+            currentSelectedPageBgBase64 = "";
             const defaultFont = document.getElementById('fontSelector').value;
             document.getElementById('diaryContent').style.fontFamily = defaultFont;
             document.getElementById('diaryTitle').style.fontFamily = defaultFont;
@@ -1290,19 +1469,28 @@
                 const minutes = dateObj.getMinutes().toString().padStart(2, '0');
                 const ampm = hours >= 12 ? 'PM' : 'AM';
                 hours = hours % 12;
-                hours = hours ? hours : 12;
+                hours = hours ? hours : 12; 
                 return `${hours}:${minutes} ${ampm}`;
-            } catch(e) { return ""; }
+            } catch(e) {
+                return "";
+            }
         }
 
-        function initiateDiaryEdit(id, title, dateStr, content, fontFamily, existingImg) {
+        function initiateDiaryEdit(id, title, dateStr, content, fontFamily, pageBg) {
             editingDiaryId = id; 
+            
             document.getElementById('writePanelPurpose').innerText = "Edit Your Memory";
             document.getElementById('diaryTitle').value = title;
             document.getElementById('diaryContent').value = content;
             document.getElementById('diaryDate').value = dateStr;
-            document.getElementById('diaryImageInput').value = '';
-            temporaryBase64Image = existingImg || ""; 
+            
+            if(pageBg) {
+                currentSelectedPageBgBase64 = pageBg;
+                removePageBgBtn.classList.remove('hidden');
+            } else {
+                currentSelectedPageBgBase64 = "";
+                removePageBgBtn.classList.add('hidden');
+            }
             
             const selector = document.getElementById('fontSelector');
             if([...selector.options].some(opt => opt.value === fontFamily)) {
@@ -1311,6 +1499,7 @@
             
             document.getElementById('diaryContent').style.fontFamily = fontFamily;
             document.getElementById('diaryTitle').style.fontFamily = fontFamily;
+            
             document.getElementById('saveBtn').innerText = "🔄 UPDATE ENTRY";
             showSubSection('writeSection');
         }
@@ -1325,7 +1514,11 @@
         };
 
         async function handleGoogleSignIn() {
-            try { await signInWithPopup(auth, googleProvider); } catch (error) { alert('Google Sign-in failed: ' + error.message); }
+            try {
+                await signInWithPopup(auth, googleProvider);
+            } catch (error) { 
+                alert('Google Sign-in failed: ' + error.message); 
+            }
         }
 
         document.getElementById('welcomeGoogleBtn').addEventListener('click', handleGoogleSignIn);
@@ -1376,7 +1569,9 @@
             const password = document.getElementById('loginPassword').value;
             if(!email || !password) return alert('Please fill in all fields!');
 
-            try { await signInWithEmailAndPassword(auth, email, password); } catch (error) { alert('Login failed: ' + error.message); }
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (error) { alert('Login failed: ' + error.message); }
         });
 
         document.getElementById('resetPasswordBtn').addEventListener('click', async () => {
@@ -1389,7 +1584,9 @@
                 await sendPasswordResetEmail(auth, email);
                 alert('পাসওয়ার্ড রিসেট করার লিঙ্কটি আপনার ইমেইলে পাঠানো হয়েছে! দয়া করে আপনার ইনবক্স অথবা স্প্যাম (Spam) ফোল্ডার চেক করুন। ✨');
                 closeForgotModal();
-            } catch (error) { alert('Error: ' + error.message); } finally {
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
                 const btn = document.getElementById('resetPasswordBtn');
                 btn.disabled = false; btn.innerText = "Send Reset Link";
             }
@@ -1422,7 +1619,7 @@
                         content: content,
                         fontFamily: selectedFont,
                         diaryDate: customDate,
-                        diaryImage: temporaryBase64Image, 
+                        pageBg: currentSelectedPageBgBase64,
                         lastEditedAt: serverTimestamp()
                     });
                     alert('Memory updated securely! 🔄✨');
@@ -1433,7 +1630,7 @@
                         content: content,
                         fontFamily: selectedFont,
                         diaryDate: customDate, 
-                        diaryImage: temporaryBase64Image, 
+                        pageBg: currentSelectedPageBgBase64,
                         createdAt: serverTimestamp()
                     });
                     alert('Saved securely! ✨');
@@ -1457,121 +1654,102 @@
 
             onSnapshot(q, (snapshot) => {
                 allDiaries = [];
-                snapshot.forEach(doc => { allDiaries.push({ id: doc.id, ...doc.data() }); });
-                
-                allDiaries.sort((a, b) => {
-                    const dateA = a.diaryDate || "";
-                    const dateB = b.diaryDate || "";
-                    if (dateB !== dateA) { return dateB.localeCompare(dateA); }
-                    const timeA = a.createdAt ? a.createdAt.toMillis() : 0;
-                    const timeB = b.createdAt ? b.createdAt.toMillis() : 0;
-                    return timeB - timeA;
+                snapshot.forEach(doc => {
+                    allDiaries.push({ id: doc.id, ...doc.data() });
                 });
-
-                renderDiaryList(allDiaries);
+                
+                sortAndRenderDiaries();
 
                 if (isFirstLoad) {
                     checkOnThisDayMemories(allDiaries);
                     isFirstLoad = false;
                 }
-            }, (error) => { console.error("Firestore Snapshot Error: ", error); });
-        }
-
-        // Smart dynamic multi-page algorithm to handle text overflow properly
-        function renderDiaryList(diariesArray) {
-            const diaryList = document.getElementById('diaryList');
-            if(!diaryList) return;
-            diaryList.innerHTML = '';
-            
-            if (!diariesArray || diariesArray.length === 0) {
-                diaryList.innerHTML = `<p style="text-align:center; color:#666; font-style:italic; font-family:'Hind Siliguri', sans-serif; font-size:0.85rem; padding: 20px 0;">কোনো ডায়েরি পাওয়া যায়নি। নতুন ডায়েরি লিখুন</p>`;
-                return;
-            }
-
-            diariesArray.forEach((data) => {
-                const maxChunkSize = 800; // Character limit configuration per single page block
-                const textContent = data.content || "";
-                let chunks = [];
-                
-                if(textContent.length <= maxChunkSize) {
-                    chunks.push(textContent);
-                } else {
-                    for (let i = 0; i < textContent.length; i += maxChunkSize) {
-                        chunks.push(textContent.substring(i, i + maxChunkSize));
-                    }
-                }
-
-                // Create a container block for this grouped entry
-                const groupContainer = document.createElement('div');
-                groupContainer.className = "diary-entry-group";
-
-                chunks.forEach((chunkText, index) => {
-                    const page = document.createElement('div');
-                    page.className = "diary-pdf-page";
-                    page.style.fontFamily = data.fontFamily || "'Cinzel Decorative', serif";
-                    
-                    if(data.diaryImage) {
-                        page.style.backgroundImage = `url(${data.diaryImage})`;
-                    } else {
-                        page.style.backgroundImage = 'none';
-                    }
-                    
-                    const formattedTime = formatFirebaseTime(data.createdAt) || "Recent Cloud Sync";
-                    const isLastPage = (index === chunks.length - 1);
-
-                    if(index === 0) {
-                        // First standard layout configuration structure
-                        page.innerHTML = `
-                            <div>
-                                <h2 class="pdf-date">${data.diaryDate || ""}</h2>
-                                <div class="pdf-time">${formattedTime}</div>
-                                <h3 class="pdf-title">${data.title || "Untitled"}</h3>
-                                <div class="pdf-content">${chunkText}</div>
-                            </div>
-                            <div class="pdf-footer-actions id-placeholder"></div>
-                        `;
-                    } else {
-                        // Next blank metadata layout mode structure
-                        page.innerHTML = `
-                            <div>
-                                <div class="pdf-content" style="margin-top:15px;">${chunkText}</div>
-                            </div>
-                            <div class="pdf-footer-actions id-placeholder"></div>
-                        `;
-                    }
-
-                    // Render actions button architecture specifically inside final index
-                    if(isLastPage) {
-                        const targetFooter = page.querySelector('.id-placeholder');
-                        targetFooter.innerHTML = `
-                            <button class="pdf-action-btn pdf-edit-btn">Edit</button>
-                            <button class="pdf-action-btn pdf-delete-btn">Delete</button>
-                        `;
-                        targetFooter.querySelector('.pdf-edit-btn').addEventListener('click', () => {
-                            initiateDiaryEdit(data.id, data.title || "Untitled", data.diaryDate || "", data.content || "", data.fontFamily || "", data.diaryImage || "");
-                        });
-                        targetFooter.querySelector('.pdf-delete-btn').addEventListener('click', () => { deleteEntry(data.id); });
-                    } else {
-                        const targetFooter = page.querySelector('.id-placeholder');
-                        targetFooter.style.borderTop = "none";
-                    }
-
-                    groupContainer.appendChild(page);
-                });
-
-                diaryList.appendChild(groupContainer);
+            }, (error) => {
+                console.error("Firestore Snapshot Error: ", error);
             });
         }
 
-        document.getElementById('diarySearchInput').addEventListener('input', (e) => {
-            const searchKey = e.target.value.toLowerCase().trim();
-            const filtered = allDiaries.filter(diary => {
+        // CONTROL SORT FILTER LOGIC AND FILTER SEARCH COMBINATIONS
+        function sortAndRenderDiaries() {
+            const sortOrder = document.getElementById('diarySortSelector').value;
+            const searchKey = document.getElementById('diarySearchInput').value.toLowerCase().trim();
+            
+            // Apply search filtering first
+            let filtered = allDiaries.filter(diary => {
                 const titleMatch = (diary.title || "").toLowerCase().includes(searchKey);
                 const dateMatch = (diary.diaryDate || "").includes(searchKey);
                 return titleMatch || dateMatch;
             });
+
+            // Perform robust multi-criteria conditional array sorting mutations
+            filtered.sort((a, b) => {
+                const dateA = a.diaryDate || "";
+                const dateB = b.diaryDate || "";
+                if (dateB !== dateA) {
+                    return sortOrder === 'newest' ? dateB.localeCompare(dateA) : dateA.localeCompare(dateB);
+                }
+                const timeA = a.createdAt ? a.createdAt.toMillis() : 0;
+                const timeB = b.createdAt ? b.createdAt.toMillis() : 0;
+                return sortOrder === 'newest' ? (timeB - timeA) : (timeA - timeB);
+            });
+
             renderDiaryList(filtered);
-        });
+        }
+
+        // Listen for filter mutations and re-render list seamlessly
+        document.getElementById('diarySortSelector').addEventListener('change', sortAndRenderDiaries);
+        document.getElementById('diarySearchInput').addEventListener('input', sortAndRenderDiaries);
+
+        // ADVANCED PDF LAYOUT RENDERER FOR PAST MEMORIES WITH DYNAMIC PAGINATION FLOW
+        function renderDiaryList(diariesArray) {
+            const diaryList = document.getElementById('diaryList');
+            if(!diaryList) return;
+            
+            diaryList.innerHTML = '';
+            
+            if (!diariesArray || diariesArray.length === 0) {
+                diaryList.innerHTML = `<p style="text-align:center; color:#666; font-style:italic; font-family:'Hind Siliguri', sans-serif; font-size:0.85rem; padding: 20px 0;">কোনো ডায়েরি পাওয়া যায়নি।নতুন ডায়েরি লিখুন</p>`;
+                return;
+            }
+
+            diariesArray.forEach((data) => {
+                const pageWrapper = document.createElement('div');
+                pageWrapper.className = "diary-pdf-page-wrapper";
+                pageWrapper.style.fontFamily = data.fontFamily || "'Cinzel Decorative', serif";
+                
+                // Add optional custom cropped page background overlay cleanly if saved
+                if(data.pageBg) {
+                    pageWrapper.style.background = `url(${data.pageBg})`;
+                }
+
+                const formattedTime = formatFirebaseTime(data.createdAt) || "Recent Cloud Sync";
+
+                pageWrapper.innerHTML = `
+                    <div class="pdf-main-body">
+                        <div class="pdf-content-flow-container">
+                            <h2 class="pdf-date">${data.diaryDate || ""}</h2>
+                            <div class="pdf-time">${formattedTime}</div>
+                            <h3 class="pdf-title">${data.title || "Untitled"}</h3>
+                            <div class="pdf-content">${data.content || ""}</div>
+                        </div>
+                    </div>
+                    <div class="pdf-footer-actions">
+                        <button class="pdf-action-btn pdf-edit-btn">Edit</button>
+                        <button class="pdf-action-btn pdf-delete-btn">Delete</button>
+                    </div>
+                `;
+
+                pageWrapper.querySelector('.pdf-edit-btn').addEventListener('click', () => {
+                    initiateDiaryEdit(data.id, data.title || "Untitled", data.diaryDate || "", data.content || "", data.fontFamily || "", data.pageBg || "");
+                });
+
+                pageWrapper.querySelector('.pdf-delete-btn').addEventListener('click', () => {
+                    deleteEntry(data.id);
+                });
+
+                diaryList.appendChild(pageWrapper);
+            });
+        }
 
         document.getElementById('loadFontBtn').addEventListener('click', () => {
             const url = document.getElementById('customFontUrl').value.trim();
@@ -1596,34 +1774,48 @@
             document.getElementById('forgotModal').classList.remove('hidden');
         };
 
-        window.closeForgotModal = () => { document.getElementById('forgotModal').classList.add('hidden'); };
+        window.closeForgotModal = () => {
+            document.getElementById('forgotModal').classList.add('hidden');
+        };
 
         document.getElementById('updatePasswordBtn').addEventListener('click', async () => {
             const oldPassword = document.getElementById('oldPasswordInput').value;
             const newPassword = document.getElementById('newPasswordInput').value;
             const user = auth.currentUser;
 
-            if (!oldPassword || !newPassword) { return alert('দয়া করে পুরাতন এবং নতুন উভয় পাসওয়ার্ড ফিল্ড পূরণ করুন!'); }
-            if (newPassword.length < 6) { return alert('নতুন পাসওয়ার্ডটি কমপক্ষে ৬ ক্যারেক্টারের হতে হবে!'); }
-            if (!user || !user.email) { return alert('ইউজার সেশন পাওয়া যায়নি। দয়া করে আবার লগইন করুন।'); }
+            if (!oldPassword || !newPassword) {
+                return alert('দয়া করে পুরাতন এবং নতুন উভয় পাসওয়ার্ড ফিল্ড পূরণ করুন!');
+            }
+            if (newPassword.length < 6) {
+                return alert('নতুন পাসওয়ার্ডটি কমপক্ষে ৬ ক্যারেক্টারের হতে হবে!');
+            }
+            if (!user || !user.email) {
+                return alert('ইউজার সেশন পাওয়া যায়নি। দয়া করে আবার লগইন করুন।');
+            }
 
             try {
                 const updateBtn = document.getElementById('updatePasswordBtn');
                 updateBtn.disabled = true; updateBtn.innerText = "Processing...";
 
                 const credential = EmailAuthProvider.credential(user.email, oldPassword);
+
                 await reauthenticateWithCredential(user, credential);
+
                 await updatePassword(user, newPassword);
 
-                alert("পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে! নিরাপত্তা নিশ্চিত করতে অ্যাপ্লিকেশনটি এখন রিলিজ (Sign Out) হবে। নতুন পাসওয়ার্ড দিয়ে আবার লগইন করুন। ✨");
+                alert("পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে! নিরাপত্তা নিশ্চিত করতে ও পুরাতন পাসওয়ার্ড বাতিল করতে অ্যাপ্লিকেশনটি এখন রিলিজ (Sign Out) হবে। নতুন পাসওয়ার্ড দিয়ে আবার লগইন করুন। ✨");
                 
                 document.getElementById('oldPasswordInput').value = "";
                 document.getElementById('newPasswordInput').value = "";
+                
                 signOut(auth);
+
             } catch (error) {
                 if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
                     alert('আপনার দেওয়া পুরাতন পাসওয়ার্ডটি সঠিক নয়! দয়া করে আবার চেষ্টা করুন।');
-                } else { alert('পাসওয়ার্ড পরিবর্তনে সমস্যা হয়েছে: ' + error.message); }
+                } else {
+                    alert('পাসওয়ার্ড পরিবর্তনে সমস্যা হয়েছে: ' + error.message);
+                }
             } finally {
                 const updateBtn = document.getElementById('updatePasswordBtn');
                 updateBtn.disabled = false; updateBtn.innerText = "UPDATE PASSWORD";
@@ -1631,4 +1823,4 @@
         });
     </script>
 </body>
-                        </html>
+                            </html>
