@@ -34,7 +34,7 @@
             position: relative;
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
+            overflow: hidden;
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
             background-size: cover !important;
             background-position: center !important;
@@ -337,11 +337,11 @@
             flex-direction: column;
             gap: 25px;
             padding-right: 8px;
-            overflow-y: scroll;
-            max-height: calc(100vh - 270px);
+            overflow-y: auto;
+            flex-grow: 1;
         }
 
-        /* Custom Scrollbar Styling (ডান পাশের স্ক্রল বার কন্ট্রোলার) */
+        /* Custom Scrollbar Styling */
         .diary-pages-container::-webkit-scrollbar {
             width: 8px;
         }
@@ -358,24 +358,25 @@
             background: #555555;
         }
 
-        /* PDF Individual Page Setup - FIXED CHOPPING FIX */
+        /* PDF Individual Page Setup - FIXED SCROLLING & CHOPPING */
         .diary-pdf-page-wrapper {
             background: #ffffff;
             border: 1px solid #dcdcdc;
             box-shadow: 0 5px 15px rgba(0,0,0,0.06);
             border-radius: 4px;
             padding: 25px 20px;
-            height: 480px; 
+            min-height: 480px; 
+            height: auto;
             width: 100%;
             position: relative;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            overflow: hidden;
             background-size: cover !important;
             background-position: center !important;
             background-repeat: no-repeat !important;
             z-index: 1;
+            page-break-inside: avoid;
         }
 
         /* ডায়েরি পেজ ব্যাকগ্রাউন্ডের জন্য মিডিয়াম সাদা ওভারলে সিস্টেম */
@@ -383,7 +384,7 @@
             content: "";
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(255, 255, 255, 0.65); /* মিডিয়াম অপাসিটির সাদা ওভারলে */
+            background: rgba(255, 255, 255, 0.65); 
             z-index: -1;
             pointer-events: none;
         }
@@ -391,29 +392,18 @@
         .pdf-main-body {
             display: flex;
             flex-direction: column;
-            height: calc(100% - 40px);
-            overflow: hidden;
+            height: auto;
             position: relative;
             z-index: 2;
         }
         
-        /* কলাম প্রোপার্টি বাতিল করে লেখা উপর-নিচ স্ক্রল করার জন্য ফিক্স */
+        /* কলাম প্রোপার্টি বাতিল করে লেখা অটো-পেজ ব্রেক করার জন্য ফিক্স */
         .pdf-content-flow-container {
             flex-grow: 1;
             width: 100%;
-            height: 100%;
-            overflow-x: hidden;
-            overflow-y: auto; /* লেখা বেশি হলে পেজের ভেতরেই উপর-নিচ স্ক্রল হবে */
+            height: auto;
+            overflow: hidden;
             padding-right: 5px;
-        }
-        
-        /* পেজের ভেতরের স্ক্রলবার হাইড রাখার জন্য (ঐচ্ছিক, দেখতে সুন্দর লাগে) */
-        .pdf-content-flow-container::-webkit-scrollbar {
-            width: 4px;
-        }
-        .pdf-content-flow-container::-webkit-scrollbar-thumb {
-            background: rgba(0,0,0,0.1);
-            border-radius: 4px;
         }
 
         .pdf-date {
@@ -455,6 +445,7 @@
             background: transparent;
             position: relative;
             z-index: 5;
+            margin-top: auto;
         }
         .pdf-action-btn {
             background: none;
@@ -463,7 +454,7 @@
             font-weight: bold;
             cursor: pointer;
             padding: 5px 8px;
-            font-family: 'Hind Siliguri', sans-serif;
+            font-family: sans-serif;
             transition: 0.2s;
         }
         .pdf-edit-btn { color: #1e40af; }
@@ -631,7 +622,7 @@
             position: relative;
             width: 100%;
             max-width: 380px;
-            max-height: 50vh; /* উচ্চতা কমানো হয়েছে যেন বাটন স্ক্রিনের বাইরে না যায় */
+            max-height: 50vh; 
             overflow: hidden;
             background: #000;
             display: flex;
@@ -1028,14 +1019,14 @@
     </div> 
 
     <div id="cropperModal" class="cropper-modal hidden">
-        <h3 style="color:white; margin:0 0 10px 0; font-family:'Hind Siliguri', sans-serif;">ছবির অংশ ড্র্যাগ করে ব্যাকগ্রাউন্ড সিলেক্ট করুন</h3>
+        <h3 style="color:white; margin:0 0 10px 0; font-family:'Hind Siliguri', sans-serif; text-align: center;">ছবির অংশ ড্র্যাগ করে ব্যাকগ্রাউন্ড সিলেক্ট করুন</h3>
         <div class="cropper-workspace" id="cropperWorkspace">
             <img id="cropperSourceImg" class="cropper-img" src="" alt="Source">
             <div id="cropperTargetBox" class="cropper-box"></div>
         </div>
-        <div style="margin-top:15px; display:flex; gap:15px; width:100%; max-width:360px;">
-            <button id="cancelCropBtn" class="btn-black" style="background:#555; margin:0;">বাতিল</button>
-            <button id="confirmCropBtn" class="btn-black" style="background:#10b981; margin:0;">সিলেক্ট করুন</button>
+        <div style="margin-top:15px; display:flex; gap:15px; width:100%; max-width:380px; justify-content: space-between;">
+            <button id="cancelCropBtn" class="btn-black" style="background:#555; margin:0; flex: 1;">বাতিল</button>
+            <button id="confirmCropBtn" class="btn-black" style="background:#10b981; margin:0; flex: 1;">সিলেক্ট করুন</button>
         </div>
     </div>
 
