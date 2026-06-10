@@ -358,14 +358,14 @@
             background: #555555;
         }
 
-        /* PDF Individual Page Setup (Fixed Ideal Size & Pure Auto CSS Pagination Multi-Page View) */
+        /* PDF Individual Page Setup - FIXED CHOPPING FIX */
         .diary-pdf-page-wrapper {
             background: #ffffff;
             border: 1px solid #dcdcdc;
             box-shadow: 0 5px 15px rgba(0,0,0,0.06);
             border-radius: 4px;
             padding: 25px 20px;
-            height: 480px; /* ফিক্সড আদর্শ সাইজ */
+            height: 480px; 
             width: 100%;
             position: relative;
             display: flex;
@@ -376,23 +376,33 @@
             background-position: center !important;
             background-repeat: no-repeat !important;
         }
-        /* Custom Internal Pagination CSS to flow long content to subsequent Virtual Columns/Pages automatically */
+        
         .pdf-main-body {
             display: flex;
             flex-direction: column;
             height: calc(100% - 40px);
             overflow: hidden;
         }
+        
+        /* কলাম প্রোপার্টি বাতিল করে লেখা উপর-নিচ স্ক্রল করার জন্য ফিক্স */
         .pdf-content-flow-container {
             flex-grow: 1;
             width: 100%;
             height: 100%;
-            column-width: 350px; /* অটোমেটিক কলাম ব্রেক এর মাধ্যমে মাল্টি-পেজ তৈরি */
-            column-gap: 40px;
-            column-fill: auto;
-            overflow-x: auto;
-            overflow-y: hidden;
+            overflow-x: hidden;
+            overflow-y: auto; /* লেখা বেশি হলে পেজের ভেতরেই উপর-নিচ স্ক্রল হবে */
+            padding-right: 5px;
         }
+        
+        /* পেজের ভেতরের স্ক্রলবার হাইড রাখার জন্য (ঐচ্ছিক, দেখতে সুন্দর লাগে) */
+        .pdf-content-flow-container::-webkit-scrollbar {
+            width: 4px;
+        }
+        .pdf-content-flow-container::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.1);
+            border-radius: 4px;
+        }
+
         .pdf-date {
             font-size: 1.4rem;
             font-weight: bold;
@@ -422,7 +432,6 @@
             color: #222222;
             white-space: pre-wrap;
             margin-bottom: 20px;
-            break-inside: avoid;
         }
         .pdf-footer-actions {
             border-top: 1px dashed #e5e5e5;
@@ -1060,8 +1069,8 @@
 
         let allDiaries = []; 
         let currentUserId = null;
-        let editingDiaryId = null; // State controller for managing Edit Mode
-        let currentSelectedPageBgBase64 = ""; // Holds base64 cropped string data for active diary item
+        let editingDiaryId = null; 
+        let currentSelectedPageBgBase64 = ""; 
 
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('diaryDate').value = today;
@@ -1164,17 +1173,14 @@
                     cropperSourceImg.src = event.target.result;
                     cropperModal.classList.remove('hidden');
                     
-                    // Setup cropper dimensions after image loads safely
                     cropperSourceImg.onload = function() {
                         sourceImgRealSize.width = cropperSourceImg.naturalWidth;
                         sourceImgRealSize.height = cropperSourceImg.naturalHeight;
 
-                        // Calculate aspect ratio matching ideal page box (width:100% (~364px) to height:480px ratio => approx 0.76)
                         const workspaceRect = cropperSourceImg.getBoundingClientRect();
                         const targetWidth = workspaceRect.width * 0.75;
                         const targetHeight = targetWidth * (480 / 364); 
 
-                        // Handle extreme landscape fits safely
                         let finalW = targetWidth;
                         let finalH = targetHeight;
                         if(finalH > workspaceRect.height) {
@@ -1192,7 +1198,6 @@
             }
         });
 
-        // Event listeners for Dragging Box on image workspace area (Mouse and Touch Controls)
         const startDrag = (e) => {
             cropState.isDragging = true;
             const clientX = e.clientX || (e.touches && e.touches[0].clientX);
@@ -1217,7 +1222,6 @@
             let newLeft = cropState.initialLeft + deltaX;
             let newTop = cropState.initialTop + deltaY;
 
-            // Constrain movement parameters strictly inside the visible source image boundary
             if(newLeft < 0) newLeft = 0;
             if(newTop < 0) newTop = 0;
             if(newLeft + boxRect.width > imgRect.width) newLeft = imgRect.width - boxRect.width;
@@ -1245,7 +1249,6 @@
             const imgRect = cropperSourceImg.getBoundingClientRect();
             const boxRect = cropperTargetBox.getBoundingClientRect();
 
-            // Calculate precise positional scaling factor maps
             const scaleX = sourceImgRealSize.width / imgRect.width;
             const scaleY = sourceImgRealSize.height / imgRect.height;
 
@@ -1254,7 +1257,6 @@
             const cropW = boxRect.width * scaleX;
             const cropH = boxRect.height * scaleY;
 
-            // Execute final image data extraction utilizing HTML5 Canvas API elements
             const canvas = document.createElement('canvas');
             canvas.width = 364; 
             canvas.height = 480; 
@@ -1669,19 +1671,16 @@
             });
         }
 
-        // CONTROL SORT FILTER LOGIC AND FILTER SEARCH COMBINATIONS
         function sortAndRenderDiaries() {
             const sortOrder = document.getElementById('diarySortSelector').value;
             const searchKey = document.getElementById('diarySearchInput').value.toLowerCase().trim();
             
-            // Apply search filtering first
             let filtered = allDiaries.filter(diary => {
                 const titleMatch = (diary.title || "").toLowerCase().includes(searchKey);
                 const dateMatch = (diary.diaryDate || "").includes(searchKey);
                 return titleMatch || dateMatch;
             });
 
-            // Perform robust multi-criteria conditional array sorting mutations
             filtered.sort((a, b) => {
                 const dateA = a.diaryDate || "";
                 const dateB = b.diaryDate || "";
@@ -1696,11 +1695,9 @@
             renderDiaryList(filtered);
         }
 
-        // Listen for filter mutations and re-render list seamlessly
         document.getElementById('diarySortSelector').addEventListener('change', sortAndRenderDiaries);
         document.getElementById('diarySearchInput').addEventListener('input', sortAndRenderDiaries);
 
-        // ADVANCED PDF LAYOUT RENDERER FOR PAST MEMORIES WITH DYNAMIC PAGINATION FLOW
         function renderDiaryList(diariesArray) {
             const diaryList = document.getElementById('diaryList');
             if(!diaryList) return;
@@ -1717,7 +1714,6 @@
                 pageWrapper.className = "diary-pdf-page-wrapper";
                 pageWrapper.style.fontFamily = data.fontFamily || "'Cinzel Decorative', serif";
                 
-                // Add optional custom cropped page background overlay cleanly if saved
                 if(data.pageBg) {
                     pageWrapper.style.background = `url(${data.pageBg})`;
                 }
@@ -1823,4 +1819,4 @@
         });
     </script>
 </body>
-                            </html>
+                                              </html>
