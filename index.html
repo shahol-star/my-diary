@@ -11,6 +11,8 @@
     <link rel="icon" type="image/jpeg" href="11513.jpg" onerror="this.onerror=null; this.src='11512.png';">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet">
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
     <style>
         * { box-sizing: border-box; }
         body { 
@@ -947,7 +949,7 @@
                         <h4>✒️ Writing & Saving a New Diary</h4>
                         <ul>
                             <li><b>Step 1:</b> Navigate to "WRITE NEW DIARY" from the Main Menu.</li>
-                            <li><b>Step 2:</b> Select the specific date and choose your preferred language font from the dropdown.</li>
+                            <li><b>Step 2:</b> Choose the specific date and choose your preferred language font from the dropdown.</li>
                             <li><b>Step 3:</b> Enter a Title and Content, then click the "💾 SAVE ENTRY" button. Your memory will be securely synced to the cloud.</li>
                         </ul>
 
@@ -1369,7 +1371,6 @@
 
         loadSavedFonts();
 
-        // প্রতিদিনের আলাদা নোটিফিকেশনের কথার কালেকশন (৭ দিনের ৭টি ইউনিক মেসেজ)
         const dailyNotificationBodies = [
             "আজকের দিনটি কেমন কাটলো? আপনার বিশেষ মূহুর্তগুলো ডায়েরিতে লিখে রাখুন! 🌟",
             "স্মৃতিরা হারিয়ে যাওয়ার আগেই সেগুলোকে শব্দের ফ্রেমে বন্দি করে নিন। 📝",
@@ -1389,10 +1390,8 @@
 
             setInterval(() => {
                 const now = new Date();
-                // প্রতিদিন রাত ৮:০০ টায় নোটিফিকেশন ফায়ার হবে
                 if (now.getHours() === 20 && now.getMinutes() === 0) {
                     if (Notification.permission === "granted") {
-                        // সপ্তাহের দিনের ইনডেক্স (0-6) অনুযায়ী আলাদা মেসেজ সিলেক্ট হবে
                         const currentDayIndex = now.getDay();
                         const selectedMessageBody = dailyNotificationBodies[currentDayIndex];
 
@@ -1429,8 +1428,6 @@
                 
                 setTimeout(() => {
                     document.getElementById('sweetMemoryModal').classList.remove('hidden');
-                    
-                    // অ্যানিভার্সারি নোটিফিকেশন সিস্টেম অ্যাপ্লাইড (ঠিক থাকবে প্রতি বছর)
                     if (Notification.permission === "granted") {
                         new Notification("✨ অন দিস ডে স্মৃতিচারণ!", {
                             body: `ঠিক ${elapsedYears} বছর আগের আজকের দিনে আপনার স্মৃতি: "${luckyMemory.title}"`,
@@ -1737,11 +1734,53 @@
         document.getElementById('diarySortSelector').addEventListener('change', sortAndRenderDiaries);
         document.getElementById('diarySearchInput').addEventListener('input', sortAndRenderDiaries);
 
-        // DOWNLOAD BOOK TRIGGER FUNCTION
+
+        // --- সম্পূর্ণ ডায়েরি বুক PDF ডাউনলোডের আসল মেকানিজম ---
         document.getElementById('downloadBookBtn').addEventListener('click', () => {
-            alert("আপনার ডায়েরির সব পাতা নিয়ে 'Download Book' PDF তৈরির প্রসেস শুরু হয়েছে! 📖✨");
-            // এখানে পরবর্তীতে উইন্ডো প্রিন্ট অথবা html2pdf লাইব্রেরি ইন্টিগ্রেট করতে পারবেন সহজে।
+            const diaryListElement = document.getElementById('diaryList');
+            
+            // যদি কোনো ডায়েরি না থাকে
+            if (!diaryListElement || diaryListElement.children.length === 0 || diaryListElement.querySelector('.diary-pdf-page-wrapper') === null) {
+                alert("ডাউনলোড করার মতো কোনো ডায়েরি পেজ খুঁজে পাওয়া যায়নি! 🔍");
+                return;
+            }
+
+            alert("আপনার ডায়েরির সব পাতা নিয়ে 'Download Book' PDF তৈরির প্রসেস শুরু হয়েছে! অনুগ্রহ করে কয়েক সেকেন্ড অপেক্ষা করুন... 📖✨");
+
+            // পিডিএফ তৈরির জন্য আসল ডায়েরি কন্টেইনারের একটি ক্লোন বা কপি তৈরি করা হচ্ছে যাতে আসল অ্যাপ লেআউটে কোনো প্রভাব না পড়ে
+            const elementToPrint = diaryListElement.cloneNode(true);
+
+            // পিডিএফ এর ভেতরে অ্যাকশন বাটন (Edit/Delete) এবং স্ক্রলবার ট্র্যাকিং টেক্সট হাইড করে দেওয়ার লজিক
+            const footerActions = elementToPrint.querySelectorAll('.pdf-footer-actions, div[style*="border-top:1px dashed"]');
+            footerActions.forEach(action => action.style.display = 'none');
+
+            // প্রতিটি পেজ র‍্যাপারের স্টাইল পিডিএফ প্রিন্টের জন্য স্ট্যান্ডার্ডাইজ করা হলো
+            const pages = elementToPrint.querySelectorAll('.diary-pdf-page-wrapper');
+            pages.forEach(page => {
+                page.style.boxShadow = 'none';
+                page.style.border = '1px solid #eeeeee';
+                page.style.marginBottom = '0px'; 
+                page.style.pageBreakAfter = 'always'; // প্রতিটি ডায়েরি ব্লকের পর নতুন পেজ ব্রেক হবে
+            });
+
+            // html2pdf কনফিগারেশন সেটআপ (A4 সাইজ, মার্জিন এবং ইমেজ রেন্ডারিং অপ্টিমাইজেশন)
+            const opt = {
+                margin:       [10, 10, 10, 10], // top, left, bottom, right margins
+                filename:     `DailyDock_Memory_Book_${new Date().toISOString().split('T')[0]}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false }, // উচ্চ রেজোলিউশন এবং এক্সটার্নাল ইমেজের CORS হ্যান্ডলিং
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // পিডিএফ জেনারেট এবং ডিভাইস স্টোরেজে ডাউনলোড করার টাস্ক এক্সিকিউশন
+            html2pdf().set(opt).from(elementToPrint).save().then(() => {
+                alert("আপনার ডায়েরি বুক PDF সফলভাবে ডাউনলোড হয়েছে! 🎉");
+            }).catch(err => {
+                console.error("PDF generation error: ", err);
+                alert("দুঃখিত, PDF জেনারেট করার সময় একটি ত্রুটি ঘটেছে।");
+            });
         });
+
 
         /* INTELLIGENT COMPUTE ENGINE FOR ADVANCED TEXT SPLITTING (PAGINATION SYSTEM) */
         function paginateText(text, maxPixelHeight, fontStyleString) {
@@ -1786,9 +1825,6 @@
             diariesArray.forEach((data) => {
                 const fontFamilyStr = data.fontFamily || "'Cinzel Decorative', serif";
                 const rawContent = data.content || "";
-                
-                // Maximum safe height inside .pdf-content area for perfect chopping box fitment
-                // Total page height 480px minus padding, header space, title box height yields roughly 245px max bounding size.
                 const maxTextBlockHeight = 245; 
                 
                 const storyPages = paginateText(rawContent, maxTextBlockHeight, fontFamilyStr);
@@ -1806,7 +1842,6 @@
 
                     const formattedTime = formatFirebaseTime(data.createdAt) || "Recent Cloud Sync";
                     
-                    // Conditionally load header text only on the first page of split pages
                     const headerHTML = (index === 0) ? `
                         <h2 class="pdf-date">${data.diaryDate || ""}</h2>
                         <div class="pdf-time">${formattedTime}</div>
@@ -1815,7 +1850,6 @@
                         <h2 class="pdf-date" style="font-size:0.9rem; opacity:0.6; margin-bottom:15px;">${data.diaryDate || ""} (Continued...) Page ${index + 1}/${totalPagesCount}</h2>
                     `;
 
-                    // Conditionally load action buttons only on the final page block
                     const footerHTML = isLastPage ? `
                         <div class="pdf-footer-actions">
                             <button class="pdf-action-btn pdf-edit-btn">Edit</button>
@@ -1897,18 +1931,14 @@
                 updateBtn.disabled = true; updateBtn.innerText = "Processing...";
 
                 const credential = EmailAuthProvider.credential(user.email, oldPassword);
-
                 await reauthenticateWithCredential(user, credential);
-
                 await updatePassword(user, newPassword);
 
                 alert("পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে! নিরাপত্তা নিশ্চিত করতে ও পুরাতন পাসওয়ার্ড বাতিল করতে অ্যাপ্লিকেশনটি এখন রিলিজ (Sign Out) হবে। নতুন পাসওয়ার্ড দিয়ে আবার লগইন করুন। ✨");
                 
                 document.getElementById('oldPasswordInput').value = "";
                 document.getElementById('newPasswordInput').value = "";
-                
                 signOut(auth);
-
             } catch (error) {
                 if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
                     alert('আপনার দেওয়া পুরাতন পাসওয়ার্ডটি সঠিক নয়! দয়া করে আবার চেষ্টা করুন।');
@@ -1922,4 +1952,4 @@
         });
     </script>
 </body>
-                        </html>
+                            </html>
