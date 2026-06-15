@@ -825,6 +825,8 @@
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
                 <h3 style="color: #222; margin-bottom: 12px; font-size:1.1rem; text-align: center;">Your Past Memories</h3>
                 
+                <button id="downloadBookBtn" class="btn-black" style="background: #1e40af; margin: 0 0 15px 0; font-family: 'Hind Siliguri', sans-serif;">📥 Download Book (PDF)</button>
+
                 <div class="input-wrapper" style="flex-shrink: 0; margin-bottom: 10px;">
                     <input type="text" id="diarySearchInput" placeholder="🔍 Search by title or date (e.g. 2026-06-05)..." class="input-field" style="font-family:sans-serif; background:white;">
                 </div>
@@ -1367,6 +1369,17 @@
 
         loadSavedFonts();
 
+        // প্রতিদিনের আলাদা নোটিফিকেশনের কথার কালেকশন (৭ দিনের ৭টি ইউনিক মেসেজ)
+        const dailyNotificationBodies = [
+            "আজকের দিনটি কেমন কাটলো? আপনার বিশেষ মূহুর্তগুলো ডায়েরিতে লিখে রাখুন! 🌟",
+            "স্মৃতিরা হারিয়ে যাওয়ার আগেই সেগুলোকে শব্দের ফ্রেমে বন্দি করে নিন। 📝",
+            "আজকের সুন্দর অভিজ্ঞতা বা কোনো শিক্ষা? লিখে রাখুন আপনার ডায়েরি ডকে। ✨",
+            "মনের জম জমে থাকা ভাবনাগুলো আজ ডায়েরির পাতায় নামিয়ে ফেলুন। 🌸",
+            "প্রতিটি দিনই একটি নতুন গল্প। আজকের পাতাটি পূরণ করতে ভুলবেন না যেন! 📖",
+            "ছোট ছোট আনন্দই জীবনকে সুন্দর করে। আজকের সুখের স্মৃতিটি লিখে রাখুন। 🍃",
+            "ডায়েরি লেখার সময় হয়েছে! শান্ত হয়ে বসুন এবং আজকের দিনটি স্মরণ করুন। 🕊️"
+        ];
+
         function setupDailyReminder() {
             if (!("Notification" in window)) return;
 
@@ -1376,10 +1389,15 @@
 
             setInterval(() => {
                 const now = new Date();
+                // প্রতিদিন রাত ৮:০০ টায় নোটিফিকেশন ফায়ার হবে
                 if (now.getHours() === 20 && now.getMinutes() === 0) {
                     if (Notification.permission === "granted") {
+                        // সপ্তাহের দিনের ইনডেক্স (0-6) অনুযায়ী আলাদা মেসেজ সিলেক্ট হবে
+                        const currentDayIndex = now.getDay();
+                        const selectedMessageBody = dailyNotificationBodies[currentDayIndex];
+
                         new Notification("📝 ডায়েরি লেখার সময় হয়েছে!", {
-                            body: "আজকের সুন্দর মুহূর্তগুলো ডায়েরির পাতায় বন্দি করে রাখুন। ✨",
+                            body: selectedMessageBody,
                             icon: "📝",
                             tag: "diary-reminder-" + now.toDateString() 
                         });
@@ -1411,6 +1429,14 @@
                 
                 setTimeout(() => {
                     document.getElementById('sweetMemoryModal').classList.remove('hidden');
+                    
+                    // অ্যানিভার্সারি নোটিফিকেশন সিস্টেম অ্যাপ্লাইড (ঠিক থাকবে প্রতি বছর)
+                    if (Notification.permission === "granted") {
+                        new Notification("✨ অন দিস ডে স্মৃতিচারণ!", {
+                            body: `ঠিক ${elapsedYears} বছর আগের আজকের দিনে আপনার স্মৃতি: "${luckyMemory.title}"`,
+                            icon: "🌸"
+                        });
+                    }
                 }, 2000);
             }
         }
@@ -1428,466 +1454,4 @@
 
         window.showSubSection = (sectionId) => {
             document.getElementById('dashboardSection').classList.add('hidden');
-            document.getElementById('writeSection').classList.add('hidden');
-            document.getElementById('listSection').classList.add('hidden');
-            document.getElementById('settingsSection').classList.add('hidden');
-            document.getElementById('helpSection').classList.add('hidden');
-            document.getElementById('creditsSection').classList.add('hidden');
-            
-            document.getElementById('fontSettingsPage').classList.add('hidden');
-            document.getElementById('themeSettingsPage').classList.add('hidden');
-            document.getElementById('passwordSettingsPage').classList.add('hidden');
-            
-            document.getElementById(sectionId).classList.remove('hidden');
-            if(sectionId === 'listSection') {
-                sortAndRenderDiaries();
-            }
-            if(sectionId === 'writeSection') {
-                if (!editingDiaryId) {
-                    clearWriteForm();
-                }
-            }
-        };
-
-        function clearWriteForm() {
-            document.getElementById('writePanelPurpose').innerText = "Capture Memory";
-            document.getElementById('saveBtn').innerText = "💾 SAVE ENTRY";
-            document.getElementById('diaryTitle').value = '';
-            document.getElementById('diaryContent').value = '';
-            document.getElementById('diaryDate').value = today;
-            document.getElementById('diaryPageBgInput').value = '';
-            removePageBgBtn.classList.add('hidden');
-            currentSelectedPageBgBase64 = "";
-            const defaultFont = document.getElementById('fontSelector').value;
-            document.getElementById('diaryContent').style.fontFamily = defaultFont;
-            document.getElementById('diaryTitle').style.fontFamily = defaultFont;
-        }
-
-        window.backToDashboard = () => {
-            editingDiaryId = null; 
-            document.getElementById('writeSection').classList.add('hidden');
-            document.getElementById('listSection').classList.add('hidden');
-            document.getElementById('settingsSection').classList.add('hidden');
-            document.getElementById('helpSection').classList.add('hidden');
-            document.getElementById('creditsSection').classList.add('hidden');
-            document.getElementById('fontSettingsPage').classList.add('hidden');
-            document.getElementById('themeSettingsPage').classList.add('hidden');
-            document.getElementById('passwordSettingsPage').classList.add('hidden');
-            document.getElementById('dashboardSection').classList.remove('hidden');
-        };
-
-        function formatFirebaseTime(createdAtTimestamp) {
-            if (!createdAtTimestamp) return "";
-            try {
-                const dateObj = createdAtTimestamp.toDate ? createdAtTimestamp.toDate() : new Date(createdAtTimestamp);
-                let hours = dateObj.getHours();
-                const minutes = dateObj.getMinutes().toString().padStart(2, '0');
-                const ampm = hours >= 12 ? 'PM' : 'AM';
-                hours = hours % 12;
-                hours = hours ? hours : 12; 
-                return `${hours}:${minutes} ${ampm}`;
-            } catch(e) {
-                return "";
-            }
-        }
-
-        function initiateDiaryEdit(id, title, dateStr, content, fontFamily, pageBg) {
-            editingDiaryId = id; 
-            
-            document.getElementById('writePanelPurpose').innerText = "Edit Your Memory";
-            document.getElementById('diaryTitle').value = title;
-            document.getElementById('diaryContent').value = content;
-            document.getElementById('diaryDate').value = dateStr;
-            
-            if(pageBg) {
-                currentSelectedPageBgBase64 = pageBg;
-                removePageBgBtn.classList.remove('hidden');
-            } else {
-                currentSelectedPageBgBase64 = "";
-                removePageBgBtn.classList.add('hidden');
-            }
-            
-            const selector = document.getElementById('fontSelector');
-            if([...selector.options].some(opt => opt.value === fontFamily)) {
-                selector.value = fontFamily;
-            }
-            
-            document.getElementById('diaryContent').style.fontFamily = fontFamily;
-            document.getElementById('diaryTitle').style.fontFamily = fontFamily;
-            
-            document.getElementById('saveBtn').innerText = "🔄 UPDATE ENTRY";
-            showSubSection('writeSection');
-        }
-
-        window.deleteEntry = async (entryId) => {
-            if(confirm("Are you sure you want to delete this memory forever? 😢")) {
-                try {
-                    await deleteDoc(doc(db, "diaries", entryId));
-                    alert("Deleted successfully!");
-                } catch (error) { alert("Error deleting entry."); }
-            }
-        };
-
-        async function handleGoogleSignIn() {
-            try {
-                await signInWithPopup(auth, googleProvider);
-            } catch (error) { 
-                alert('Google Sign-in failed: ' + error.message); 
-            }
-        }
-
-        document.getElementById('welcomeGoogleBtn').addEventListener('click', handleGoogleSignIn);
-        document.getElementById('googleLoginBtn').addEventListener('click', handleGoogleSignIn);
-
-        onAuthStateChanged(auth, (user) => {
-            const topHeader = document.getElementById('topHeader');
-            const appSection = document.getElementById('appSection');
-
-            if (user) {
-                currentUserId = user.uid;
-                topHeader.classList.add('hidden');
-                document.getElementById('welcomeSection').classList.add('hidden');
-                document.getElementById('loginSection').classList.add('hidden');
-                document.getElementById('registerSection').classList.add('hidden');
-                appSection.classList.remove('hidden');
-                backToDashboard();
-                loadDiaryEntries(user.uid);
-                setupDailyReminder(); 
-            } else {
-                currentUserId = null;
-                topHeader.classList.remove('hidden');
-                appSection.classList.add('hidden');
-                navigateTo('welcomeSection');
-                document.getElementById('diaryList').innerHTML = '';
-                allDiaries = [];
-            }
-        });
-
-        document.getElementById('signupBtn').addEventListener('click', async () => {
-            const email = document.getElementById('regEmail').value.trim();
-            const password = document.getElementById('regPassword').value;
-            const confirmPass = document.getElementById('regConfirmPassword').value;
-            const first = document.getElementById('regFirst').value.trim();
-            const last = document.getElementById('regLast').value.trim();
-
-            if(!first || !last || !email || !password || !confirmPass) return alert('Please fill in all fields!');
-            if(password !== confirmPass) return alert('Passwords do not match!');
-
-            try {
-                await createUserWithEmailAndPassword(auth, email, password);
-                alert('Account created successfully! ✨');
-            } catch (error) { alert(error.message); }
-        });
-
-        document.getElementById('loginBtn').addEventListener('click', async () => {
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            if(!email || !password) return alert('Please fill in all fields!');
-
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-            } catch (error) { alert('Login failed: ' + error.message); }
-        });
-
-        document.getElementById('resetPasswordBtn').addEventListener('click', async () => {
-            const email = document.getElementById('forgotEmail').value.trim();
-            if (!email) return alert('Please enter your email address!');
-
-            try {
-                const btn = document.getElementById('resetPasswordBtn');
-                btn.disabled = true; btn.innerText = "Sending...";
-                await sendPasswordResetEmail(auth, email);
-                alert('পাসওয়ার্ড রিসেট করার লিঙ্কটি আপনার ইমেইলে পাঠানো হয়েছে! দয়া করে আপনার ইনবক্স অথবা স্প্যাম (Spam) ফোল্ডার চেক করুন। ✨');
-                closeForgotModal();
-            } catch (error) {
-                alert('Error: ' + error.message);
-            } finally {
-                const btn = document.getElementById('resetPasswordBtn');
-                btn.disabled = false; btn.innerText = "Send Reset Link";
-            }
-        });
-
-        document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
-
-        const fontSelector = document.getElementById('fontSelector');
-        fontSelector.addEventListener('change', () => {
-            document.getElementById('diaryContent').style.fontFamily = fontSelector.value;
-            document.getElementById('diaryTitle').style.fontFamily = fontSelector.value;
-        });
-
-        document.getElementById('saveBtn').addEventListener('click', async () => {
-            const title = document.getElementById('diaryTitle').value.trim();
-            const content = document.getElementById('diaryContent').value.trim();
-            const customDate = document.getElementById('diaryDate').value; 
-            const selectedFont = fontSelector.value;
-
-            if (!title || !content || !customDate) return alert('Title, Content and Date are required!');
-
-            try {
-                const saveBtn = document.getElementById('saveBtn');
-                saveBtn.disabled = true; 
-                saveBtn.innerText = editingDiaryId ? "Updating..." : "Saving...";
-
-                if (editingDiaryId) {
-                    await updateDoc(doc(db, "diaries", editingDiaryId), {
-                        title: title,
-                        content: content,
-                        fontFamily: selectedFont,
-                        diaryDate: customDate,
-                        pageBg: currentSelectedPageBgBase64,
-                        lastEditedAt: serverTimestamp()
-                    });
-                    alert('Memory updated securely! 🔄✨');
-                } else {
-                    await addDoc(collection(db, "diaries"), {
-                        uid: auth.currentUser.uid,
-                        title: title,
-                        content: content,
-                        fontFamily: selectedFont,
-                        diaryDate: customDate, 
-                        pageBg: currentSelectedPageBgBase64,
-                        createdAt: serverTimestamp()
-                    });
-                    alert('Saved securely! ✨');
-                }
-
-                editingDiaryId = null; 
-                clearWriteForm();
-                backToDashboard();
-            } catch (error) { 
-                console.error(error);
-                alert('Error processing memory submission task.'); 
-            } finally { 
-                document.getElementById('saveBtn').disabled = false; 
-                document.getElementById('saveBtn').innerText = "💾 SAVE ENTRY"; 
-            }
-        });
-
-        let isFirstLoad = true; 
-        function loadDiaryEntries(uid) {
-            const q = query(collection(db, "diaries"), where("uid", "==", uid));
-
-            onSnapshot(q, (snapshot) => {
-                allDiaries = [];
-                snapshot.forEach(doc => {
-                    allDiaries.push({ id: doc.id, ...doc.data() });
-                });
-                
-                sortAndRenderDiaries();
-
-                if (isFirstLoad) {
-                    checkOnThisDayMemories(allDiaries);
-                    isFirstLoad = false;
-                }
-            }, (error) => {
-                console.error("Firestore Snapshot Error: ", error);
-            });
-        }
-
-        function sortAndRenderDiaries() {
-            const sortOrder = document.getElementById('diarySortSelector').value;
-            const searchKey = document.getElementById('diarySearchInput').value.toLowerCase().trim();
-            
-            let filtered = allDiaries.filter(diary => {
-                const titleMatch = (diary.title || "").toLowerCase().includes(searchKey);
-                const dateMatch = (diary.diaryDate || "").includes(searchKey);
-                return titleMatch || dateMatch;
-            });
-
-            filtered.sort((a, b) => {
-                const dateA = a.diaryDate || "";
-                const dateB = b.diaryDate || "";
-                if (dateB !== dateA) {
-                    return sortOrder === 'newest' ? dateB.localeCompare(dateA) : dateA.localeCompare(dateB);
-                }
-                const timeA = a.createdAt ? a.createdAt.toMillis() : 0;
-                const timeB = b.createdAt ? b.createdAt.toMillis() : 0;
-                return sortOrder === 'newest' ? (timeB - timeA) : (timeA - timeB);
-            });
-
-            renderDiaryList(filtered);
-        }
-
-        document.getElementById('diarySortSelector').addEventListener('change', sortAndRenderDiaries);
-        document.getElementById('diarySearchInput').addEventListener('input', sortAndRenderDiaries);
-
-        /* INTELLIGENT COMPUTE ENGINE FOR ADVANCED TEXT SPLITTING (PAGINATION SYSTEM) */
-        function paginateText(text, maxPixelHeight, fontStyleString) {
-            const sandbox = document.getElementById('paginationSandbox');
-            sandbox.style.fontFamily = fontStyleString;
-            sandbox.style.fontSize = "0.95rem";
-            sandbox.style.lineHeight = "1.6";
-            
-            const words = text.split(/(\s+)/);
-            let pages = [];
-            let currentPageText = "";
-
-            for (let i = 0; i < words.length; i++) {
-                let testText = currentPageText + words[i];
-                sandbox.innerText = testText;
-                
-                if (sandbox.offsetHeight > maxPixelHeight && currentPageText !== "") {
-                    pages.push(currentPageText);
-                    currentPageText = words[i];
-                } else {
-                    currentPageText = testText;
-                }
-            }
-            if (currentPageText !== "") {
-                pages.push(currentPageText);
-            }
-            if (pages.length === 0) pages.push("");
-            return pages;
-        }
-
-        function renderDiaryList(diariesArray) {
-            const diaryList = document.getElementById('diaryList');
-            if(!diaryList) return;
-            
-            diaryList.innerHTML = '';
-            
-            if (!diariesArray || diariesArray.length === 0) {
-                diaryList.innerHTML = `<p style="text-align:center; color:#666; font-style:italic; font-family:'Hind Siliguri', sans-serif; font-size:0.85rem; padding: 20px 0;">কোনো ডায়েরি পাওয়া যায়নি।নতুন ডায়েরি লিখুন</p>`;
-                return;
-            }
-
-            diariesArray.forEach((data) => {
-                const fontFamilyStr = data.fontFamily || "'Cinzel Decorative', serif";
-                const rawContent = data.content || "";
-                
-                // Maximum safe height inside .pdf-content area for perfect chopping box fitment
-                // Total page height 480px minus padding, header space, title box height yields roughly 245px max bounding size.
-                const maxTextBlockHeight = 245; 
-                
-                const storyPages = paginateText(rawContent, maxTextBlockHeight, fontFamilyStr);
-                const totalPagesCount = storyPages.length;
-
-                storyPages.forEach((pageContentText, index) => {
-                    const isLastPage = (index === totalPagesCount - 1);
-                    const pageWrapper = document.createElement('div');
-                    pageWrapper.className = "diary-pdf-page-wrapper";
-                    pageWrapper.style.fontFamily = fontFamilyStr;
-                    
-                    if(data.pageBg) {
-                        pageWrapper.style.background = `url(${data.pageBg})`;
-                    }
-
-                    const formattedTime = formatFirebaseTime(data.createdAt) || "Recent Cloud Sync";
-                    
-                    // Conditionally load header text only on the first page of split pages
-                    const headerHTML = (index === 0) ? `
-                        <h2 class="pdf-date">${data.diaryDate || ""}</h2>
-                        <div class="pdf-time">${formattedTime}</div>
-                        <h3 class="pdf-title">${data.title || "Untitled"}</h3>
-                    ` : `
-                        <h2 class="pdf-date" style="font-size:0.9rem; opacity:0.6; margin-bottom:15px;">${data.diaryDate || ""} (Continued...) Page ${index + 1}/${totalPagesCount}</h2>
-                    `;
-
-                    // Conditionally load action buttons only on the final page block
-                    const footerHTML = isLastPage ? `
-                        <div class="pdf-footer-actions">
-                            <button class="pdf-action-btn pdf-edit-btn">Edit</button>
-                            <button class="pdf-action-btn pdf-delete-btn">Delete</button>
-                        </div>
-                    ` : `
-                        <div style="text-align:right; font-size:0.75rem; color:#666; font-family:sans-serif; border-top:1px dashed #ddd; padding-top:5px; margin-top:auto;">Turn page for more...</div>
-                    `;
-
-                    pageWrapper.innerHTML = `
-                        <div class="pdf-main-body">
-                            <div class="pdf-content-flow-container">
-                                ${headerHTML}
-                                <div class="pdf-content">${pageContentText}</div>
-                            </div>
-                        </div>
-                        ${footerHTML}
-                    `;
-
-                    if (isLastPage) {
-                        pageWrapper.querySelector('.pdf-edit-btn').addEventListener('click', () => {
-                            initiateDiaryEdit(data.id, data.title || "Untitled", data.diaryDate || "", data.content || "", data.fontFamily || "", data.pageBg || "");
-                        });
-
-                        pageWrapper.querySelector('.pdf-delete-btn').addEventListener('click', () => {
-                            deleteEntry(data.id);
-                        });
-                    }
-
-                    diaryList.appendChild(pageWrapper);
-                });
-            });
-        }
-
-        document.getElementById('loadFontBtn').addEventListener('click', () => {
-            const url = document.getElementById('customFontUrl').value.trim();
-            const name = document.getElementById('customFontName').value.trim();
-
-            if(!url || !name) return alert('Both fields are required!');
-
-            const savedFonts = JSON.parse(localStorage.getItem('DailydockExportedFonts')) || [];
-            savedFonts.push({ url: url, name: name });
-            localStorage.setItem('DailydockExportedFonts', JSON.stringify(savedFonts));
-
-            alert(`Font "${name}" exported & saved permanently! 🎉`);
-            document.getElementById('customFontUrl').value = '';
-            document.getElementById('customFontName').value = '';
-            
-            loadSavedFonts();
-            backToDashboard();
-        });
-
-        window.openForgotModal = () => {
-            document.getElementById('forgotEmail').value = "";
-            document.getElementById('forgotModal').classList.remove('hidden');
-        };
-
-        window.closeForgotModal = () => {
-            document.getElementById('forgotModal').classList.add('hidden');
-        };
-
-        document.getElementById('updatePasswordBtn').addEventListener('click', async () => {
-            const oldPassword = document.getElementById('oldPasswordInput').value;
-            const newPassword = document.getElementById('newPasswordInput').value;
-            const user = auth.currentUser;
-
-            if (!oldPassword || !newPassword) {
-                return alert('দয়া করে পুরাতন এবং নতুন উভয় পাসওয়ার্ড ফিল্ড পূরণ করুন!');
-            }
-            if (newPassword.length < 6) {
-                return alert('নতুন পাসওয়ার্ডটি কমপক্ষে ৬ ক্যারেক্টারের হতে হবে!');
-            }
-            if (!user || !user.email) {
-                return alert('ইউজার সেশন পাওয়া যায়নি। দয়া করে আবার লগইন করুন।');
-            }
-
-            try {
-                const updateBtn = document.getElementById('updatePasswordBtn');
-                updateBtn.disabled = true; updateBtn.innerText = "Processing...";
-
-                const credential = EmailAuthProvider.credential(user.email, oldPassword);
-
-                await reauthenticateWithCredential(user, credential);
-
-                await updatePassword(user, newPassword);
-
-                alert("পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে! নিরাপত্তা নিশ্চিত করতে ও পুরাতন পাসওয়ার্ড বাতিল করতে অ্যাপ্লিকেশনটি এখন রিলিজ (Sign Out) হবে। নতুন পাসওয়ার্ড দিয়ে আবার লগইন করুন। ✨");
-                
-                document.getElementById('oldPasswordInput').value = "";
-                document.getElementById('newPasswordInput').value = "";
-                
-                signOut(auth);
-
-            } catch (error) {
-                if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
-                    alert('আপনার দেওয়া পুরাতন পাসওয়ার্ডটি সঠিক নয়! দয়া করে আবার চেষ্টা করুন।');
-                } else {
-                    alert('পাসওয়ার্ড পরিবর্তনে সমস্যা হয়েছে: ' + error.message);
-                }
-            } finally {
-                const updateBtn = document.getElementById('updatePasswordBtn');
-                updateBtn.disabled = false; updateBtn.innerText = "UPDATE PASSWORD";
-            }
-        });
-    </script>
-</body>
-                    </html>
+            document
