@@ -404,7 +404,6 @@
             background-position: center !important;
             background-repeat: no-repeat !important;
             z-index: 1;
-            page-break-inside: avoid;
         }
 
         /* ডায়েরি পেজ ব্যাকগ্রাউন্ডের জন্য মিডিয়াম সাদা ওভারলে সিস্টেম */
@@ -489,6 +488,28 @@
         .pdf-edit-btn:hover { text-decoration: underline; }
         .pdf-delete-btn { color: #dc2626; }
         .pdf-delete-btn:hover { text-decoration: underline; }
+
+        /* PRINT MEDIA LAYOUT FIX FOR PDF EXPORT */
+        @media print {
+            .diary-pdf-page-wrapper {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                page-break-after: always !important;
+                break-after: always !important;
+                height: 297mm !important; /* Forces exact A4 Height */
+                width: 210mm !important;  /* Forces exact A4 Width */
+                margin: 0 !important;
+                padding: 20mm !important;
+                box-shadow: none !important;
+                border: none !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .pdf-main-body, .pdf-content-flow-container {
+                height: 100% !important;
+                overflow: hidden !important;
+            }
+        }
 
         /* Sort dropdown locked to app default font */
         #diarySortSelector, label[for="diarySortSelector"] {
@@ -1762,7 +1783,7 @@
         document.getElementById('diarySearchInput').addEventListener('input', sortAndRenderDiaries);
 
 
-        // --- সম্পূর্ণ ডায়েরি বুক PDF ডাউনলোডের আসল মেকানিজম (FIXED FOR FULL PAGE BG) ---
+        // --- সম্পূর্ণ ডায়েরি বুক PDF ডাউনলোডের আসল মেকানিজম (FIXED FOR FULL PAGE BG & NO BREAK) ---
         document.getElementById('downloadBookBtn').addEventListener('click', () => {
             const diaryListElement = document.getElementById('diaryList');
             
@@ -1777,23 +1798,32 @@
 
             // পিডিএফ এর ভেতরে অ্যাকশন বাটন এবং থার্ড-পার্টি কন্টেন্ট হাইড করা
             const footerActions = elementToPrint.querySelectorAll('.pdf-footer-actions, div[style*="border-top:1px dashed"]');
-            footerActions.forEach(action => action.style.display = 'none');
+            footerActions.forEach(action => action.style.setProperty('display', 'none', 'important'));
+
+            // গ্রিড লেআউট রিমুভ করে ফ্লেক্স বা নরমাল ব্লক লেআউট দেওয়া যেন html2pdf প্রপারলি পেজ কাউন্ট করতে পারে
+            elementToPrint.style.display = 'block';
+            elementToPrint.style.width = '210mm';
+            elementToPrint.style.padding = '0';
+            elementToPrint.style.margin = '0';
 
             // পিডিএফ এর জন্য স্টাইল রেশিও একদম ফুল পেজ এ ফিক্স করা
             const pages = elementToPrint.querySelectorAll('.diary-pdf-page-wrapper');
             pages.forEach(page => {
-                page.style.boxShadow = 'none';
-                page.style.border = 'none';
-                page.style.margin = '0mm'; 
-                page.style.padding = '20mm'; // লেখার সেফ জোন মার্জিন
-                page.style.width = '210mm';  // A4 স্ট্যান্ডার্ড উইডথ
-                page.style.height = '297mm'; // A4 স্ট্যান্ডার্ড হাইট
-                page.style.pageBreakAfter = 'always';
+                page.style.setProperty('box-shadow', 'none', 'important');
+                page.style.setProperty('border', 'none', 'important');
+                page.style.setProperty('margin', '0mm', 'important'); 
+                page.style.setProperty('padding', '20mm', 'important'); // লেখার সেফ জোন মার্জিন
+                page.style.setProperty('width', '210mm', 'important');  // A4 স্ট্যান্ডার্ড উইডথ
+                page.style.setProperty('height', '297mm', 'important'); // A4 স্ট্যান্ডার্ড হাইট
+                page.style.setProperty('page-break-inside', 'avoid', 'important');
+                page.style.setProperty('break-inside', 'avoid', 'important');
+                page.style.setProperty('page-break-after', 'always', 'important');
+                page.style.setProperty('break-after', 'always', 'important');
                 
                 // ব্যাকগ্রাউন্ড নিশ্চিত করা
-                page.style.backgroundSize = 'cover';
-                page.style.backgroundPosition = 'center';
-                page.style.backgroundRepeat = 'no-repeat';
+                page.style.setProperty('background-size', 'cover', 'important');
+                page.style.setProperty('background-position', 'center', 'important');
+                page.style.setProperty('background-repeat', 'no-repeat', 'important');
             });
 
             // html2pdf কনফিগারেশন সেটআপ (A4 সাইজ, কোনো বর্ডার মার্জিন থাকবে না কারণ পেজ নিজেই হ্যান্ডেল করছে)
@@ -1802,7 +1832,8 @@
                 filename:     `DailyDock_Memory_Book_${new Date().toISOString().split('T')[0]}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2, useCORS: true, logging: false }, 
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak:    { mode: ['css', 'legacy'] }
             };
 
             html2pdf().set(opt).from(elementToPrint).save().then(() => {
@@ -1984,4 +2015,4 @@
         });
     </script>
 </body>
-                    </html>
+                        </html>
