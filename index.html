@@ -27,16 +27,15 @@
             min-height: 100vh;
         }
         
-        /* App Layout Fixed to Responsive Device Fit (Mobile & Desktop View) */
+        /* App Layout Updated to Full Responsive Layout for Mobile & Desktop */
         .app-container {
             width: 100%;
-            max-width: 430px;
-            height: 100vh;
+            min-height: 100vh;
             background: #f3f3f3; 
             position: relative;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow-x: hidden;
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
             background-size: cover !important;
             background-position: center !important;
@@ -75,6 +74,7 @@
             flex-direction: column;
             justify-content: center;
             flex-shrink: 0;
+            width: 100%;
         }
         .header-circle {
             position: absolute;
@@ -136,21 +136,37 @@
             100% { left: -20%; transform: scaleX(-1); }
         }
 
-        /* CONTENT AREAS */
+        /* CONTENT AREAS - Desktop Optimized Grid Max-width for Forms */
         .content-body {
             padding: 25px 25px;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
             color: #222222; 
-            overflow-y: auto;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
         }
+        
+        /* Layout overrides for sections containing list cards grid */
+        #appSection {
+            max-width: 100% !important;
+            padding: 20px 25px !important;
+        }
+        
+        #dashboardSection {
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
         .page-title {
             font-size: 1.6rem;
             letter-spacing: 1px;
             margin-top: 0;
             margin-bottom: 20px;
             color: #111;
+            text-align: center;
         }
 
         /* INPUT STYLES */
@@ -333,14 +349,25 @@
         .text-red:hover { background: #dc2626; color: white; }
         .back-link { color: #1e40af; text-decoration: none; display: inline-block; margin-bottom: 15px; cursor: pointer; font-size: 0.9rem; font-weight: bold;}
         
-        /* NEW PDF-STYLE DIARY PAGE CONTAINER AND SCROLLBAR DESIGN */
+        /* NEW PDF-STYLE DIARY PAGE CONTAINER AND SCROLLBAR DESIGN - Grid layout on Large Screens */
         .diary-pages-container {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: 1fr;
             gap: 25px;
             padding-right: 8px;
             overflow-y: auto;
             flex-grow: 1;
+        }
+        
+        @media (min-width: 768px) {
+            .diary-pages-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (min-width: 1200px) {
+            .diary-pages-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
 
         /* Custom Scrollbar Styling */
@@ -827,13 +854,13 @@
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
                 <h3 style="color: #222; margin-bottom: 12px; font-size:1.1rem; text-align: center;">Your Past Memories</h3>
                 
-                <button id="downloadBookBtn" class="btn-black" style="background: #1e40af; margin: 0 0 15px 0; font-family: 'Hind Siliguri', sans-serif;">📥 Download Book (PDF)</button>
+                <button id="downloadBookBtn" class="btn-black" style="background: #1e40af; margin: 0 0 15px 0; font-family: 'Hind Siliguri', sans-serif; max-width: 300px;">📥 Download Book (PDF)</button>
 
                 <div class="input-wrapper" style="flex-shrink: 0; margin-bottom: 10px;">
                     <input type="text" id="diarySearchInput" placeholder="🔍 Search by title or date (e.g. 2026-06-05)..." class="input-field" style="font-family:sans-serif; background:white;">
                 </div>
 
-                <div class="input-wrapper" style="flex-shrink: 0; display:flex; align-items:center; gap:10px; margin-bottom:15px;">
+                <div class="input-wrapper" style="flex-shrink: 0; display:flex; align-items:center; gap:10px; margin-bottom:15px; max-width: 300px;">
                     <label id="sortLabel" style="margin:0; white-space:nowrap; font-weight:bold; font-size:0.85rem;">Sort by:</label>
                     <select id="diarySortSelector" style="flex-grow:1; padding:8px; background:white; color:black; border:1px solid #dfdfdf; border-radius:8px; font-size:0.85rem;">
                         <option value="newest">Newest First</option>
@@ -848,7 +875,7 @@
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
                 <h3 style="color: #222; margin-bottom: 20px; font-size:1.2rem; text-align: center;">Settings Menu</h3>
                 
-                <div class="pro-card">
+                <div class="pro-card" style="max-width: 500px; margin: 0 auto;">
                     <div class="menu-item" onclick="showSubSection('fontSettingsPage')">▶ WEB FONT EXPORTER</div>
                     <div class="menu-item" onclick="showSubSection('themeSettingsPage')">▶ CUSTOM THEME</div>
                     <div class="menu-item" onclick="showSubSection('passwordSettingsPage')">▶ CHANGE PASSWORD</div>
@@ -858,7 +885,7 @@
             <div id="fontSettingsPage" class="hidden" style="padding: 10px 25px;">
                 <div class="back-link" onclick="showSubSection('settingsSection')">← Back to Settings</div>
                 
-                <div class="settings-panel-box">
+                <div class="settings-panel-box" style="max-width: 500px; margin: 0 auto;">
                     <div class="settings-panel-title">🔤 Web Font Exporter (ফন্ট সেটিংস)</div>
                     <p style="font-size: 0.8rem; color: #555; font-family:'Hind Siliguri', sans-serif; margin-bottom:10px;">
                         <a href="https://fonts.google.com" target="_blank" class="font-link">Google Fonts</a> CSS URL পেস্ট করে নতুন ফন্ট এক্সপোর্ট করুন।
@@ -877,7 +904,7 @@
             <div id="themeSettingsPage" class="hidden" style="padding: 10px 25px;">
                 <div class="back-link" onclick="showSubSection('settingsSection')">← Back to Settings</div>
                 
-                <div class="settings-panel-box">
+                <div class="settings-panel-box" style="max-width: 500px; margin: 0 auto;">
                     <div class="settings-panel-title">🎨 Custom Theme (কাস্টম ব্যাকগ্রাউন্ড)</div>
                     <p style="font-size: 0.8rem; color: #555; font-family:'Hind Siliguri', sans-serif; margin: 0 0 10px 0;">
                         আপনার গ্যালারি থেকে যেকোনো ছবি সিলেক্ট করে অ্যাপ্লিকেশনের ব্যাকগ্রাউন্ড থিম হিসেবে ব্যবহার করুন।
@@ -892,7 +919,7 @@
             <div id="passwordSettingsPage" class="hidden" style="padding: 10px 25px;">
                 <div class="back-link" onclick="showSubSection('settingsSection')">← Back to Settings</div>
                 
-                <div class="settings-panel-box">
+                <div class="settings-panel-box" style="max-width: 500px; margin: 0 auto;">
                     <div class="settings-panel-title">Change Password (পাসওয়ার্ড পরিবর্তন)</div>
                     <div class="input-wrapper">
                         <label>Old Password</label>
@@ -911,12 +938,12 @@
             <div id="helpSection" class="hidden" style="padding: 10px 25px; font-family:'Hind Siliguri', sans-serif;">
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
                 
-                <div class="help-tabs">
+                <div class="help-tabs" style="max-width: 600px; margin: 0 auto 15px auto;">
                     <button id="tabBn" class="tab-btn active" onclick="switchHelpLang('bn')">বাংলা</button>
                     <button id="tabEn" class="tab-btn" onclick="switchHelpLang('en')">English</button>
                 </div>
 
-                <div class="help-box">
+                <div class="help-box" style="max-width: 600px; margin: 0 auto;">
                     <div id="guideBn">
                         <h4>✒️ নতুন ডায়েরি লেখা ও সংরক্ষণ</h4>
                         <ul>
@@ -978,7 +1005,7 @@
             <div id="creditsSection" class="hidden" style="padding: 10px 25px;">
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
                 
-                <div class="credit-card" style="padding-top: 25px; padding-bottom: 25px;">
+                <div class="credit-card" style="padding-top: 25px; padding-bottom: 25px; max-width: 600px; margin: 0 auto;">
                     <p style="font-size: 1.2rem; font-style: italic; font-weight: bold; color: #111111; margin: 0 0 25px 0; letter-spacing: 0.5px;">
                         "Every day deserves a page."
                     </p>
@@ -1735,11 +1762,10 @@
         document.getElementById('diarySearchInput').addEventListener('input', sortAndRenderDiaries);
 
 
-        // --- সম্পূর্ণ ডায়েরি বুক PDF ডাউনলোডের আসল মেকানিজম ---
+        // --- সম্পূর্ণ ডায়েরি বুক PDF ডাউনলোডের আসল মেকানিজম (FIXED FOR FULL PAGE BG) ---
         document.getElementById('downloadBookBtn').addEventListener('click', () => {
             const diaryListElement = document.getElementById('diaryList');
             
-            // যদি কোনো ডায়েরি না থাকে
             if (!diaryListElement || diaryListElement.children.length === 0 || diaryListElement.querySelector('.diary-pdf-page-wrapper') === null) {
                 alert("ডাউনলোড করার মতো কোনো ডায়েরি পেজ খুঁজে পাওয়া যায়নি! 🔍");
                 return;
@@ -1747,32 +1773,38 @@
 
             alert("আপনার ডায়েরির সব পাতা নিয়ে 'Download Book' PDF তৈরির প্রসেস শুরু হয়েছে! অনুগ্রহ করে কয়েক সেকেন্ড অপেক্ষা করুন... 📖✨");
 
-            // পিডিএফ তৈরির জন্য আসল ডায়েরি কন্টেইনারের একটি ক্লোন বা কপি তৈরি করা হচ্ছে যাতে আসল অ্যাপ লেআউটে কোনো প্রভাব না পড়ে
             const elementToPrint = diaryListElement.cloneNode(true);
 
-            // পিডিএফ এর ভেতরে অ্যাকশন বাটন (Edit/Delete) এবং স্ক্রলবার ট্র্যাকিং টেক্সট হাইড করে দেওয়ার লজিক
+            // পিডিএফ এর ভেতরে অ্যাকশন বাটন এবং থার্ড-পার্টি কন্টেন্ট হাইড করা
             const footerActions = elementToPrint.querySelectorAll('.pdf-footer-actions, div[style*="border-top:1px dashed"]');
             footerActions.forEach(action => action.style.display = 'none');
 
-            // প্রতিটি পেজ র‍্যাপারের স্টাইল পিডিএফ প্রিন্টের জন্য স্ট্যান্ডার্ডাইজ করা হলো
+            // পিডিএফ এর জন্য স্টাইল রেশিও একদম ফুল পেজ এ ফিক্স করা
             const pages = elementToPrint.querySelectorAll('.diary-pdf-page-wrapper');
             pages.forEach(page => {
                 page.style.boxShadow = 'none';
-                page.style.border = '1px solid #eeeeee';
-                page.style.marginBottom = '0px'; 
-                page.style.pageBreakAfter = 'always'; // প্রতিটি ডায়েরি ব্লকের পর নতুন পেজ ব্রেক হবে
+                page.style.border = 'none';
+                page.style.margin = '0mm'; 
+                page.style.padding = '20mm'; // লেখার সেফ জোন মার্জিন
+                page.style.width = '210mm';  // A4 স্ট্যান্ডার্ড উইডথ
+                page.style.height = '297mm'; // A4 স্ট্যান্ডার্ড হাইট
+                page.style.pageBreakAfter = 'always';
+                
+                // ব্যাকগ্রাউন্ড নিশ্চিত করা
+                page.style.backgroundSize = 'cover';
+                page.style.backgroundPosition = 'center';
+                page.style.backgroundRepeat = 'no-repeat';
             });
 
-            // html2pdf কনফিগারেশন সেটআপ (A4 সাইজ, মার্জিন এবং ইমেজ রেন্ডারিং অপ্টিমাইজেশন)
+            // html2pdf কনফিগারেশন সেটআপ (A4 সাইজ, কোনো বর্ডার মার্জিন থাকবে না কারণ পেজ নিজেই হ্যান্ডেল করছে)
             const opt = {
-                margin:       [10, 10, 10, 10], // top, left, bottom, right margins
+                margin:       0, 
                 filename:     `DailyDock_Memory_Book_${new Date().toISOString().split('T')[0]}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false }, // উচ্চ রেজোলিউশন এবং এক্সটার্নাল ইমেজের CORS হ্যান্ডলিং
+                html2canvas:  { scale: 2, useCORS: true, logging: false }, 
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // পিডিএফ জেনারেট এবং ডিভাইস স্টোরেজে ডাউনলোড করার টাস্ক এক্সিকিউশন
             html2pdf().set(opt).from(elementToPrint).save().then(() => {
                 alert("আপনার ডায়েরি বুক PDF সফলভাবে ডাউনলোড হয়েছে! 🎉");
             }).catch(err => {
@@ -1818,7 +1850,7 @@
             diaryList.innerHTML = '';
             
             if (!diariesArray || diariesArray.length === 0) {
-                diaryList.innerHTML = `<p style="text-align:center; color:#666; font-style:italic; font-family:'Hind Siliguri', sans-serif; font-size:0.85rem; padding: 20px 0;">কোনো ডায়েরি পাওয়া যায়নি।নতুন ডায়েরি লিখুন</p>`;
+                diaryList.innerHTML = `<p style="text-align:center; color:#666; font-style:italic; font-family:'Hind Siliguri', sans-serif; font-size:0.85rem; padding: 20px 0; grid-column: 1 / -1;">কোনো ডায়েরি পাওয়া যায়নি।নতুন ডায়েরি লিখুন</p>`;
                 return;
             }
 
@@ -1952,4 +1984,4 @@
         });
     </script>
 </body>
-                            </html>
+                    </html>
