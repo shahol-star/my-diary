@@ -40,6 +40,7 @@
             background-size: cover !important;
             background-position: center !important;
             background-repeat: no-repeat !important;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         /* Dynamic Overlay for Theme Background to keep text readable and theme visible */
@@ -337,6 +338,7 @@
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: background 0.3s, border-color 0.3s;
         }
         .menu-item { 
             cursor: pointer; transition: 0.2s; padding: 15px 20px; 
@@ -404,6 +406,7 @@
             background-position: center !important;
             background-repeat: no-repeat !important;
             z-index: 1;
+            transition: background 0.3s, border-color 0.3s;
         }
 
         /* ডায়েরি পেজ ব্যাকগ্রাউন্ডের জন্য মিডিয়াম সাদা ওভারলে সিস্টেম */
@@ -414,6 +417,7 @@
             background: rgba(255, 255, 255, 0.65); 
             z-index: -1;
             pointer-events: none;
+            transition: background 0.3s;
         }
         
         .pdf-main-body {
@@ -440,6 +444,7 @@
             margin: 0;
             font-family: sans-serif;
             text-align: left;
+            transition: color 0.3s;
         }
         .pdf-time {
             font-size: 0.8rem;
@@ -447,6 +452,7 @@
             margin: 3px 0 15px 0;
             font-family: sans-serif;
             text-align: left;
+            transition: color 0.3s;
         }
         .pdf-title {
             font-size: 1.25rem;
@@ -455,6 +461,7 @@
             text-align: center;
             margin: 10px 0 15px 0;
             line-height: 1.4;
+            transition: color 0.3s;
         }
         .pdf-content {
             font-size: 0.95rem;
@@ -462,6 +469,7 @@
             color: #111111;
             white-space: pre-wrap;
             margin-bottom: 20px;
+            transition: color 0.3s;
         }
         .pdf-footer-actions {
             border-top: 1px dashed #cccccc;
@@ -527,6 +535,7 @@
             border-radius: 20px; padding: 20px; position: relative;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             max-height: 80vh; overflow-y: auto;
+            transition: background 0.3s;
         }
         .close-modal { position: absolute; top: 12px; right: 15px; font-size: 1.2rem; cursor: pointer; color: #666;}
 
@@ -604,6 +613,7 @@
             padding: 15px 18px;
             font-family: 'Hind Siliguri', sans-serif;
             overflow-y: auto;
+            transition: background 0.3s, border-color 0.3s;
         }
         .help-box h4 {
             margin: 12px 0 6px 0;
@@ -629,6 +639,7 @@
             padding: 20px;
             text-align: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            transition: background 0.3s, border-color 0.3s;
         }
         .credit-row {
             display: flex;
@@ -655,6 +666,7 @@
             border-radius: 12px;
             padding: 15px;
             margin-bottom: 15px;
+            transition: background 0.3s, border-color 0.3s;
         }
         .settings-panel-title {
             font-size: 1rem;
@@ -713,6 +725,146 @@
             border-radius: 4px;
             font-family: sans-serif;
             white-space: nowrap;
+        }
+
+        /* 🌓 DARK MODE STYLES OVERRIDES */
+        .dark-mode {
+            background-color: #0a0a0a !important;
+            color: #e5e5e5 !important;
+        }
+        .dark-mode .app-container {
+            background: #121212;
+            color: #e5e5e5;
+        }
+        .dark-mode .app-container::before {
+            background: rgba(18, 18, 18, 0.65);
+        }
+        .dark-mode .page-title, .dark-mode h1, .dark-mode h2, .dark-mode h3, .dark-mode h4 {
+            color: #ffffff !important;
+        }
+        .dark-mode .input-field {
+            background: #222222;
+            border-color: #333333;
+            color: #ffffff;
+        }
+        .dark-mode .input-field:focus {
+            border-color: #ffffff;
+            background: #1a1a1a;
+        }
+        .dark-mode .input-wrapper label {
+            color: #b3b3b3;
+        }
+        .dark-mode .password-toggle-btn {
+            background: #333333;
+            color: #ccc;
+        }
+        .dark-mode .password-toggle-btn:hover {
+            background: #444444;
+            color: #fff;
+        }
+        .dark-mode .pro-card, .dark-mode .help-box, .dark-mode .credit-card, .dark-mode .settings-panel-box, .dark-mode .modal-content {
+            background: #1a1a1a;
+            border-color: #2a2a2a;
+            color: #e5e5e5;
+        }
+        .dark-mode .menu-item {
+            color: #e5e5e5;
+            border-bottom-color: #252525;
+        }
+        .dark-mode .menu-item:hover {
+            background: #ffffff;
+            color: #121212;
+        }
+        .dark-mode .btn-black {
+            background: #ffffff;
+            color: #121212;
+        }
+        .dark-mode .btn-black:hover {
+            background: #e5e5e5;
+        }
+        .dark-mode .btn-outline {
+            color: #ffffff;
+            border-color: #ffffff;
+        }
+        .dark-mode .btn-outline:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        .dark-mode .link-text {
+            color: #aaa;
+        }
+        .dark-mode .divider {
+            color: #666;
+        }
+        .dark-mode .divider::before, .dark-mode .divider::after {
+            background: #333;
+        }
+        .dark-mode .settings-panel-title {
+            color: #fff;
+            border-bottom-color: #2a2a2a;
+        }
+        .dark-mode .settings-panel-box p, .dark-mode .help-box ul {
+            color: #ccc;
+        }
+        .dark-mode .help-tabs {
+            background: #222;
+        }
+        .dark-mode .tab-btn {
+            color: #aaa;
+        }
+        .dark-mode .tab-btn.active {
+            background: #fff;
+            color: #121212;
+        }
+        .dark-mode .credit-row {
+            border-bottom-color: #2a2a2a;
+        }
+        .dark-mode .credit-label {
+            color: #aaa;
+        }
+        .dark-mode .credit-value {
+            color: #fff;
+        }
+        .dark-mode .custom-font-manager {
+            border-top-color: #333;
+        }
+        .dark-mode .font-item-deleteable {
+            background: #222;
+            border-color: #333;
+            color: #fff;
+        }
+        .dark-mode .font-item-deleteable:hover {
+            border-color: #dc2626;
+            background: #2d1818;
+        }
+        .dark-mode #fontSelector, .dark-mode #diarySortSelector {
+            background: #222;
+            color: #fff;
+            border-color: #333;
+        }
+        .dark-mode .back-link {
+            color: #60a5fa;
+        }
+
+        /* ডার্ক মোডে ডায়েরি পাতার স্টাইল অবয়ব */
+        .dark-mode .diary-pdf-page-wrapper {
+            background: #1c1c1c;
+            border-color: #2d2d2d;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .dark-mode .diary-pdf-page-wrapper::before {
+            background: rgba(28, 28, 28, 0.75);
+        }
+        .dark-mode .pdf-date, .dark-mode .pdf-title, .dark-mode .pdf-content {
+            color: #ffffff !important;
+        }
+        .dark-mode .pdf-time {
+            color: #aaaaaa !important;
+        }
+        .dark-mode .pdf-edit-btn {
+            color: #60a5fa;
+        }
+        .dark-mode .pdf-footer-actions {
+            border-top-color: #333;
         }
     </style>
 </head>
@@ -835,7 +987,7 @@
             <div id="writeSection" class="hidden" style="display: flex; flex-direction: column; flex-grow: 1; height: 100%;">
                 <div class="back-link" onclick="backToDashboard()" style="padding: 0 25px;">← Back to Menu</div>
                 
-                <div style="background: #ffffff; padding: 20px 25px; border-top-left-radius: 30px; border-top-right-radius: 30px; border: 1px solid #dfdfdf; display: flex; flex-direction: column; flex-grow: 1; overflow-y: auto;">
+                <div style="background: #ffffff; padding: 20px 25px; border-top-left-radius: 30px; border-top-right-radius: 30px; border: 1px solid #dfdfdf; display: flex; flex-direction: column; flex-grow: 1; overflow-y: auto;" id="writeContainerBox">
                     <span id="writePanelPurpose" style="color:#111; display:block; margin-bottom:10px; font-size:1rem; font-weight:bold; text-align: center;">Capture Memory</span>
                     
                     <div class="input-wrapper">
@@ -897,6 +1049,7 @@
                 <h3 style="color: #222; margin-bottom: 20px; font-size:1.2rem; text-align: center;">Settings Menu</h3>
                 
                 <div class="pro-card" style="max-width: 500px; margin: 0 auto;">
+                    <div class="menu-item" id="toggleDarkModeBtn">▶ 🌓 TOGGLE DARK MODE</div>
                     <div class="menu-item" onclick="showSubSection('fontSettingsPage')">▶ WEB FONT EXPORTER</div>
                     <div class="menu-item" onclick="showSubSection('themeSettingsPage')">▶ CUSTOM THEME</div>
                     <div class="menu-item" onclick="showSubSection('passwordSettingsPage')">▶ CHANGE PASSWORD</div>
@@ -1140,6 +1293,35 @@
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('diaryDate').value = today;
 
+        // --- 🌓 ডার্ক মোড মেকানিজম শুরু ---
+        function applySavedDarkMode() {
+            const isDark = localStorage.getItem('DailydockDarkMode') === 'enabled';
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+                // লিনিয়ার ব্যাকগ্রাউন্ড রিফ্লেকশন ফিক্স
+                const writeBox = document.getElementById('writeContainerBox');
+                if (writeBox) writeBox.style.background = "#1a1a1a";
+            } else {
+                document.body.classList.remove('dark-mode');
+                const writeBox = document.getElementById('writeContainerBox');
+                if (writeBox) writeBox.style.background = "#ffffff";
+            }
+        }
+
+        document.getElementById('toggleDarkModeBtn').addEventListener('click', () => {
+            const isDark = document.body.classList.contains('dark-mode');
+            if (isDark) {
+                localStorage.setItem('DailydockDarkMode', 'disabled');
+            } else {
+                localStorage.setItem('DailydockDarkMode', 'enabled');
+            }
+            applySavedDarkMode();
+        });
+
+        // ইনিশিয়াল লোডে অ্যাপ্লাই
+        applySavedDarkMode();
+        // --- 🌓 ডার্ক মোড মেকানিজম শেষ ---
+
         function setupPasswordToggle(toggleId, fieldId) {
             const toggleElement = document.getElementById(toggleId);
             const fieldElement = document.getElementById(fieldId);
@@ -1188,7 +1370,7 @@
                 container.style.background = `url(${savedTheme})`;
                 container.classList.add('has-theme');
             } else {
-                container.style.background = '#f3f3f3';
+                container.style.background = ''; // ডার্ক মোড সিএসএস ক্লাসের জন্য খালি রাখা হলো
                 container.classList.remove('has-theme');
             }
         }
@@ -1518,6 +1700,8 @@
                     clearWriteForm();
                 }
             }
+            // রি-অ্যাপ্লাই ফিক্স ফর ডার্ক মোড উইজেটস
+            applySavedDarkMode();
         };
 
         function clearWriteForm() {
@@ -2015,4 +2199,4 @@
         });
     </script>
 </body>
-                        </html>
+    </html>
