@@ -121,40 +121,13 @@
             border-bottom-right-radius: 60px;
             position: relative;
             color: white;
-            height: 200px;
+            height: 60px; /* Reduced height as identity is removed */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             flex-shrink: 0;
             width: 100%;
-        }
-        .header-circle {
-            width: 120px;
-            height: 120px;
-            background: #ffffff;
-            border-radius: 50%;
-            border: 4px solid #fff;
-            box-shadow: inset 0 4px 10px rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            margin-bottom: 10px;
-        }
-        .header-circle img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .static-title {
-            color: white;
-            font-size: 1.6rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            margin: 0;
-            text-align: center;
         }
 
         /* CLEAN PREMIUM TEXT FOR PRE-LOGIN SCREEN */
@@ -867,10 +840,13 @@
         .dark-mode .divider::before, .dark-mode .divider::after {
             background: #333;
         }
+        
+        /* FIX: Change password title visual accessibility in Dark mode */
         .dark-mode .settings-panel-title {
-            color: #fff;
+            color: #ffffff !important;
             border-bottom-color: #2a2a2a;
         }
+        
         .dark-mode .settings-panel-box p, .dark-mode .help-box ul {
             color: #ccc !important;
         }
@@ -970,10 +946,6 @@
     <div id="mainContainer" class="app-container">
         
         <div id="topHeader" class="top-banner hidden">
-            <div class="header-circle">
-                <img src="11513.jpg" onerror="this.onerror=null; this.src='11512.png';" alt="Dailydock Logo">
-            </div>
-            <h1 class="static-title">DAILYDOCK</h1>
         </div>
 
         <div id="welcomeSection" class="content-body hidden">
@@ -1282,30 +1254,25 @@
                     </div>
 
                     <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
-                        <span class="credit-label">APP NAME</span>
-                        <span class="credit-value" style="font-family: sans-serif; text-align: center;">DailyDock</span>
-                    </div>
-                    
-                    <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
                         <span class="credit-label">PURPOSE</span>
                         <span class="credit-value" style="font-family: sans-serif; text-align: center; font-weight: normal; font-size: 0.85rem; color: #444; line-height: 1.5; max-width: 90%;">
-                            DailyDock was created to provide a private and comfortable space where people can record their daily thoughts, experiences, memories, and emotions. Every moment, whether big or small, deserves to be remembered, and DailyDock aims to preserve those moments in a simple and meaningful way.
+                            This platform was created to provide a private and comfortable space where people can record their daily thoughts, experiences, memories, and emotions. Every moment, whether big or small, deserves to be remembered, and our platform aims to preserve those moments in a simple and meaningful way.
                         </span>
                     </div>
                     
                     <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
                         <span class="credit-label">MISSION</span>
                         <span class="credit-value" style="font-family: sans-serif; text-align: center; font-weight: normal; font-size: 0.85rem; color: #444; line-height: 1.5; max-width: 90%;">
-                            Our mission is to help people capture their life's journey one page at a time. We believe that personal memories, ideas, and emotions are valuable, and DailyDock exists to make journaling easy, accessible, and enjoyable for everyone.
+                            Our mission is to help people capture their life's journey one page at a time. We believe that personal memories, ideas, and emotions are valuable, and our platform exists to make journaling easy, accessible, and enjoyable for everyone.
                         </span>
                     </div>
                     
                     <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
                         <span class="credit-label">SPECIAL THANKS</span>
                         <span class="credit-value" style="font-family: sans-serif; text-align: center; font-weight: normal; font-size: 0.85rem; color: #444; line-height: 1.5; max-width: 90%;">
-                            Special thanks to the incredible advancements in Artificial Intelligence that helped inspire, guide, and shape the development of this project. We are grateful for the AI technologies that assisted with problem-solving, learning, creativity, and innovation throughout the journey of building DailyDock.
+                            Special thanks to the incredible advancements in Artificial Intelligence that helped inspire, guide, and shape the development of this project. We are grateful for the AI technologies that assisted with problem-solving, learning, creativity, and innovation throughout the journey of building this system.
                             <br><br>
-                            Thank you to everyone who uses DailyDock and trusts us with their memories.
+                            Thank you to everyone who uses this space and trusts us with their memories.
                         </span>
                     </div>
                     
@@ -2149,7 +2116,7 @@
 
             const opt = {
                 margin:       0, 
-                filename:     `DailyDock_Memory_Book_${new Date().toISOString().split('T')[0]}.pdf`,
+                filename:     `Diary_Memory_Book_${new Date().toISOString().split('T')[0]}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2, useCORS: true, logging: false }, 
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
@@ -2335,4 +2302,4 @@
         });
     </script>
 </body>
-                    </html>
+    </html>
