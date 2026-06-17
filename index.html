@@ -138,6 +138,27 @@
             100% { left: -20%; transform: scaleX(-1); }
         }
 
+        /* NEON TEXT ANIMATION FOR LOGIN PAGE */
+        .neon-title {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            color: #232323;
+            margin-top: 10px;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            animation: neonPulse 2s ease-in-out infinite alternate;
+        }
+        @keyframes neonPulse {
+            0% {
+                text-shadow: 0 0 4px rgba(35,35,35,0.2), 0 0 10px rgba(35,35,35,0.1);
+            }
+            100% {
+                text-shadow: 0 0 8px rgba(35,35,35,0.6), 0 0 20px rgba(35,35,35,0.3), 0 0 30px rgba(35,35,35,0.1);
+            }
+        }
+
         /* CONTENT AREAS - Desktop Optimized Grid Max-width for Forms */
         .content-body {
             padding: 25px 25px;
@@ -658,14 +679,18 @@
         }
         .help-box li { margin-bottom: 6px; }
         
+        /* CREDITS PAGE DESIGN UPDATED TO BE EXPANDED BUT KEEP SIDE GAP */
         .credit-card {
             background: #ffffff;
             border: 1px solid #dfdfdf;
             border-radius: 16px;
-            padding: 20px;
+            padding: 25px;
             text-align: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.02);
             transition: background 0.3s, border-color 0.3s;
+            width: calc(100% - 20px);
+            max-width: 580px;
+            margin: 0 auto;
         }
         .credit-row {
             display: flex;
@@ -768,6 +793,18 @@
         .dark-mode .page-title, .dark-mode h1, .dark-mode h2, .dark-mode h3, .dark-mode h4 {
             color: #ffffff !important;
         }
+        .dark-mode .neon-title {
+            color: #ffffff !important;
+            animation: neonPulseDark 2s ease-in-out infinite alternate;
+        }
+        @keyframes neonPulseDark {
+            0% {
+                text-shadow: 0 0 4px rgba(255,255,255,0.2), 0 0 10px rgba(255,255,255,0.1);
+            }
+            100% {
+                text-shadow: 0 0 8px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.4), 0 0 30px rgba(255,255,255,0.2);
+            }
+        }
         .dark-mode .input-field {
             background: #222222;
             border-color: #333333;
@@ -848,18 +885,25 @@
             background: #fff;
             color: #121212;
         }
+        
+        /* FIXED DARK MODE TEXT READABILITY FOR CREDITS PAGE */
+        .dark-mode .credit-card {
+            background: #1a1a1a !important;
+            border-color: #2a2a2a !important;
+        }
         .dark-mode .credit-row {
-            border-bottom-color: #2a2a2a;
+            border-bottom-color: #2a2a2a !important;
         }
         .dark-mode .credit-label {
-            color: #aaa !important;
+            color: #aaaaaa !important;
         }
         .dark-mode .credit-value {
-            color: #fff !important;
+            color: #ffffff !important;
         }
         .dark-mode .credit-card p {
-            color: #fff !important;
+            color: #ffffff !important;
         }
+        
         .dark-mode .custom-font-manager {
             border-top-color: #333;
         }
@@ -881,21 +925,21 @@
             color: #60a5fa;
         }
 
-        /* ডার্ক মোডে ডায়েরি লেখার ইনপুট ফিল্ড ও টেক্সটের ফিক্স */
+        /* ডায়েরি লেখার ইনপুট ফিল্ড ও টেক্সটের ফিক্স */
         .dark-mode #diaryTitle, .dark-mode #diaryContent {
             background: #222222 !important;
             color: #ffffff !important;
             border-color: #333333 !important;
         }
         
-        /* ডার্ক মোডে সার্চ বার লেখার কালার ও ব্যাকগ্রাউন্ড ফিক্স */
+        /* সার্চ বার লেখার কালার ও ব্যাকগ্রাউন্ড ফিক্স */
         .dark-mode #diarySearchInput {
             background: #222222 !important;
             color: #ffffff !important;
             border-color: #333333 !important;
         }
 
-        /* ডার্ক মোডে ডায়েরি পাতার স্টাইল অবয়ব */
+        /* ডায়েরি পাতার স্টাইল অবয়ব */
         .dark-mode .diary-pdf-page-wrapper {
             background: #1c1c1c;
             border-color: #2d2d2d;
@@ -933,9 +977,7 @@
         </div>
 
         <div id="welcomeSection" class="content-body">
-            <div class="welcome-logo" style="font-size:3.5rem; text-align:center; margin-bottom:15px;">📖</div>
-            <h2 style="margin:0; font-size: 1.7rem; text-align:center;">Welcome</h2>
-            <p style="color:#666; font-size:0.85rem; margin-top:5px; font-family: sans-serif; text-align:center;">Secure your daily thoughts and memories lifetime.</p>
+            <div class="neon-title">DailyDock</div>
             <div class="btn-group-vertical">
                 <button onclick="navigateTo('loginSection')" class="btn-black" style="margin-top:0;">Sign in</button>
                 <button onclick="navigateTo('registerSection')" class="btn-outline">Register</button>
@@ -1229,7 +1271,7 @@
             <div id="creditsSection" class="hidden" style="padding: 10px 25px;">
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
                 
-                <div class="credit-card" style="padding-top: 25px; padding-bottom: 25px; max-width: 600px; margin: 0 auto;">
+                <div class="credit-card">
                     <p style="font-size: 1.2rem; font-style: italic; font-weight: bold; color: #111111; margin: 0 0 25px 0; letter-spacing: 0.5px;">
                         "Every day deserves a page."
                     </p>
@@ -1760,7 +1802,6 @@
             
             document.getElementById(sectionId).classList.remove('hidden');
             
-            // যখনই কোনো সাব-সেকশনে ঢুকবে, তখন কন্টেন্ট এরিয়ার স্ক্রল টপে রিসেট হবে
             const activeSection = document.getElementById(sectionId);
             if(activeSection) activeSection.scrollTop = 0;
 
@@ -1772,7 +1813,6 @@
                     clearWriteForm();
                 }
             }
-            // রি-অ্যাপ্লাই ফিক্স ফর ডার্ক মোড উইজেটস
             applySavedDarkMode();
         };
 
@@ -1789,7 +1829,6 @@
             document.getElementById('diaryContent').style.fontFamily = defaultFont;
             document.getElementById('diaryTitle').style.fontFamily = defaultFont;
             
-            // ফর্ম ক্লিয়ার করার সাথে ডার্ক মোডের স্টেট সিঙ্ক
             applySavedDarkMode();
         }
 
@@ -1806,7 +1845,6 @@
             document.getElementById('dashboardSection').classList.remove('hidden');
         };
 
-        // ডায়েরি সেভ করার তারিখ অনুযায়ী বারের নাম বের করার ফাংশন
         function getDayNameFromDate(dateString) {
             if (!dateString) return "";
             try {
@@ -2053,8 +2091,6 @@
         document.getElementById('diarySortSelector').addEventListener('change', sortAndRenderDiaries);
         document.getElementById('diarySearchInput').addEventListener('input', sortAndRenderDiaries);
 
-
-        // --- সম্পূর্ণ ডায়েরি বুক PDF ডাউনলোডের আসল মেকানিজম (FIXED FOR FULL PAGE BG & NO BREAK) ---
         document.getElementById('downloadBookBtn').addEventListener('click', () => {
             const diaryListElement = document.getElementById('diaryList');
             
@@ -2066,38 +2102,31 @@
             alert("আপনার ডায়েরির সব পাতা নিয়ে 'Download Book' PDF তৈরির প্রসেস শুরু হয়েছে! অনুগ্রহ করে কয়েক সেকেন্ড অপেক্ষা করুন... 📖✨");
 
             const elementToPrint = diaryListElement.cloneNode(true);
-
-            // পিডিএফ এর ভেতরে অ্যাকশন বাটন এবং থার্ড-পার্টি কন্টেন্ট হাইড করা
             const footerActions = elementToPrint.querySelectorAll('.pdf-footer-actions, div[style*="border-top:1px dashed"]');
             footerActions.forEach(action => action.style.setProperty('display', 'none', 'important'));
 
-            // গ্রিড লেআউট রিমুভ করে ফ্লেক্স বা নরমাল ব্লক লেআউট দেওয়া যেন html2pdf প্রপারলি পেজ কাউন্ট করতে পারে
             elementToPrint.style.display = 'block';
             elementToPrint.style.width = '210mm';
             elementToPrint.style.padding = '0';
             elementToPrint.style.margin = '0';
 
-            // পিডিএফ এর জন্য স্টাইল রেশিও একদম ফুল পেজ এ ফিক্স করা
             const pages = elementToPrint.querySelectorAll('.diary-pdf-page-wrapper');
             pages.forEach(page => {
                 page.style.setProperty('box-shadow', 'none', 'important');
                 page.style.setProperty('border', 'none', 'important');
                 page.style.setProperty('margin', '0mm', 'important'); 
-                page.style.setProperty('padding', '20mm', 'important'); // লেখার সেফ জোন মার্জিন
-                page.style.setProperty('width', '210mm', 'important');  // A4 স্ট্যান্ডার্ড উইডথ
-                page.style.setProperty('height', '297mm', 'important'); // A4 স্ট্যান্ডার্ড হাইট
+                page.style.setProperty('padding', '20mm', 'important'); 
+                page.style.setProperty('width', '210mm', 'important');  
+                page.style.setProperty('height', '297mm', 'important'); 
                 page.style.setProperty('page-break-inside', 'avoid', 'important');
                 page.style.setProperty('break-inside', 'avoid', 'important');
                 page.style.setProperty('page-break-after', 'always', 'important');
                 page.style.setProperty('break-after', 'always', 'important');
-                
-                // ব্যাকগ্রাউন্ড নিশ্চিত করা
                 page.style.setProperty('background-size', 'cover', 'important');
                 page.style.setProperty('background-position', 'center', 'important');
                 page.style.setProperty('background-repeat', 'no-repeat', 'important');
             });
 
-            // html2pdf কনফিগারেশন সেটআপ (A4 সাইজ, কোনো বর্ডার মার্জিন থাকবে না কারণ পেজ নিজেই হ্যান্ডেল করছে)
             const opt = {
                 margin:       0, 
                 filename:     `DailyDock_Memory_Book_${new Date().toISOString().split('T')[0]}.pdf`,
@@ -2115,8 +2144,6 @@
             });
         });
 
-
-        /* INTELLIGENT COMPUTE ENGINE FOR ADVANCED TEXT SPLITTING (PAGINATION SYSTEM) */
         function paginateText(text, maxPixelHeight, fontStyleString) {
             const sandbox = document.getElementById('paginationSandbox');
             sandbox.style.fontFamily = fontStyleString;
@@ -2174,10 +2201,8 @@
                         pageWrapper.style.background = `url(${data.pageBg})`;
                     }
 
-                    // ডায়েরি সেভ করার তারিখ থেকে বারের নাম বের করা
                     const dayName = getDayNameFromDate(data.diaryDate);
                     const rawTime = formatFirebaseTime(data.createdAt) || "Recent Cloud Sync";
-                    // টাইমের ঠিক আগে বারের নাম ও স্পেস যোগ করা হলো
                     const formattedTime = dayName ? `${dayName} ${rawTime}` : rawTime;
                     
                     const headerHTML = (index === 0) ? `
@@ -2290,4 +2315,4 @@
         });
     </script>
 </body>
-    </html>
+                    </html>
