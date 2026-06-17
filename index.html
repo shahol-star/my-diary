@@ -242,6 +242,29 @@
             background: #444;
         }
 
+        /* DOWNLOAD BOOK BUTTON DYNAMIC BACKGROUND BASED ON THEME COLOR */
+        #downloadBookBtn {
+            background: #FBBC05; /* Light mode: Right side 2nd color */
+            color: white;
+            border: none;
+            border-radius: 14px;
+            padding: 12px 30px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: block;
+            margin: 0 0 15px 0;
+            text-align: center;
+            width: 100%;
+            max-width: 300px;
+            font-family: inherit;
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        #downloadBookBtn:hover {
+            opacity: 0.9;
+        }
+
         /* GOOGLE SIGN IN BUTTON */
         .btn-google {
             background: white;
@@ -782,6 +805,13 @@
         .dark-mode .btn-black:hover {
             background: #e5e5e5;
         }
+        
+        /* Dark mode colors for Download button (Left side 2nd color) */
+        .dark-mode #downloadBookBtn {
+            background: #4285F4;
+            color: white;
+        }
+
         .dark-mode .btn-outline {
             color: #ffffff;
             border-color: #ffffff;
@@ -1034,7 +1064,7 @@
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
                 <h3 style="color: #222; margin-bottom: 12px; font-size:1.1rem; text-align: center;">Your Past Memories</h3>
                 
-                <button id="downloadBookBtn" class="btn-black" style="background: #1e40af; margin: 0 0 15px 0; max-width: 300px;">📥 Download Book (PDF)</button>
+                <button id="downloadBookBtn">Download Book (PDF)</button>
 
                 <div class="input-wrapper" style="flex-shrink: 0; margin-bottom: 10px;">
                     <input type="text" id="diarySearchInput" placeholder="🔍 Search by title or date (e.g. 2026-06-05)..." class="input-field" style="font-family:sans-serif; background:white;">
@@ -1300,7 +1330,7 @@
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('diaryDate').value = today;
 
-        // --- 🌓 ডার্ক মোড মেকানিজম শুরু ---
+        // --- 🌓 ডার্ক মোড মেকানিথম শুরু ---
         function applySavedDarkMode() {
             const isDark = localStorage.getItem('DailydockDarkMode') === 'enabled';
             const titleField = document.getElementById('diaryTitle');
@@ -1758,6 +1788,18 @@
             document.getElementById('dashboardSection').classList.remove('hidden');
         };
 
+        // ডায়েরি সেভ করার তারিখ অনুযায়ী বারের নাম বের করার ফাংশন
+        function getDayNameFromDate(dateString) {
+            if (!dateString) return "";
+            try {
+                const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                const d = new Date(dateString);
+                return days[d.getDay()];
+            } catch(e) {
+                return "";
+            }
+        }
+
         function formatFirebaseTime(createdAtTimestamp) {
             if (!createdAtTimestamp) return "";
             try {
@@ -2114,7 +2156,11 @@
                         pageWrapper.style.background = `url(${data.pageBg})`;
                     }
 
-                    const formattedTime = formatFirebaseTime(data.createdAt) || "Recent Cloud Sync";
+                    // ডায়েরি সেভ করার তারিখ থেকে বারের নাম বের করা
+                    const dayName = getDayNameFromDate(data.diaryDate);
+                    const rawTime = formatFirebaseTime(data.createdAt) || "Recent Cloud Sync";
+                    // টাইমের ঠিক আগে বারের নাম ও স্পেস যোগ করা হলো
+                    const formattedTime = dayName ? `${dayName} ${rawTime}` : rawTime;
                     
                     const headerHTML = (index === 0) ? `
                         <h2 class="pdf-date">${data.diaryDate || ""}</h2>
@@ -2226,4 +2272,4 @@
         });
     </script>
 </body>
-                        </html>
+                    </html>
