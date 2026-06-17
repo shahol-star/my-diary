@@ -26,6 +26,56 @@
             align-items: center;
             min-height: 100vh;
         }
+
+        /* SPLASH SCREEN STYLES */
+        #splashScreen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #111111;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        .splash-logo-container {
+            width: 140px;
+            height: 140px;
+            background: #ffffff;
+            border-radius: 50%;
+            padding: 4px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .splash-logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .splash-title {
+            color: #ffffff;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            margin: 0 0 30px 0;
+            text-align: center;
+        }
+        .spinner {
+            width: 45px;
+            height: 45px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
         
         /* App Layout Updated to Full Responsive Layout for Mobile & Desktop */
         .app-container {
@@ -64,7 +114,7 @@
             z-index: 1;
         }
 
-        /* TOP BLACK HEADER DESIGN (Only for pre-login screens) */
+        /* TOP BLACK HEADER DESIGN (Only inside app dashboards) */
         .top-banner {
             background: #232323;
             padding: 20px 25px;
@@ -107,16 +157,17 @@
             text-align: center;
         }
 
-        /* NEON TEXT DESIGN FOR LOGIN PAGE (Static) */
-        .neon-title {
+        /* CLEAN PREMIUM TEXT FOR PRE-LOGIN SCREEN */
+        .welcome-message {
             font-family: 'Cinzel Decorative', serif;
-            font-size: 2.5rem;
+            font-size: 1.6rem;
             font-weight: 700;
             text-align: center;
             color: #232323;
-            margin-top: 10px;
-            margin-bottom: 25px;
-            letter-spacing: 2px;
+            margin-top: 40px;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            line-height: 1.4;
         }
 
         /* CONTENT AREAS - Desktop Optimized Grid Max-width for Forms */
@@ -148,8 +199,8 @@
         .page-title {
             font-size: 1.6rem;
             letter-spacing: 1px;
-            margin-top: 0;
-            margin-bottom: 20px;
+            margin-top: 20px;
+            margin-bottom: 25px;
             color: #111;
             text-align: center;
         }
@@ -312,11 +363,11 @@
             justify-content: center;
             align-items: center;
             flex-grow: 1;
-            padding: 30px 25px;
+            padding: 50px 25px;
         }
         .btn-group-vertical {
             width: 100%;
-            margin-top: 25px;
+            margin-top: 15px;
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -751,7 +802,7 @@
         .dark-mode .page-title, .dark-mode h1, .dark-mode h2, .dark-mode h3, .dark-mode h4 {
             color: #ffffff !important;
         }
-        .dark-mode .neon-title {
+        .dark-mode .welcome-message {
             color: #ffffff !important;
         }
         .dark-mode .input-field {
@@ -821,7 +872,7 @@
             border-bottom-color: #2a2a2a;
         }
         .dark-mode .settings-panel-box p, .dark-mode .help-box ul {
-            color: #ccc;
+            color: #ccc !important;
         }
         .dark-mode .help-tabs {
             background: #222;
@@ -908,17 +959,25 @@
 </head>
 <body>
 
+    <div id="splashScreen">
+        <div class="splash-logo-container">
+            <img src="11513.jpg" onerror="this.onerror=null; this.src='11512.png';" alt="DailyDock Logo">
+        </div>
+        <div class="splash-title">DAILYDOCK</div>
+        <div class="spinner"></div>
+    </div>
+
     <div id="mainContainer" class="app-container">
         
-        <div id="topHeader" class="top-banner">
+        <div id="topHeader" class="top-banner hidden">
             <div class="header-circle">
                 <img src="11513.jpg" onerror="this.onerror=null; this.src='11512.png';" alt="Dailydock Logo">
             </div>
             <h1 class="static-title">DAILYDOCK</h1>
         </div>
 
-        <div id="welcomeSection" class="content-body">
-            <div class="neon-title">DailyDock</div>
+        <div id="welcomeSection" class="content-body hidden">
+            <div class="welcome-message">Welcome to your private space.</div>
             <div class="btn-group-vertical">
                 <button onclick="navigateTo('loginSection')" class="btn-black" style="margin-top:0;">Sign in</button>
                 <button onclick="navigateTo('registerSection')" class="btn-outline">Register</button>
@@ -1102,7 +1161,7 @@
                     <button id="loadFontBtn" class="btn-black" style="background:#10b981; font-size:0.9rem; padding:10px;">EXPORT & APPLY FONT</button>
                     
                     <div class="custom-font-manager">
-                        <span style="font-size: 0.85rem; font-weight: bold; color: #333; font-family: 'Hind Siliguri', sans-serif;">এক্সপোর্ট করা ফন্টসমূহ (ডিলিট করতে ১ সেকেন্ড চেপে ধরুন):</span>
+                        <span style="font-size: 0.85rem; font-weight: bold; color: #333; font-family: 'Hind Siliguri', sans-serif;" id="exportedFontsTitle">এক্সপোর্ট করা ফন্টসমূহ (ডিলিট করতে ১ সেকেন্ড চেপে ধরুন):</span>
                         <div id="deleteableFontsList" style="margin-top: 5px;"></div>
                     </div>
                 </div>
@@ -1113,7 +1172,7 @@
                 
                 <div class="settings-panel-box" style="max-width: 500px; margin: 0 auto;">
                     <div class="settings-panel-title">🎨 Custom Theme (কাস্টম ব্যাকগ্রাউন্ড)</div>
-                    <p style="font-size: 0.8rem; color: #555; font-family:'Hind Siliguri', sans-serif; margin: 0 0 10px 0;">
+                    <p style="font-size: 0.8rem; color: #555; font-family:'Hind Siliguri', sans-serif; margin: 0 0 10px 0;" id="customThemeDesc">
                         আপনার গ্যালারি থেকে যেকোনো ছবি সিলেক্ট করে অ্যাপ্লিকেশনের ব্যাকগ্রাউন্ড থিম হিসেবে ব্যবহার করুন।
                     </p>
                     <div class="input-wrapper">
@@ -1326,12 +1385,26 @@
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('diaryDate').value = today;
 
+        // --- SPLASH SCREEN TIMEOUT LOGIC ---
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splashScreen');
+                if (splash) {
+                    splash.style.opacity = '0';
+                    splash.style.visibility = 'hidden';
+                }
+            }, 2500); // 2.5 Seconds Maximum
+        });
+
         // --- 🌓 ডার্ক মোড মেকানিথম শুরু ---
         function applySavedDarkMode() {
             const isDark = localStorage.getItem('DailydockDarkMode') === 'enabled';
             const titleField = document.getElementById('diaryTitle');
             const contentField = document.getElementById('diaryContent');
             const writeBox = document.getElementById('writeContainerBox');
+            
+            const exportedFontsTitle = document.getElementById('exportedFontsTitle');
+            const customThemeDesc = document.getElementById('customThemeDesc');
 
             if (isDark) {
                 document.body.classList.add('dark-mode');
@@ -1344,6 +1417,8 @@
                     contentField.style.background = "#222222";
                     contentField.style.color = "#ffffff";
                 }
+                if (exportedFontsTitle) exportedFontsTitle.style.color = "#ffffff";
+                if (customThemeDesc) customThemeDesc.style.color = "#cccccc";
             } else {
                 document.body.classList.remove('dark-mode');
                 if (writeBox) writeBox.style.background = "#ffffff";
@@ -1355,6 +1430,8 @@
                     contentField.style.background = "#ffffff";
                     contentField.style.color = "#111111";
                 }
+                if (exportedFontsTitle) exportedFontsTitle.style.color = "#333333";
+                if (customThemeDesc) customThemeDesc.style.color = "#555555";
             }
         }
 
@@ -1865,8 +1942,8 @@
 
             if (user) {
                 currentUserId = user.uid;
-                // Completely hide top banner and logo after successful authentication
-                topHeader.classList.add('hidden');
+                // Show top banner ONLY inside app dashboards
+                topHeader.classList.remove('hidden');
                 document.getElementById('welcomeSection').classList.add('hidden');
                 document.getElementById('loginSection').classList.add('hidden');
                 document.getElementById('registerSection').classList.add('hidden');
@@ -1876,13 +1953,14 @@
                 setupDailyReminder(); 
             } else {
                 currentUserId = null;
-                // Show top banner and logo ONLY on welcome/login/register pages
-                topHeader.classList.remove('hidden');
+                // Hide top banner on standard authentication panels
+                topHeader.classList.add('hidden');
                 appSection.classList.add('hidden');
                 navigateTo('welcomeSection');
                 document.getElementById('diaryList').innerHTML = '';
                 allDiaries = [];
             }
+            applySavedDarkMode();
         });
 
         document.getElementById('signupBtn').addEventListener('click', async () => {
@@ -2257,4 +2335,4 @@
         });
     </script>
 </body>
-    </html>
+                    </html>
