@@ -30,16 +30,17 @@
         /* App Layout Updated to Full Responsive Layout for Mobile & Desktop */
         .app-container {
             width: 100%;
-            min-height: 100vh;
+            height: 100vh;
             background: #f3f3f3; 
             position: relative;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden;
+            overflow: hidden;
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
             background-size: cover !important;
             background-position: center !important;
             background-repeat: no-repeat !important;
+            background-attachment: fixed !important;
             transition: background 0.3s ease, color 0.3s ease;
         }
 
@@ -147,12 +148,14 @@
             width: 100%;
             max-width: 600px;
             margin: 0 auto;
+            overflow-y: auto; /* এই পেজগুলোর কন্টেন্ট বেশি হলে নিজেদের ভেতর স্ক্রল হবে */
         }
         
         /* Layout overrides for sections containing list cards grid */
         #appSection {
             max-width: 100% !important;
             padding: 20px 25px !important;
+            overflow-y: auto;
         }
         
         #dashboardSection {
@@ -785,7 +788,7 @@
             background: #444444;
             color: #fff;
         }
-        .dark-mode .pro-card, .dark-mode .help-box, .dark-mode .credit-card, .dark-mode .settings-panel-box, .dark-mode .modal-content {
+        .dark-mode .pro-card, .dark-mode .help-box, .dark-mode .settings-panel-box, .dark-mode .modal-content {
             background: #1a1a1a;
             border-color: #2a2a2a;
             color: #e5e5e5;
@@ -849,10 +852,13 @@
             border-bottom-color: #2a2a2a;
         }
         .dark-mode .credit-label {
-            color: #aaa;
+            color: #aaa !important;
         }
         .dark-mode .credit-value {
-            color: #fff;
+            color: #fff !important;
+        }
+        .dark-mode .credit-card p {
+            color: #fff !important;
         }
         .dark-mode .custom-font-manager {
             border-top-color: #333;
@@ -877,6 +883,13 @@
 
         /* ডার্ক মোডে ডায়েরি লেখার ইনপুট ফিল্ড ও টেক্সটের ফিক্স */
         .dark-mode #diaryTitle, .dark-mode #diaryContent {
+            background: #222222 !important;
+            color: #ffffff !important;
+            border-color: #333333 !important;
+        }
+        
+        /* ডার্ক মোডে সার্চ বার লেখার কালার ও ব্যাকগ্রাউন্ড ফিক্স */
+        .dark-mode #diarySearchInput {
             background: #222222 !important;
             color: #ffffff !important;
             border-color: #333333 !important;
@@ -1746,6 +1759,11 @@
             document.getElementById('passwordSettingsPage').classList.add('hidden');
             
             document.getElementById(sectionId).classList.remove('hidden');
+            
+            // যখনই কোনো সাব-সেকশনে ঢুকবে, তখন কন্টেন্ট এরিয়ার স্ক্রল টপে রিসেট হবে
+            const activeSection = document.getElementById(sectionId);
+            if(activeSection) activeSection.scrollTop = 0;
+
             if(sectionId === 'listSection') {
                 sortAndRenderDiaries();
             }
@@ -2272,4 +2290,4 @@
         });
     </script>
 </body>
-                    </html>
+    </html>
