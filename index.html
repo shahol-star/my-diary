@@ -44,8 +44,20 @@
             transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s ease;
         }
         .splash-logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             text-align: center;
             animation: splashFadeInUp 1s ease-out;
+        }
+        .splash-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         .splash-title {
             font-family: 'Cinzel Decorative', serif;
@@ -57,7 +69,7 @@
             animation: splashNeonPulse 2s ease-in-out infinite alternate;
         }
         .splash-tagline {
-            font-family: 'Hind Siliguri', sans-serif;
+            font-family: sans-serif; /* অ্যাপের ডিফল্ট ফন্ট করা হলো */
             font-size: 0.95rem;
             color: #666;
             letter-spacing: 1px;
@@ -235,17 +247,21 @@
             text-align: center;
             color: #232323;
             margin-top: 10px;
-            margin-bottom: 25px;
+            margin-bottom: 10px;
             letter-spacing: 2px;
             animation: neonPulse 2s ease-in-out infinite alternate;
         }
+        .welcome-subtitle {
+            font-family: 'Hind Siliguri', sans-serif;
+            font-size: 1.1rem;
+            color: #555;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
         @keyframes neonPulse {
-            0% {
-                text-shadow: 0 0 4px rgba(35,35,35,0.2), 0 0 10px rgba(35,35,35,0.1);
-            }
-            100% {
-                text-shadow: 0 0 8px rgba(35,35,35,0.6), 0 0 20px rgba(35,35,35,0.3), 0 0 30px rgba(35,35,35,0.1);
-            }
+            0% { text-shadow: 0 0 4px rgba(35,35,35,0.2), 0 0 10px rgba(35,35,35,0.1); }
+            100% { text-shadow: 0 0 8px rgba(35,35,35,0.6), 0 0 20px rgba(35,35,35,0.3), 0 0 30px rgba(35,35,35,0.1); }
         }
 
         /* CONTENT AREAS - Desktop Optimized Grid Max-width for Forms */
@@ -258,7 +274,7 @@
             width: 100%;
             max-width: 600px;
             margin: 0 auto;
-            overflow-y: auto; /* এই পেজগুলোর কন্টেন্ট বেশি হলে নিজেদের ভেতর স্ক্রল হবে */
+            overflow-y: auto; 
         }
         
         /* Layout overrides for sections containing list cards grid */
@@ -357,7 +373,7 @@
 
         /* DOWNLOAD BOOK BUTTON DYNAMIC BACKGROUND BASED ON THEME COLOR */
         #downloadBookBtn {
-            background: #FBBC05; /* Light mode: Right side 2nd color */
+            background: #FBBC05; 
             color: white;
             border: none;
             border-radius: 14px;
@@ -462,6 +478,7 @@
             font-family: inherit;
             font-weight: 700;
             transition: 0.2s;
+            text-align: center;
         }
         .btn-outline:hover {
             background: rgba(0,0,0,0.05);
@@ -487,7 +504,7 @@
         .text-red:hover { background: #dc2626; color: white; }
         .back-link { color: #1e40af; text-decoration: none; display: inline-block; margin-bottom: 15px; cursor: pointer; font-size: 0.9rem; font-weight: bold;}
         
-        /* NEW PDF-STYLE DIARY PAGE CONTAINER AND SCROLLBAR DESIGN - Grid layout on Large Screens */
+        /* NEW PDF-STYLE DIARY PAGE CONTAINER AND SCROLLBAR DESIGN */
         .diary-pages-container {
             display: grid;
             grid-template-columns: 1fr;
@@ -525,14 +542,14 @@
             background: #555555;
         }
 
-        /* PDF Individual Page Setup - FIXED HEIGHT & NO OVERFLOW CHOPPING */
+        /* PDF Individual Page Setup */
         .diary-pdf-page-wrapper {
             background: #ffffff;
             border: 1px solid #dcdcdc;
             box-shadow: 0 5px 15px rgba(0,0,0,0.06);
             border-radius: 4px;
             padding: 25px 20px;
-            height: 480px; /* Fixed screen height constraint */
+            height: 480px; 
             width: 100%;
             position: relative;
             display: flex;
@@ -545,7 +562,7 @@
             transition: background 0.3s, border-color 0.3s;
         }
 
-        /* ডায়েরি পেজ ব্যাকগ্রাউন্ডের জন্য মিডিয়াম সাদা ওভারলে সিস্টেম */
+        /* Overlay */
         .diary-pdf-page-wrapper::before {
             content: "";
             position: absolute;
@@ -625,7 +642,7 @@
             font-weight: bold;
             cursor: pointer;
             padding: 5px 8px;
-            font-family: sans-serif !important; /* Forces app default font */
+            font-family: sans-serif !important; 
             transition: 0.2s;
         }
         .pdf-edit-btn { color: #1e40af; }
@@ -640,8 +657,8 @@
                 break-inside: avoid !important;
                 page-break-after: always !important;
                 break-after: always !important;
-                height: 297mm !important; /* Forces exact A4 Height */
-                width: 210mm !important;  /* Forces exact A4 Width */
+                height: 297mm !important; 
+                width: 210mm !important;  
                 margin: 0 !important;
                 padding: 20mm !important;
                 box-shadow: none !important;
@@ -655,12 +672,11 @@
             }
         }
 
-        /* Sort dropdown locked to app default font */
         #diarySortSelector, label[for="diarySortSelector"] {
             font-family: sans-serif !important;
         }
 
-        /* DIARY & FORGOT PASSWORD MODAL */
+        /* MODAL SYSTEM */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.6); display: flex; justify-content: center;
@@ -675,7 +691,6 @@
         }
         .close-modal { position: absolute; top: 12px; right: 15px; font-size: 1.2rem; cursor: pointer; color: #666;}
 
-        /* SWEET REMINDER MODAL SPECIAL LOOK */
         .sweet-modal-header {
             font-size: 1.3rem;
             color: #d946ef;
@@ -694,7 +709,6 @@
             font-size: 0.9rem;
         }
 
-        /* CUSTOM FONT LIST SYSTEM FOR DELETION */
         .custom-font-manager {
             margin-top: 20px;
             border-top: 1px dashed #cccccc;
@@ -718,7 +732,7 @@
             background: #fff5f5;
         }
 
-        /* HELP & CREDITS BRAND NEW DESIGN SYSTEM */
+        /* HELP & CREDITS DESIGN */
         .help-tabs {
             display: flex;
             background: #e9e9e9;
@@ -768,7 +782,6 @@
         }
         .help-box li { margin-bottom: 6px; }
         
-        /* CREDITS PAGE DESIGN UPDATED TO BE EXPANDED BUT KEEP SIDE GAP */
         .credit-card {
             background: #ffffff;
             border: 1px solid #dfdfdf;
@@ -799,7 +812,6 @@
             cursor: pointer;
         }
 
-        /* Settings Sub-panels Box Layout */
         .settings-panel-box {
             background: #ffffff;
             border: 1px solid #dfdfdf;
@@ -818,7 +830,7 @@
             font-family: 'Hind Siliguri', sans-serif;
         }
 
-        /* --- BACKGROUND PHOTO CROPPING BOX UX INTERFACE SYSTEM (FIXED SCREEN FLOW) --- */
+        /* --- BACKGROUND PHOTO CROPPING SYSTEM --- */
         .cropper-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); display: flex; flex-direction: column;
@@ -886,13 +898,12 @@
             color: #ffffff !important;
             animation: neonPulseDark 2s ease-in-out infinite alternate;
         }
+        .dark-mode .welcome-subtitle {
+            color: #bbb;
+        }
         @keyframes neonPulseDark {
-            0% {
-                text-shadow: 0 0 4px rgba(255,255,255,0.2), 0 0 10px rgba(255,255,255,0.1);
-            }
-            100% {
-                text-shadow: 0 0 8px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.4), 0 0 30px rgba(255,255,255,0.2);
-            }
+            0% { text-shadow: 0 0 4px rgba(255,255,255,0.2), 0 0 10px rgba(255,255,255,0.1); }
+            100% { text-shadow: 0 0 8px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.4), 0 0 30px rgba(255,255,255,0.2); }
         }
         .dark-mode .input-field {
             background: #222222;
@@ -935,7 +946,6 @@
             background: #e5e5e5;
         }
         
-        /* Dark mode colors for Download button (Left side 2nd color) */
         .dark-mode #downloadBookBtn {
             background: #4285F4;
             color: white;
@@ -975,7 +985,6 @@
             color: #121212;
         }
         
-        /* FIXED DARK MODE TEXT READABILITY FOR CREDITS PAGE */
         .dark-mode .credit-card {
             background: #1a1a1a !important;
             border-color: #2a2a2a !important;
@@ -1014,21 +1023,18 @@
             color: #60a5fa;
         }
 
-        /* ডায়েরি লেখার ইনপুট ফিল্ড ও টেক্সটের ফিক্স */
         .dark-mode #diaryTitle, .dark-mode #diaryContent {
             background: #222222 !important;
             color: #ffffff !important;
             border-color: #333333 !important;
         }
         
-        /* সার্চ বার লেখার কালার ও ব্যাকগ্রাউন্ড ফিক্স */
         .dark-mode #diarySearchInput {
             background: #222222 !important;
             color: #ffffff !important;
             border-color: #333333 !important;
         }
 
-        /* ডায়েরি পাতার স্টাইল অবয়ব */
         .dark-mode .diary-pdf-page-wrapper {
             background: #1c1c1c;
             border-color: #2d2d2d;
@@ -1055,9 +1061,9 @@
 
     <div id="splashScreen">
         <div class="splash-logo-container">
+            <img src="11513.jpg" onerror="this.onerror=null; this.src='11512.png';" alt="Logo" class="splash-logo">
             <div class="splash-title">DailyDock</div>
-            <div class="splash-tagline">Every day deserves a page.</div>
-            <div class="splash-loader-bar">
+            <div class="splash-tagline">Every day deserves a page.</div> <div class="splash-loader-bar">
                 <div class="splash-loader-progress"></div>
             </div>
         </div>
@@ -1065,7 +1071,7 @@
 
     <div id="mainContainer" class="app-container">
         
-        <div id="topHeader" class="top-banner">
+        <div id="topHeader" class="top-banner hidden">
             <div class="anim-title-container">
                 <div class="chomper"></div>
                 <h1 class="animated-title">DAILYDOCK</h1>
@@ -1076,7 +1082,9 @@
         </div>
 
         <div id="welcomeSection" class="content-body">
-            <div class="neon-title">DailyDock</div>
+            <div class="neon-title">Welcome to DailyDock</div>
+            <div class="welcome-subtitle">Your private space to capture life's beautiful journeys, one page at a time.</div>
+            
             <div class="btn-group-vertical">
                 <button onclick="navigateTo('loginSection')" class="btn-black" style="margin-top:0;">Sign in</button>
                 <button onclick="navigateTo('registerSection')" class="btn-outline">Register</button>
@@ -1484,7 +1492,6 @@
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('diaryDate').value = today;
 
-        // --- 🌓 ডার্ক মোড মেকানিথম শুরু ---
         function applySavedDarkMode() {
             const isDark = localStorage.getItem('DailydockDarkMode') === 'enabled';
             const titleField = document.getElementById('diaryTitle');
@@ -1526,9 +1533,7 @@
             applySavedDarkMode();
         });
 
-        // ইনিশিয়াল লোডে অ্যাপ্লাই
         applySavedDarkMode();
-        // --- 🌓 ডার্ক মোড মেকানিজম শেষ ---
 
         function setupPasswordToggle(toggleId, fieldId) {
             const toggleElement = document.getElementById(toggleId);
@@ -1567,7 +1572,6 @@
             }
         };
 
-        // --- কাস্টম থিম লজিক শুরু ---
         const container = document.getElementById('mainContainer');
         const themeInput = document.getElementById('themeImageInput');
         const removeThemeBtn = document.getElementById('removeThemeBtn');
@@ -1578,7 +1582,7 @@
                 container.style.background = `url(${savedTheme})`;
                 container.classList.add('has-theme');
             } else {
-                container.style.background = ''; // ডার্ক মোড সিএসএস ক্লাসের জন্য খালি রাখা হলো
+                container.style.background = ''; 
                 container.classList.remove('has-theme');
             }
         }
@@ -1605,9 +1609,7 @@
         });
 
         applySavedTheme();
-        // --- কাস্টম থিম লজিক শেষ ---
 
-        // --- কাস্টম পেজ ব্যাকগ্রাউন্ড ইন্টেলিজেন্ট ক্রপার সিস্টেম লজিক শুরু ---
         const pageBgInput = document.getElementById('diaryPageBgInput');
         const cropperModal = document.getElementById('cropperModal');
         const cropperSourceImg = document.getElementById('cropperSourceImg');
@@ -1731,7 +1733,6 @@
             removePageBgBtn.classList.add('hidden');
             alert('পেজ ব্যাকগ্রাউন্ড রিমুভ করা হয়েছে।');
         });
-        // --- কাস্টম পেজ ব্যাকগ্রাউন্ড ইন্টেলিজেন্ট ক্রপার সিস্টেম লজিক শেষ ---
 
         function loadSavedFonts() {
             const savedFonts = JSON.parse(localStorage.getItem('DailydockExportedFonts')) || [];
@@ -2018,7 +2019,6 @@
         document.getElementById('welcomeGoogleBtn').addEventListener('click', handleGoogleSignIn);
         document.getElementById('googleLoginBtn').addEventListener('click', handleGoogleSignIn);
 
-        // --- SPLASH HIDE CONTROL LOGIC ---
         function dismissSplash() {
             const splash = document.getElementById('splashScreen');
             if (splash) {
@@ -2026,7 +2026,7 @@
                 splash.style.transform = 'scale(1.05)';
                 setTimeout(() => {
                     splash.style.display = 'none';
-                    document.body.style.overflow = 'auto'; // Re-enable interaction
+                    document.body.style.overflow = 'auto'; 
                 }, 600);
             }
         }
@@ -2037,7 +2037,7 @@
 
             if (user) {
                 currentUserId = user.uid;
-                topHeader.classList.add('hidden');
+                topHeader.classList.remove('hidden'); // ভেতরে ঢুকলে ব্যানার অন হবে
                 document.getElementById('welcomeSection').classList.add('hidden');
                 document.getElementById('loginSection').classList.add('hidden');
                 document.getElementById('registerSection').classList.add('hidden');
@@ -2045,16 +2045,14 @@
                 backToDashboard();
                 loadDiaryEntries(user.uid);
                 setupDailyReminder(); 
-                // Session instantly recognized, dismiss splash directly
                 setTimeout(dismissSplash, 800);
             } else {
                 currentUserId = null;
-                topHeader.classList.remove('hidden');
+                topHeader.classList.add('hidden'); // ৪ নম্বর রিকোয়ারমেন্ট: স্বাগতম পেজে টপ ব্যানার অফ থাকবে
                 appSection.classList.add('hidden');
                 navigateTo('welcomeSection');
                 document.getElementById('diaryList').innerHTML = '';
                 allDiaries = [];
-                // Normal application fresh initialization flow
                 setTimeout(dismissSplash, 2800);
             }
         });
@@ -2431,4 +2429,4 @@
         });
     </script>
 </body>
-                </html>
+    </html>
