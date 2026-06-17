@@ -845,6 +845,13 @@
             color: #60a5fa;
         }
 
+        /* ডার্ক মোডে ডায়েরি লেখার ইনপুট ফিল্ড ও টেক্সটের ফিক্স */
+        .dark-mode #diaryTitle, .dark-mode #diaryContent {
+            background: #222222 !important;
+            color: #ffffff !important;
+            border-color: #333333 !important;
+        }
+
         /* ডার্ক মোডে ডায়েরি পাতার স্টাইল অবয়ব */
         .dark-mode .diary-pdf-page-wrapper {
             background: #1c1c1c;
@@ -1027,7 +1034,7 @@
                 <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
                 <h3 style="color: #222; margin-bottom: 12px; font-size:1.1rem; text-align: center;">Your Past Memories</h3>
                 
-                <button id="downloadBookBtn" class="btn-black" style="background: #1e40af; margin: 0 0 15px 0; font-family: 'Hind Siliguri', sans-serif; max-width: 300px;">📥 Download Book (PDF)</button>
+                <button id="downloadBookBtn" class="btn-black" style="background: #1e40af; margin: 0 0 15px 0; max-width: 300px;">📥 Download Book (PDF)</button>
 
                 <div class="input-wrapper" style="flex-shrink: 0; margin-bottom: 10px;">
                     <input type="text" id="diarySearchInput" placeholder="🔍 Search by title or date (e.g. 2026-06-05)..." class="input-field" style="font-family:sans-serif; background:white;">
@@ -1296,15 +1303,32 @@
         // --- 🌓 ডার্ক মোড মেকানিজম শুরু ---
         function applySavedDarkMode() {
             const isDark = localStorage.getItem('DailydockDarkMode') === 'enabled';
+            const titleField = document.getElementById('diaryTitle');
+            const contentField = document.getElementById('diaryContent');
+            const writeBox = document.getElementById('writeContainerBox');
+
             if (isDark) {
                 document.body.classList.add('dark-mode');
-                // লিনিয়ার ব্যাকগ্রাউন্ড রিফ্লেকশন ফিক্স
-                const writeBox = document.getElementById('writeContainerBox');
                 if (writeBox) writeBox.style.background = "#1a1a1a";
+                if (titleField) {
+                    titleField.style.background = "#222222";
+                    titleField.style.color = "#ffffff";
+                }
+                if (contentField) {
+                    contentField.style.background = "#222222";
+                    contentField.style.color = "#ffffff";
+                }
             } else {
                 document.body.classList.remove('dark-mode');
-                const writeBox = document.getElementById('writeContainerBox');
                 if (writeBox) writeBox.style.background = "#ffffff";
+                if (titleField) {
+                    titleField.style.background = "#f3f3f3";
+                    titleField.style.color = "#111111";
+                }
+                if (contentField) {
+                    contentField.style.background = "#ffffff";
+                    contentField.style.color = "#111111";
+                }
             }
         }
 
@@ -1716,6 +1740,9 @@
             const defaultFont = document.getElementById('fontSelector').value;
             document.getElementById('diaryContent').style.fontFamily = defaultFont;
             document.getElementById('diaryTitle').style.fontFamily = defaultFont;
+            
+            // ফর্ম ক্লিয়ার করার সাথে ডার্ক মোডের স্টেট সিঙ্ক
+            applySavedDarkMode();
         }
 
         window.backToDashboard = () => {
@@ -2199,4 +2226,4 @@
         });
     </script>
 </body>
-    </html>
+                        </html>
