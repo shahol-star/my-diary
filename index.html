@@ -25,6 +25,95 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- MODERN SPLASH SCREEN SYSTEM --- */
+        #splashScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #f3f3f3;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s ease;
+        }
+        .splash-logo-container {
+            text-align: center;
+            animation: splashFadeInUp 1s ease-out;
+        }
+        .splash-title {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #232323;
+            letter-spacing: 3px;
+            margin-bottom: 5px;
+            animation: splashNeonPulse 2s ease-in-out infinite alternate;
+        }
+        .splash-tagline {
+            font-family: 'Hind Siliguri', sans-serif;
+            font-size: 0.95rem;
+            color: #666;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        .splash-loader-bar {
+            width: 160px;
+            height: 3px;
+            background: #dfdfdf;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        .splash-loader-progress {
+            content: "";
+            position: absolute;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: #232323;
+            animation: splashLoading 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        @keyframes splashFadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes splashNeonPulse {
+            0% { text-shadow: 0 0 5px rgba(35,35,35,0.1); }
+            100% { text-shadow: 0 0 15px rgba(35,35,35,0.25); }
+        }
+        @keyframes splashLoading {
+            0% { left: -100%; }
+            50% { left: 0; }
+            100% { left: 100%; }
+        }
+        /* Dark Mode Override for Splash Screen */
+        body.dark-mode #splashScreen {
+            background: #121212;
+        }
+        body.dark-mode .splash-title {
+            color: #ffffff;
+            animation: splashNeonPulseDark 2s ease-in-out infinite alternate;
+        }
+        body.dark-mode .splash-tagline {
+            color: #aaa;
+        }
+        body.dark-mode .splash-loader-bar {
+            background: #222;
+        }
+        body.dark-mode .splash-loader-progress {
+            background: #ffffff;
+        }
+        @keyframes splashNeonPulseDark {
+            0% { text-shadow: 0 0 5px rgba(255,255,255,0.2); }
+            100% { text-shadow: 0 0 15px rgba(255,255,255,0.5); }
         }
         
         /* App Layout Updated to Full Responsive Layout for Mobile & Desktop */
@@ -963,6 +1052,16 @@
     </style>
 </head>
 <body>
+
+    <div id="splashScreen">
+        <div class="splash-logo-container">
+            <div class="splash-title">DailyDock</div>
+            <div class="splash-tagline">Every day deserves a page.</div>
+            <div class="splash-loader-bar">
+                <div class="splash-loader-progress"></div>
+            </div>
+        </div>
+    </div>
 
     <div id="mainContainer" class="app-container">
         
@@ -1919,6 +2018,19 @@
         document.getElementById('welcomeGoogleBtn').addEventListener('click', handleGoogleSignIn);
         document.getElementById('googleLoginBtn').addEventListener('click', handleGoogleSignIn);
 
+        // --- SPLASH HIDE CONTROL LOGIC ---
+        function dismissSplash() {
+            const splash = document.getElementById('splashScreen');
+            if (splash) {
+                splash.style.opacity = '0';
+                splash.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    document.body.style.overflow = 'auto'; // Re-enable interaction
+                }, 600);
+            }
+        }
+
         onAuthStateChanged(auth, (user) => {
             const topHeader = document.getElementById('topHeader');
             const appSection = document.getElementById('appSection');
@@ -1933,6 +2045,8 @@
                 backToDashboard();
                 loadDiaryEntries(user.uid);
                 setupDailyReminder(); 
+                // Session instantly recognized, dismiss splash directly
+                setTimeout(dismissSplash, 800);
             } else {
                 currentUserId = null;
                 topHeader.classList.remove('hidden');
@@ -1940,6 +2054,8 @@
                 navigateTo('welcomeSection');
                 document.getElementById('diaryList').innerHTML = '';
                 allDiaries = [];
+                // Normal application fresh initialization flow
+                setTimeout(dismissSplash, 2800);
             }
         });
 
@@ -2283,7 +2399,7 @@
                 return alert('দয়া করে পুরাতন এবং নতুন উভয় পাসওয়ার্ড ফিল্ড পূরণ করুন!');
             }
             if (newPassword.length < 6) {
-                return alert('নতুন পাসওয়ার্ডটি কমপক্ষে ৬ ক্যারেক্টারের হতে হবে!');
+                return alert('নতুন পাসওয়ার্ডটি কমপক্ষে ६ ক্যারেক্টারের হতে হবে!');
             }
             if (!user || !user.email) {
                 return alert('ইউজার সেশন পাওয়া যায়নি। দয়া করে আবার লগইন করুন।');
@@ -2315,4 +2431,4 @@
         });
     </script>
 </body>
-                    </html>
+                </html>
