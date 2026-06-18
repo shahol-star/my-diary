@@ -27,57 +27,133 @@
             min-height: 100vh;
         }
 
-        /* SPLASH SCREEN STYLES */
-        #splashScreen {
+        /* ========== অ্যাডভান্সড লোডিং স্ক্রিন ========== */
+        #loadingScreen {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #111111;
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
-        .splash-logo-container {
-            width: 140px;
-            height: 140px;
-            background: #ffffff;
-            border-radius: 50%;
-            padding: 4px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-        .splash-logo-container img {
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
         }
-        .splash-title {
-            color: #ffffff;
-            font-size: 2.2rem;
-            font-weight: 700;
-            letter-spacing: 3px;
-            margin: 0 0 30px 0;
-            text-align: center;
+        #loadingScreen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         }
-        .spinner {
-            width: 45px;
-            height: 45px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top-color: #ffffff;
+        .loader-visual {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .outer-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            border: 3px solid transparent;
+            border-top-color: #1a1a1a;
+            border-bottom-color: #666666;
+            animation: spinClockwise 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .inner-ring {
+            position: absolute;
+            width: 72%;
+            height: 72%;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-left-color: #000000;
+            border-right-color: #444444;
+            animation: spinCounterClockwise 1.8s linear infinite;
         }
+        .core-diamond {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #111111;
+            transform: rotate(45deg);
+            animation: pulseDiamond 1.2s ease-in-out infinite;
+            border-radius: 2px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.4);
+        }
+        .orbital-dot {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: #000000;
+            border-radius: 50%;
+            top: 5%;
+            left: 45%;
+            transform-origin: 50% 470%;
+            animation: orbitRotate 3s linear infinite;
+            box-shadow: 0 0 6px #00000050;
+        }
+        .orbital-dot.second {
+            width: 4px;
+            height: 4px;
+            background: #555555;
+            top: 10%;
+            left: 48%;
+            transform-origin: 50% 390%;
+            animation-duration: 4.2s;
+            animation-delay: -0.8s;
+        }
+        .loading-text {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 4px;
+            color: #1e1e1e;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            font-family: 'Cinzel Decorative', serif;
+        }
+        .dot-animate {
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            background: #111;
+            border-radius: 50%;
+            margin-left: 2px;
+            animation: dotBounce 1.4s infinite ease-in-out;
+        }
+        .dot-animate:nth-child(2) { animation-delay: 0.2s; }
+        .dot-animate:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes spinClockwise {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes spinCounterClockwise {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(-360deg); }
+        }
+        @keyframes pulseDiamond {
+            0%, 100% { transform: rotate(45deg) scale(0.8); opacity: 0.7; background: #333; }
+            50% { transform: rotate(45deg) scale(1.4); opacity: 1; background: #000; box-shadow: 0 0 20px #00000060; }
+        }
+        @keyframes orbitRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes dotBounce {
+            0%, 80%, 100% { transform: translateY(0); opacity: 0.3; }
+            40% { transform: translateY(-5px); opacity: 1; background: #000; }
+        }
+        /* ========== লোডিং স্ক্রিন শেষ ========== */
         
-        /* App Layout Updated to Full Responsive Layout for Mobile & Desktop */
+        /* App Layout */
         .app-container {
             width: 100%;
             height: 100vh;
@@ -94,7 +170,6 @@
             transition: background 0.3s ease, color 0.3s ease;
         }
 
-        /* Dynamic Overlay for Theme Background to keep text readable and theme visible */
         .app-container::before {
             content: "";
             position: absolute;
@@ -108,42 +183,104 @@
             display: block;
         }
         
-        /* Ensure content stays above the theme overlay */
         .top-banner, .content-body {
             position: relative;
             z-index: 1;
         }
 
-        /* TOP BLACK HEADER DESIGN (Only inside app dashboards) */
+        /* TOP HEADER - বর্ডার সম্পূর্ণ রিমুভ */
         .top-banner {
             background: #232323;
-            padding: 20px 25px;
+            padding: 30px 25px;
             border-bottom-right-radius: 60px;
             position: relative;
             color: white;
-            height: 60px; /* Reduced height as identity is removed */
+            height: 140px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
             flex-shrink: 0;
             width: 100%;
         }
+        .header-circle {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            width: 65px;
+            height: 65px;
+            background: #ffffff;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .header-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-        /* CLEAN PREMIUM TEXT FOR PRE-LOGIN SCREEN */
-        .welcome-message {
+        .anim-title-container {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            height: 40px;
+            width: 180px;
+        }
+        .animated-title {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin: 0;
+            z-index: 1;
+        }
+        .chomper {
+            position: absolute;
+            left: -40px;
+            width: 24px;
+            height: 24px;
+            background: #f59e0b;
+            border-radius: 50%;
+            z-index: 2;
+            animation: moveAcross 3s ease-in-out infinite, bite 0.3s ease-in-out infinite alternate;
+        }
+        @keyframes bite {
+            0% { clip-path: polygon(100% 50%, 0% 0%, 0% 100%); }
+            100% { clip-path: polygon(50% 50%, 0% 0%, 0% 100%); transform: rotate(-30deg); }
+        }
+        @keyframes moveAcross {
+            0% { left: -20%; transform: scaleX(-1); }
+            45% { left: 110%; transform: scaleX(-1); }
+            50% { left: 110%; transform: scaleX(1); }
+            95% { left: -20%; transform: scaleX(1); }
+            100% { left: -20%; transform: scaleX(-1); }
+        }
+
+        .neon-title {
             font-family: 'Cinzel Decorative', serif;
-            font-size: 1.6rem;
+            font-size: 2.5rem;
             font-weight: 700;
             text-align: center;
             color: #232323;
-            margin-top: 40px;
-            margin-bottom: 30px;
-            letter-spacing: 1px;
-            line-height: 1.4;
+            margin-top: 10px;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            animation: neonPulse 2s ease-in-out infinite alternate;
+        }
+        @keyframes neonPulse {
+            0% {
+                text-shadow: 0 0 4px rgba(35,35,35,0.2), 0 0 10px rgba(35,35,35,0.1);
+            }
+            100% {
+                text-shadow: 0 0 8px rgba(35,35,35,0.6), 0 0 20px rgba(35,35,35,0.3), 0 0 30px rgba(35,35,35,0.1);
+            }
         }
 
-        /* CONTENT AREAS - Desktop Optimized Grid Max-width for Forms */
         .content-body {
             padding: 25px 25px;
             flex-grow: 1;
@@ -153,10 +290,9 @@
             width: 100%;
             max-width: 600px;
             margin: 0 auto;
-            overflow-y: auto; 
+            overflow-y: auto;
         }
         
-        /* Layout overrides for sections containing list cards grid */
         #appSection {
             max-width: 100% !important;
             padding: 20px 25px !important;
@@ -165,15 +301,15 @@
         
         #dashboardSection {
             max-width: 500px;
-            margin: 40px auto 0 auto;
+            margin: 0 auto;
             width: 100%;
         }
 
         .page-title {
             font-size: 1.6rem;
             letter-spacing: 1px;
-            margin-top: 20px;
-            margin-bottom: 25px;
+            margin-top: 0;
+            margin-bottom: 20px;
             color: #111;
             text-align: center;
         }
@@ -185,15 +321,17 @@
         }
         .input-wrapper label {
             display: block;
-            font-size: 0.8rem;
-            color: #555;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #333333;
             margin-bottom: 4px;
             padding-left: 5px;
+            font-family: 'Hind Siliguri', sans-serif;
         }
         .input-field {
             width: 100%;
             background: #e9e9e9;
-            border: 1px solid #dfdfdf;
+            border: 1px solid #cccccc;
             border-radius: 8px;
             padding: 10px 14px;
             font-size: 0.9rem;
@@ -207,11 +345,10 @@
             background: #fff;
         }
 
-        /* PASSWORD TOGGLE TEXT STYLE */
         .password-toggle-btn {
             position: absolute;
             right: 12px;
-            top: 28px;
+            top: 30px;
             cursor: pointer;
             font-size: 0.75rem;
             font-weight: bold;
@@ -227,7 +364,6 @@
             color: #111;
         }
 
-        /* BUTTONS */
         .btn-black {
             background: #232323;
             color: white;
@@ -250,9 +386,8 @@
             background: #444;
         }
 
-        /* DOWNLOAD BOOK BUTTON DYNAMIC BACKGROUND BASED ON THEME COLOR */
         #downloadBookBtn {
-            background: #FBBC05; 
+            background: #FBBC05;
             color: white;
             border: none;
             border-radius: 14px;
@@ -273,7 +408,6 @@
             opacity: 0.9;
         }
 
-        /* GOOGLE SIGN IN BUTTON */
         .btn-google {
             background: white;
             color: #232323;
@@ -305,9 +439,10 @@
         .divider {
             text-align: center;
             margin: 15px 0 5px 0;
-            color: #888;
+            color: #666666;
             font-size: 0.85rem;
             position: relative;
+            font-weight: 600;
         }
         .divider::before, .divider::after {
             content: "";
@@ -315,32 +450,32 @@
             top: 50%;
             width: 35%;
             height: 1px;
-            background: #dfdfdf;
+            background: #cccccc;
         }
         .divider::before { left: 0; }
         .divider::after { right: 0; }
 
         .link-text {
-            color: #555;
+            color: #333333;
             text-align: center;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             margin-top: 15px;
             cursor: pointer;
             text-decoration: none;
             display: block;
+            font-weight: 600;
         }
 
-        /* WELCOME LANDING SCREEN */
         #welcomeSection {
             text-align: center;
             justify-content: center;
             align-items: center;
             flex-grow: 1;
-            padding: 50px 25px;
+            padding: 30px 25px;
         }
         .btn-group-vertical {
             width: 100%;
-            margin-top: 15px;
+            margin-top: 25px;
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -362,10 +497,10 @@
             background: rgba(0,0,0,0.05);
         }
 
-        /* INSIDE APP STYLES */
+        /* INSIDE APP STYLES - বর্ডার রিমুভ */
         .pro-card { 
             background: #ffffff; 
-            border: 1px solid #dfdfdf; 
+            border: none;
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
@@ -381,8 +516,8 @@
         .text-red { color: #dc2626; }
         .text-red:hover { background: #dc2626; color: white; }
         .back-link { color: #1e40af; text-decoration: none; display: inline-block; margin-bottom: 15px; cursor: pointer; font-size: 0.9rem; font-weight: bold;}
-        
-        /* NEW PDF-STYLE DIARY PAGE CONTAINER AND SCROLLBAR DESIGN */
+
+        /* DIARY PAGES CONTAINER */
         .diary-pages-container {
             display: grid;
             grid-template-columns: 1fr;
@@ -403,7 +538,6 @@
             }
         }
 
-        /* Custom Scrollbar Styling */
         .diary-pages-container::-webkit-scrollbar {
             width: 8px;
         }
@@ -420,14 +554,33 @@
             background: #555555;
         }
 
-        /* PDF Individual Page Setup - FIXED HEIGHT & NO OVERFLOW CHOPPING */
+        /* PAST MEMORIES HEADER - ফেসবুক স্টাইল স্ক্রল */
+        #listHeaderWrapper {
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            background: #f3f3f3;
+            z-index: 5;
+            padding-bottom: 5px;
+        }
+        #listHeaderWrapper.collapsed {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+        }
+        #listHeaderWrapper.expanded {
+            opacity: 1;
+            max-height: 200px;
+        }
+
         .diary-pdf-page-wrapper {
             background: #ffffff;
             border: 1px solid #dcdcdc;
             box-shadow: 0 5px 15px rgba(0,0,0,0.06);
             border-radius: 4px;
             padding: 25px 20px;
-            height: 480px; 
+            height: 480px;
             width: 100%;
             position: relative;
             display: flex;
@@ -519,7 +672,7 @@
             font-weight: bold;
             cursor: pointer;
             padding: 5px 8px;
-            font-family: sans-serif !important; 
+            font-family: sans-serif !important;
             transition: 0.2s;
         }
         .pdf-edit-btn { color: #1e40af; }
@@ -527,15 +680,14 @@
         .pdf-delete-btn { color: #dc2626; }
         .pdf-delete-btn:hover { text-decoration: underline; }
 
-        /* PRINT MEDIA LAYOUT FIX FOR PDF EXPORT */
         @media print {
             .diary-pdf-page-wrapper {
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
                 page-break-after: always !important;
                 break-after: always !important;
-                height: 297mm !important; 
-                width: 210mm !important;  
+                height: 297mm !important;
+                width: 210mm !important;
                 margin: 0 !important;
                 padding: 20mm !important;
                 box-shadow: none !important;
@@ -553,7 +705,6 @@
             font-family: sans-serif !important;
         }
 
-        /* DIARY & FORGOT PASSWORD MODAL */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.6); display: flex; justify-content: center;
@@ -568,7 +719,6 @@
         }
         .close-modal { position: absolute; top: 12px; right: 15px; font-size: 1.2rem; cursor: pointer; color: #666;}
 
-        /* SWEET REMINDER MODAL SPECIAL LOOK */
         .sweet-modal-header {
             font-size: 1.3rem;
             color: #d946ef;
@@ -587,7 +737,6 @@
             font-size: 0.9rem;
         }
 
-        /* CUSTOM FONT LIST SYSTEM FOR DELETION */
         .custom-font-manager {
             margin-top: 20px;
             border-top: 1px dashed #cccccc;
@@ -611,7 +760,6 @@
             background: #fff5f5;
         }
 
-        /* HELP & CREDITS BRAND NEW DESIGN SYSTEM */
         .help-tabs {
             display: flex;
             background: #e9e9e9;
@@ -661,7 +809,6 @@
         }
         .help-box li { margin-bottom: 6px; }
         
-        /* CREDITS PAGE DESIGN UPDATED TO BE EXPANDED BUT KEEP SIDE GAP */
         .credit-card {
             background: #ffffff;
             border: 1px solid #dfdfdf;
@@ -692,7 +839,6 @@
             cursor: pointer;
         }
 
-        /* Settings Sub-panels Box Layout */
         .settings-panel-box {
             background: #ffffff;
             border: 1px solid #dfdfdf;
@@ -711,7 +857,6 @@
             font-family: 'Hind Siliguri', sans-serif;
         }
 
-        /* --- BACKGROUND PHOTO CROPPING BOX UX INTERFACE SYSTEM --- */
         .cropper-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); display: flex; flex-direction: column;
@@ -760,7 +905,7 @@
             white-space: nowrap;
         }
 
-        /* 🌓 DARK MODE STYLES OVERRIDES */
+        /* 🌓 DARK MODE STYLES */
         .dark-mode {
             background-color: #0a0a0a !important;
             color: #e5e5e5 !important;
@@ -775,12 +920,21 @@
         .dark-mode .page-title, .dark-mode h1, .dark-mode h2, .dark-mode h3, .dark-mode h4 {
             color: #ffffff !important;
         }
-        .dark-mode .welcome-message {
+        .dark-mode .neon-title {
             color: #ffffff !important;
+            animation: neonPulseDark 2s ease-in-out infinite alternate;
+        }
+        @keyframes neonPulseDark {
+            0% {
+                text-shadow: 0 0 4px rgba(255,255,255,0.2), 0 0 10px rgba(255,255,255,0.1);
+            }
+            100% {
+                text-shadow: 0 0 8px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.4), 0 0 30px rgba(255,255,255,0.2);
+            }
         }
         .dark-mode .input-field {
             background: #222222;
-            border-color: #333333;
+            border-color: #444444;
             color: #ffffff;
         }
         .dark-mode .input-field:focus {
@@ -788,7 +942,7 @@
             background: #1a1a1a;
         }
         .dark-mode .input-wrapper label {
-            color: #b3b3b3;
+            color: #cccccc;
         }
         .dark-mode .password-toggle-btn {
             background: #333333;
@@ -819,6 +973,16 @@
             background: #e5e5e5;
         }
         
+        /* UPDATE PASSWORD বাটন ডার্ক মোডে স্পষ্ট */
+        .dark-mode #updatePasswordBtn {
+            background: #4285F4 !important;
+            color: #ffffff !important;
+            font-weight: 700 !important;
+        }
+        .dark-mode #updatePasswordBtn:hover {
+            background: #5a9ff5 !important;
+        }
+
         .dark-mode #downloadBookBtn {
             background: #4285F4;
             color: white;
@@ -832,23 +996,20 @@
             background: rgba(255,255,255,0.1);
         }
         .dark-mode .link-text {
-            color: #aaa;
+            color: #cccccc;
         }
         .dark-mode .divider {
-            color: #666;
+            color: #888888;
         }
         .dark-mode .divider::before, .dark-mode .divider::after {
-            background: #333;
+            background: #444444;
         }
-        
-        /* FIX: Change password title visual accessibility in Dark mode */
         .dark-mode .settings-panel-title {
-            color: #ffffff !important;
+            color: #fff;
             border-bottom-color: #2a2a2a;
         }
-        
         .dark-mode .settings-panel-box p, .dark-mode .help-box ul {
-            color: #ccc !important;
+            color: #ccc;
         }
         .dark-mode .help-tabs {
             background: #222;
@@ -902,13 +1063,13 @@
         .dark-mode #diaryTitle, .dark-mode #diaryContent {
             background: #222222 !important;
             color: #ffffff !important;
-            border-color: #333333 !important;
+            border-color: #444444 !important;
         }
         
         .dark-mode #diarySearchInput {
             background: #222222 !important;
             color: #ffffff !important;
-            border-color: #333333 !important;
+            border-color: #444444 !important;
         }
 
         .dark-mode .diary-pdf-page-wrapper {
@@ -931,25 +1092,50 @@
         .dark-mode .pdf-footer-actions {
             border-top-color: #333;
         }
+        
+        /* পাসওয়ার্ড চেঞ্জ সেকশনের প্যানেল টাইটেল */
+        .dark-mode #passwordSettingsPage .settings-panel-title {
+            color: #ffffff !important;
+        }
+        .dark-mode #passwordSettingsPage label {
+            color: #cccccc !important;
+        }
     </style>
 </head>
 <body>
 
-    <div id="splashScreen">
-        <div class="splash-logo-container">
-            <img src="11513.jpg" onerror="this.onerror=null; this.src='11512.png';" alt="DailyDock Logo">
+    <!-- ========== লোডিং স্ক্রিন ========== -->
+    <div id="loadingScreen">
+        <div class="loader-visual">
+            <div class="outer-ring"></div>
+            <div class="inner-ring"></div>
+            <div class="core-diamond"></div>
+            <div class="orbital-dot"></div>
+            <div class="orbital-dot second"></div>
         </div>
-        <div class="splash-title">DAILYDOCK</div>
-        <div class="spinner"></div>
+        <div class="loading-text">
+            Loading
+            <span class="dot-animate"></span>
+            <span class="dot-animate"></span>
+            <span class="dot-animate"></span>
+        </div>
     </div>
+    <!-- ========== লোডিং স্ক্রিন শেষ ========== -->
 
     <div id="mainContainer" class="app-container">
         
-        <div id="topHeader" class="top-banner hidden">
+        <div id="topHeader" class="top-banner">
+            <div class="anim-title-container">
+                <div class="chomper"></div>
+                <h1 class="animated-title">DAILYDOCK</h1>
+            </div>
+            <div class="header-circle">
+                <img src="11513.jpg" onerror="this.onerror=null; this.src='11512.png';" alt="Dailydock Logo">
+            </div>
         </div>
 
-        <div id="welcomeSection" class="content-body hidden">
-            <div class="welcome-message">Welcome to your private space.</div>
+        <div id="welcomeSection" class="content-body">
+            <div class="neon-title">DailyDock</div>
             <div class="btn-group-vertical">
                 <button onclick="navigateTo('loginSection')" class="btn-black" style="margin-top:0;">Sign in</button>
                 <button onclick="navigateTo('registerSection')" class="btn-outline">Register</button>
@@ -1061,7 +1247,7 @@
 
                     <div class="input-wrapper">
                         <label>Select Language Font</label>
-                        <select id="fontSelector" style="width:100%; padding:8px; background:#f3f3f3; color:black; border:1px solid #dfdfdf; border-radius:8px;">
+                        <select id="fontSelector" style="width:100%; padding:8px; background:#f3f3f3; color:black; border:1px solid #cccccc; border-radius:8px;">
                             <option value="'Cinzel Decorative', serif">English (Premium Serif)</option>
                             <option value="'Hind Siliguri', sans-serif">Bangla (Hind Siliguri)</option>
                         </select>
@@ -1080,7 +1266,7 @@
 
                     <div class="input-wrapper" style="min-height: 200px; display: flex; flex-direction: column; margin-bottom: 15px;">
                         <label>Content</label>
-                        <textarea id="diaryContent" placeholder="What happened today?..." class="input-field" style="background:#fff; line-height:1.5; flex-grow: 1; min-height: 180px; resize: none; border: 1px solid #dfdfdf; border-radius: 8px; padding: 12px;"></textarea>
+                        <textarea id="diaryContent" placeholder="What happened today?..." class="input-field" style="background:#fff; line-height:1.5; flex-grow: 1; min-height: 180px; resize: none; border: 1px solid #cccccc; border-radius: 8px; padding: 12px;"></textarea>
                     </div>
 
                     <button id="saveBtn" class="btn-black" style="margin-top: 0; flex-shrink:0;">💾 SAVE ENTRY</button>
@@ -1088,21 +1274,23 @@
             </div>
 
             <div id="listSection" class="hidden" style="padding: 10px 25px; display: flex; flex-direction: column; height: 100%;">
-                <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
-                <h3 style="color: #222; margin-bottom: 12px; font-size:1.1rem; text-align: center;">Your Past Memories</h3>
-                
-                <button id="downloadBookBtn">Download Book (PDF)</button>
+                <div id="listHeaderWrapper" class="expanded">
+                    <div class="back-link" onclick="backToDashboard()">← Back to Menu</div>
+                    <h3 style="color: #222; margin-bottom: 12px; font-size:1.1rem; text-align: center;">Your Past Memories</h3>
+                    
+                    <button id="downloadBookBtn">Download Book (PDF)</button>
 
-                <div class="input-wrapper" style="flex-shrink: 0; margin-bottom: 10px;">
-                    <input type="text" id="diarySearchInput" placeholder="🔍 Search by title or date (e.g. 2026-06-05)..." class="input-field" style="font-family:sans-serif; background:white;">
-                </div>
+                    <div class="input-wrapper" style="flex-shrink: 0; margin-bottom: 10px;">
+                        <input type="text" id="diarySearchInput" placeholder="🔍 Search by title or date..." class="input-field" style="font-family:sans-serif; background:white;">
+                    </div>
 
-                <div class="input-wrapper" style="flex-shrink: 0; display:flex; align-items:center; gap:10px; margin-bottom:15px; max-width: 300px;">
-                    <label id="sortLabel" style="margin:0; white-space:nowrap; font-weight:bold; font-size:0.85rem;">Sort by:</label>
-                    <select id="diarySortSelector" style="flex-grow:1; padding:8px; background:white; color:black; border:1px solid #dfdfdf; border-radius:8px; font-size:0.85rem;">
-                        <option value="newest">Newest First</option>
-                        <option value="oldest">Oldest First</option>
-                    </select>
+                    <div class="input-wrapper" style="flex-shrink: 0; display:flex; align-items:center; gap:10px; margin-bottom:15px; max-width: 300px;">
+                        <label id="sortLabel" style="margin:0; white-space:nowrap; font-weight:bold; font-size:0.85rem;">Sort by:</label>
+                        <select id="diarySortSelector" style="flex-grow:1; padding:8px; background:white; color:black; border:1px solid #cccccc; border-radius:8px; font-size:0.85rem;">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div id="diaryList" class="diary-pages-container"></div>
@@ -1133,7 +1321,7 @@
                     <button id="loadFontBtn" class="btn-black" style="background:#10b981; font-size:0.9rem; padding:10px;">EXPORT & APPLY FONT</button>
                     
                     <div class="custom-font-manager">
-                        <span style="font-size: 0.85rem; font-weight: bold; color: #333; font-family: 'Hind Siliguri', sans-serif;" id="exportedFontsTitle">এক্সপোর্ট করা ফন্টসমূহ (ডিলিট করতে ১ সেকেন্ড চেপে ধরুন):</span>
+                        <span style="font-size: 0.85rem; font-weight: bold; color: #333; font-family: 'Hind Siliguri', sans-serif;">এক্সপোর্ট করা ফন্টসমূহ (ডিলিট করতে ১ সেকেন্ড চেপে ধরুন):</span>
                         <div id="deleteableFontsList" style="margin-top: 5px;"></div>
                     </div>
                 </div>
@@ -1144,7 +1332,7 @@
                 
                 <div class="settings-panel-box" style="max-width: 500px; margin: 0 auto;">
                     <div class="settings-panel-title">🎨 Custom Theme (কাস্টম ব্যাকগ্রাউন্ড)</div>
-                    <p style="font-size: 0.8rem; color: #555; font-family:'Hind Siliguri', sans-serif; margin: 0 0 10px 0;" id="customThemeDesc">
+                    <p style="font-size: 0.8rem; color: #555; font-family:'Hind Siliguri', sans-serif; margin: 0 0 10px 0;">
                         আপনার গ্যালারি থেকে যেকোনো ছবি সিলেক্ট করে অ্যাপ্লিকেশনের ব্যাকগ্রাউন্ড থিম হিসেবে ব্যবহার করুন।
                     </p>
                     <div class="input-wrapper">
@@ -1158,7 +1346,7 @@
                 <div class="back-link" onclick="showSubSection('settingsSection')">← Back to Settings</div>
                 
                 <div class="settings-panel-box" style="max-width: 500px; margin: 0 auto;">
-                    <div class="settings-panel-title">Change Password (পাসওয়ার্ড পরিবর্তন)</div>
+                    <div class="settings-panel-title">🔒 Change Password (পাসওয়ার্ড পরিবর্তন)</div>
                     <div class="input-wrapper">
                         <label>Old Password</label>
                         <input type="password" id="oldPasswordInput" class="input-field" placeholder="********">
@@ -1169,7 +1357,7 @@
                         <input type="password" id="newPasswordInput" class="input-field" placeholder="********">
                         <span id="toggleNewPassword" class="password-toggle-btn">Show</span>
                     </div>
-                    <button id="updatePasswordBtn" class="btn-black" style="background:#232323; font-size:0.9rem; padding:10px;">UPDATE PASSWORD</button>
+                    <button id="updatePasswordBtn" class="btn-black" style="font-size:0.9rem; padding:10px;">UPDATE PASSWORD</button>
                 </div>
             </div>
 
@@ -1186,27 +1374,27 @@
                         <h4>✒️ নতুন ডায়েরি লেখা ও সংরক্ষণ</h4>
                         <ul>
                             <li><b>ধাপ ১:</b> মেইন মেনু থেকে "WRITE NEW DIARY" অপশনে যান।</li>
-                            <li><b>ধাপ ২:</b> ক্যালেন্ডার থেকে নির্দিষ্ট তারিখ এবং আপনার লেখার ভাষা অনুযায়ী ফন্ট (ইংরেজি বা বাংলা) সিলেক্ট করুন।</li>
-                            <li><b>ধাপ ৩:</b> ডায়েরির শিরোনাম (Title) এবং বিস্তারিত মনের কথা (Content) লিখে নিচে থাকা "💾 SAVE ENTRY" বাটনে ক্লিক করুন। আপনার স্মৃতিটি ক্লাউডে সংরক্ষিত হয়ে যাবে।</li>
+                            <li><b>ধাপ ২:</b> ক্যালেন্ডার থেকে নির্দিষ্ট তারিখ এবং আপনার লেখার ভাষা অনুযায়ী ফন্ট সিলেক্ট করুন।</li>
+                            <li><b>ধাপ ৩:</b> ডায়েরির শিরোনাম ও বিস্তারিত লিখে "💾 SAVE ENTRY" বাটনে ক্লিক করুন।</li>
                         </ul>
 
                         <h4>🎨 কাস্টম ব্যাকগ্রাউন্ড থিম সেটআপ</h4>
                         <ul>
-                            <li><b>ধাপ ১:</b> "SETTINGS"-এ যান এবং নির্দিষ্ট "Custom Theme" প্যানেলটি দেখুন।</li>
-                            <li><b>ধাপ ২:</b> ইনপুট ফিল্ডে ক্লিক করে আপনার ফোনের গ্যালারি থেকে যেকোনো পছন্দের ছবি সিলেক্ট করুন। ছবি সিলেক্ট করার সাথে সাথেই সেটি অ্যাপের ব্যাকগ্রাউন্ড থিম হিসেবে স্থায়ীভাবে সেট হয়ে যাবে।</li>
-                            <li><b>থিম রিমুভ:</b> থিম মুছে আগের ডিফল্ট ব্যাকগ্রাউন্ডে ফিরতে "❌ REMOVE THEME" বাটনে ক্লিক করুন।</li>
+                            <li><b>ধাপ ১:</b> "SETTINGS"-এ যান এবং "Custom Theme" প্যানেলটি দেখুন।</li>
+                            <li><b>ধাপ ২:</b> গ্যালারি থেকে যেকোনো ছবি সিলেক্ট করুন।</li>
+                            <li><b>থিম রিমুভ:</b> "❌ REMOVE THEME" বাটনে ক্লিক করুন।</li>
                         </ul>
 
-                        <h4>🔤 কাস্টম ফন্ট এক্সপোর্ট ও ম্যানেজমেন্ট</h4>
+                        <h4>🔤 কাস্টম ফন্ট এক্সপোর্ট</h4>
                         <ul>
-                            <li><b>নতুন ফন্ট যোগ:</b> "SETTINGS"-এর ফন্ট এক্সপোর্টার বক্সে যান। <a href="https://fonts.google.com" target="_blank" class="font-link">Google Fonts</a> থেকে আপনার প্রিয় ফন্টের CSS URL এবং সঠিক Family Name কপি করে নির্দিষ্ট বক্সে পেস্ট করে এক্সপোর্ট করুন।</li>
-                            <li><b>ফন্ট ডিলিট:</b> এক্সপোর্ট করা ফন্ট ডিলিট করতে নিচে থাকা ফন্টটির ওপর ১ সেকেন্ড চেপে (Long Press) ধরে রাখুন।</li>
+                            <li><b>নতুন ফন্ট যোগ:</b> <a href="https://fonts.google.com" target="_blank" class="font-link">Google Fonts</a> থেকে CSS URL ও Family Name পেস্ট করুন।</li>
+                            <li><b>ফন্ট ডিলিট:</b> ফন্টটির ওপর ১ সেকেন্ড চেপে ধরে রাখুন।</li>
                         </ul>
 
-                        <h4>🗝️ পাসওয়ার্ড ভুলে গেলে বা পরিবর্তন করতে চাইলে</h4>
+                        <h4>🗝️ পাসওয়ার্ড রিকভারি</h4>
                         <ul>
-                            <li><b>পাসওয়ার্ড পরিবর্তন:</b> লগইন থাকা অবস্থায় "SETTINGS" সেকশনের ভেতর থেকে পুরাতন ও নতুন পাসওয়ার্ড দিয়ে পরিবর্তন করতে পারবেন।</li>
-                            <li><b>পাসওয়ার্ড ভুলে গেলে:</b> লগইন স্ক্রিনে থাকা "Forgot Password?" অপশনে ক্লিক করে আপনার রেজিস্টার্ড ইমেইল দিন। ইনবক্স অথবা স্প্যাম ফোল্ডারে পাসওয়ার্ড রিসেট করার একটি সিকিউর লিঙ্ক চলে যাবে।লিঙ্কে ক্লিক করে পাসওয়ার্ড রিসেট করে নিন।</li>
+                            <li><b>পরিবর্তন:</b> SETTINGS থেকে পুরাতন ও নতুন পাসওয়ার্ড দিয়ে পরিবর্তন করুন।</li>
+                            <li><b>ভুলে গেলে:</b> লগইন স্ক্রিনে "Forgot Password?" থেকে ইমেইল দিন।</li>
                         </ul>
                     </div>
 
@@ -1214,27 +1402,27 @@
                         <h4>✒️ Writing & Saving a New Diary</h4>
                         <ul>
                             <li><b>Step 1:</b> Navigate to "WRITE NEW DIARY" from the Main Menu.</li>
-                            <li><b>Step 2:</b> Choose the specific date and choose your preferred language font from the dropdown.</li>
-                            <li><b>Step 3:</b> Enter a Title and Content, then click the "💾 SAVE ENTRY" button. Your memory will be securely synced to the cloud.</li>
+                            <li><b>Step 2:</b> Choose date and language font.</li>
+                            <li><b>Step 3:</b> Enter Title and Content, then click "💾 SAVE ENTRY".</li>
                         </ul>
 
                         <h4>🎨 Custom Background Theme Setup</h4>
                         <ul>
-                            <li><b>Step 1:</b> Go to "SETTINGS" and locate the "Custom Theme" panel.</li>
-                            <li><b>Step 2:</b> Click the file field and pick any background image from your gallery. It will instantly apply as your permanent app theme.</li>
-                            <li><b>Remove Theme:</b> Click the "❌ REMOVE THEME" button to roll back to the default minimalist view.</li>
+                            <li><b>Step 1:</b> Go to "SETTINGS" and locate "Custom Theme".</li>
+                            <li><b>Step 2:</b> Pick any background image from your gallery.</li>
+                            <li><b>Remove:</b> Click "❌ REMOVE THEME".</li>
                         </ul>
 
-                        <h4>🔤 Custom Font Exporter & Deletion</h4>
+                        <h4>🔤 Custom Font Exporter</h4>
                         <ul>
-                            <li><b>Adding New Fonts:</b> Inside "SETTINGS", paste the <a href="https://fonts.google.com" target="_blank" class="font-link">Google Fonts</a> CSS URL and its exact Family Name into the inputs, then click "EXPORT & APPLY FONT".</li>
-                            <li><b>Deleting Fonts:</b> To remove an exported font, simply press and hold (Long Press) the font card for 1 second.</li>
+                            <li><b>Adding:</b> Paste <a href="https://fonts.google.com" target="_blank" class="font-link">Google Fonts</a> CSS URL and Family Name.</li>
+                            <li><b>Deleting:</b> Long press the font card for 1 second.</li>
                         </ul>
 
-                        <h4>🗝️ Password Management & Recovery</h4>
+                        <h4>🗝️ Password Management</h4>
                         <ul>
-                            <li><b>Change Password:</b> You can update your current credentials directly within the "SETTINGS" panel.</li>
-                            <li><b>Password Recovery:</b> Click "Forgot Password?" on the login screen, enter your email, and a password reset link will be sent to your inbox or spam folder safely.Click the link and reset your password.</li>
+                            <li><b>Change:</b> Update within SETTINGS panel.</li>
+                            <li><b>Recovery:</b> Click "Forgot Password?" on login screen.</li>
                         </ul>
                     </div>
                 </div>
@@ -1254,25 +1442,28 @@
                     </div>
 
                     <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
+                        <span class="credit-label">APP NAME</span>
+                        <span class="credit-value" style="font-family: sans-serif; text-align: center;">DailyDock</span>
+                    </div>
+                    
+                    <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
                         <span class="credit-label">PURPOSE</span>
                         <span class="credit-value" style="font-family: sans-serif; text-align: center; font-weight: normal; font-size: 0.85rem; color: #444; line-height: 1.5; max-width: 90%;">
-                            This platform was created to provide a private and comfortable space where people can record their daily thoughts, experiences, memories, and emotions. Every moment, whether big or small, deserves to be remembered, and our platform aims to preserve those moments in a simple and meaningful way.
+                            DailyDock was created to provide a private and comfortable space where people can record their daily thoughts, experiences, memories, and emotions.
                         </span>
                     </div>
                     
                     <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
                         <span class="credit-label">MISSION</span>
                         <span class="credit-value" style="font-family: sans-serif; text-align: center; font-weight: normal; font-size: 0.85rem; color: #444; line-height: 1.5; max-width: 90%;">
-                            Our mission is to help people capture their life's journey one page at a time. We believe that personal memories, ideas, and emotions are valuable, and our platform exists to make journaling easy, accessible, and enjoyable for everyone.
+                            Our mission is to help people capture their life's journey one page at a time.
                         </span>
                     </div>
                     
                     <div class="credit-row" style="flex-direction: column; align-items: center; gap: 4px; text-align: center; margin-bottom: 15px;">
                         <span class="credit-label">SPECIAL THANKS</span>
                         <span class="credit-value" style="font-family: sans-serif; text-align: center; font-weight: normal; font-size: 0.85rem; color: #444; line-height: 1.5; max-width: 90%;">
-                            Special thanks to the incredible advancements in Artificial Intelligence that helped inspire, guide, and shape the development of this project. We are grateful for the AI technologies that assisted with problem-solving, learning, creativity, and innovation throughout the journey of building this system.
-                            <br><br>
-                            Thank you to everyone who uses this space and trusts us with their memories.
+                            Special thanks to the incredible advancements in Artificial Intelligence that helped inspire, guide, and shape the development of this project.
                         </span>
                     </div>
                     
@@ -1302,7 +1493,7 @@
         <div class="modal-content" style="font-family: 'Hind Siliguri', sans-serif;">
             <span class="close-modal" onclick="closeForgotModal()">&times;</span>
             <h3 style="margin-top: 5px; color: #111; font-size: 1.2rem;">Reset Password</h3>
-            <p style="font-size: 0.85rem; color: #555; margin-bottom: 15px;">আপনার অ্যাকাউন্টের ইমেইল ঠিকানাটি লিখুন। আমরা আপনাকে পাসওয়ার্ড রিসেট করার একটি লিঙ্ক পাঠিয়ে দেব।</p>
+            <p style="font-size: 0.85rem; color: #555; margin-bottom: 15px;">আপনার অ্যাকাউন্টের ইমেইল ঠিকানাটি লিখুন।</p>
             
             <div class="input-wrapper">
                 <label>Email Address</label>
@@ -1344,6 +1535,14 @@
         const db = getFirestore(app);
         const googleProvider = new GoogleAuthProvider();
 
+        // ========== লোডিং স্ক্রিন হ্যান্ডেল ==========
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+            }, 2000);
+        });
+        // ========== লোডিং শেষ ==========
+
         let allDiaries = []; 
         let currentUserId = null;
         let editingDiaryId = null; 
@@ -1352,26 +1551,13 @@
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('diaryDate').value = today;
 
-        // --- SPLASH SCREEN TIMEOUT LOGIC ---
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                const splash = document.getElementById('splashScreen');
-                if (splash) {
-                    splash.style.opacity = '0';
-                    splash.style.visibility = 'hidden';
-                }
-            }, 2500); // 2.5 Seconds Maximum
-        });
-
-        // --- 🌓 ডার্ক মোড মেকানিথম শুরু ---
+        // --- 🌓 ডার্ক মোড ---
         function applySavedDarkMode() {
             const isDark = localStorage.getItem('DailydockDarkMode') === 'enabled';
             const titleField = document.getElementById('diaryTitle');
             const contentField = document.getElementById('diaryContent');
             const writeBox = document.getElementById('writeContainerBox');
-            
-            const exportedFontsTitle = document.getElementById('exportedFontsTitle');
-            const customThemeDesc = document.getElementById('customThemeDesc');
+            const listHeaderWrapper = document.getElementById('listHeaderWrapper');
 
             if (isDark) {
                 document.body.classList.add('dark-mode');
@@ -1384,8 +1570,7 @@
                     contentField.style.background = "#222222";
                     contentField.style.color = "#ffffff";
                 }
-                if (exportedFontsTitle) exportedFontsTitle.style.color = "#ffffff";
-                if (customThemeDesc) customThemeDesc.style.color = "#cccccc";
+                if (listHeaderWrapper) listHeaderWrapper.style.background = "#121212";
             } else {
                 document.body.classList.remove('dark-mode');
                 if (writeBox) writeBox.style.background = "#ffffff";
@@ -1397,8 +1582,7 @@
                     contentField.style.background = "#ffffff";
                     contentField.style.color = "#111111";
                 }
-                if (exportedFontsTitle) exportedFontsTitle.style.color = "#333333";
-                if (customThemeDesc) customThemeDesc.style.color = "#555555";
+                if (listHeaderWrapper) listHeaderWrapper.style.background = "#f3f3f3";
             }
         }
 
@@ -1413,7 +1597,6 @@
         });
 
         applySavedDarkMode();
-        // --- 🌓 ডার্ক মোড মেকানিজম শেষ ---
 
         function setupPasswordToggle(toggleId, fieldId) {
             const toggleElement = document.getElementById(toggleId);
@@ -1452,7 +1635,7 @@
             }
         };
 
-        // --- কাস্টম থিম লজিক শুরু ---
+        // --- কাস্টম থিম ---
         const container = document.getElementById('mainContainer');
         const themeInput = document.getElementById('themeImageInput');
         const removeThemeBtn = document.getElementById('removeThemeBtn');
@@ -1463,7 +1646,7 @@
                 container.style.background = `url(${savedTheme})`;
                 container.classList.add('has-theme');
             } else {
-                container.style.background = ''; 
+                container.style.background = '';
                 container.classList.remove('has-theme');
             }
         }
@@ -1490,9 +1673,8 @@
         });
 
         applySavedTheme();
-        // --- কাস্টম থিম লজিক শেষ ---
 
-        // --- কাস্টম পেজ ব্যাকগ্রাউন্ড ইন্টেলিজেন্ট ক্রপার সিস্টেম লজিক শুরু ---
+        // --- কাস্টম পেজ ব্যাকগ্রাউন্ড ক্রপার ---
         const pageBgInput = document.getElementById('diaryPageBgInput');
         const cropperModal = document.getElementById('cropperModal');
         const cropperSourceImg = document.getElementById('cropperSourceImg');
@@ -1616,7 +1798,6 @@
             removePageBgBtn.classList.add('hidden');
             alert('পেজ ব্যাকগ্রাউন্ড রিমুভ করা হয়েছে।');
         });
-        // --- কাস্টম পেজ ব্যাকগ্রাউন্ড ইন্টেলিজেন্ট ক্রপার সিস্টেম লজিক শেষ ---
 
         function loadSavedFonts() {
             const savedFonts = JSON.parse(localStorage.getItem('DailydockExportedFonts')) || [];
@@ -1791,6 +1972,8 @@
 
             if(sectionId === 'listSection') {
                 sortAndRenderDiaries();
+                document.getElementById('listHeaderWrapper').classList.remove('collapsed');
+                document.getElementById('listHeaderWrapper').classList.add('expanded');
             }
             if(sectionId === 'writeSection') {
                 if (!editingDiaryId) {
@@ -1909,8 +2092,7 @@
 
             if (user) {
                 currentUserId = user.uid;
-                // Show top banner ONLY inside app dashboards
-                topHeader.classList.remove('hidden');
+                topHeader.classList.add('hidden');
                 document.getElementById('welcomeSection').classList.add('hidden');
                 document.getElementById('loginSection').classList.add('hidden');
                 document.getElementById('registerSection').classList.add('hidden');
@@ -1920,14 +2102,12 @@
                 setupDailyReminder(); 
             } else {
                 currentUserId = null;
-                // Hide top banner on standard authentication panels
-                topHeader.classList.add('hidden');
+                topHeader.classList.remove('hidden');
                 appSection.classList.add('hidden');
                 navigateTo('welcomeSection');
                 document.getElementById('diaryList').innerHTML = '';
                 allDiaries = [];
             }
-            applySavedDarkMode();
         });
 
         document.getElementById('signupBtn').addEventListener('click', async () => {
@@ -1964,7 +2144,7 @@
                 const btn = document.getElementById('resetPasswordBtn');
                 btn.disabled = true; btn.innerText = "Sending...";
                 await sendPasswordResetEmail(auth, email);
-                alert('পাসওয়ার্ড রিসেট করার লিঙ্কটি আপনার ইমেইলে পাঠানো হয়েছে! দয়া করে আপনার ইনবক্স অথবা স্প্যাম (Spam) ফোল্ডার চেক করুন। ✨');
+                alert('পাসওয়ার্ড রিসেট করার লিঙ্কটি আপনার ইমেইলে পাঠানো হয়েছে! দয়া করে আপনার ইনবক্স অথবা স্প্যাম ফোল্ডার চেক করুন। ✨');
                 closeForgotModal();
             } catch (error) {
                 alert('Error: ' + error.message);
@@ -2075,20 +2255,45 @@
             renderDiaryList(filtered);
         }
 
+        // ========== ফেসবুক স্টাইল স্ক্রল বিহেভিয়ার ==========
+        const diaryListElement = document.getElementById('diaryList');
+        const listHeaderWrapper = document.getElementById('listHeaderWrapper');
+        let lastScrollTop = 0;
+        let scrollThreshold = 50;
+
+        if (diaryListElement) {
+            diaryListElement.addEventListener('scroll', () => {
+                const currentScrollTop = diaryListElement.scrollTop;
+                
+                if (currentScrollTop > lastScrollTop && currentScrollTop > scrollThreshold) {
+                    // নিচে স্ক্রল করছে -> হেডার কোলাপস
+                    listHeaderWrapper.classList.add('collapsed');
+                    listHeaderWrapper.classList.remove('expanded');
+                } else if (currentScrollTop < lastScrollTop - 10) {
+                    // উপরে স্ক্রল করছে -> হেডার এক্সপ্যান্ড
+                    listHeaderWrapper.classList.remove('collapsed');
+                    listHeaderWrapper.classList.add('expanded');
+                }
+                
+                lastScrollTop = currentScrollTop;
+            });
+        }
+        // ========== স্ক্রল বিহেভিয়ার শেষ ==========
+
         document.getElementById('diarySortSelector').addEventListener('change', sortAndRenderDiaries);
         document.getElementById('diarySearchInput').addEventListener('input', sortAndRenderDiaries);
 
         document.getElementById('downloadBookBtn').addEventListener('click', () => {
-            const diaryListElement = document.getElementById('diaryList');
+            const diaryListEl = document.getElementById('diaryList');
             
-            if (!diaryListElement || diaryListElement.children.length === 0 || diaryListElement.querySelector('.diary-pdf-page-wrapper') === null) {
+            if (!diaryListEl || diaryListEl.children.length === 0 || diaryListEl.querySelector('.diary-pdf-page-wrapper') === null) {
                 alert("ডাউনলোড করার মতো কোনো ডায়েরি পেজ খুঁজে পাওয়া যায়নি! 🔍");
                 return;
             }
 
             alert("আপনার ডায়েরির সব পাতা নিয়ে 'Download Book' PDF তৈরির প্রসেস শুরু হয়েছে! অনুগ্রহ করে কয়েক সেকেন্ড অপেক্ষা করুন... 📖✨");
 
-            const elementToPrint = diaryListElement.cloneNode(true);
+            const elementToPrint = diaryListEl.cloneNode(true);
             const footerActions = elementToPrint.querySelectorAll('.pdf-footer-actions, div[style*="border-top:1px dashed"]');
             footerActions.forEach(action => action.style.setProperty('display', 'none', 'important'));
 
@@ -2116,7 +2321,7 @@
 
             const opt = {
                 margin:       0, 
-                filename:     `Diary_Memory_Book_${new Date().toISOString().split('T')[0]}.pdf`,
+                filename:     `DailyDock_Memory_Book_${new Date().toISOString().split('T')[0]}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2, useCORS: true, logging: false }, 
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
@@ -2166,7 +2371,7 @@
             diaryList.innerHTML = '';
             
             if (!diariesArray || diariesArray.length === 0) {
-                diaryList.innerHTML = `<p style="text-align:center; color:#666; font-style:italic; font-family:'Hind Siliguri', sans-serif; font-size:0.85rem; padding: 20px 0; grid-column: 1 / -1;">কোনো ডায়েরি পাওয়া যায়নি।নতুন ডায়েরি লিখুন</p>`;
+                diaryList.innerHTML = `<p style="text-align:center; color:#666; font-style:italic; font-family:'Hind Siliguri', sans-serif; font-size:0.85rem; padding: 20px 0; grid-column: 1 / -1;">কোনো ডায়েরি পাওয়া যায়নি। নতুন ডায়েরি লিখুন</p>`;
                 return;
             }
 
@@ -2284,7 +2489,7 @@
                 await reauthenticateWithCredential(user, credential);
                 await updatePassword(user, newPassword);
 
-                alert("পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে! নিরাপত্তা নিশ্চিত করতে ও পুরাতন পাসওয়ার্ড বাতিল করতে অ্যাপ্লিকেশনটি এখন রিলিজ (Sign Out) হবে। নতুন পাসওয়ার্ড দিয়ে আবার লগইন করুন। ✨");
+                alert("পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে! নিরাপত্তা নিশ্চিত করতে অ্যাপ্লিকেশনটি এখন Sign Out হবে। নতুন পাসওয়ার্ড দিয়ে আবার লগইন করুন। ✨");
                 
                 document.getElementById('oldPasswordInput').value = "";
                 document.getElementById('newPasswordInput').value = "";
@@ -2302,4 +2507,4 @@
         });
     </script>
 </body>
-    </html>
+                    </html>
