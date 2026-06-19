@@ -14,6 +14,30 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <style>
+        /* SPLASH SCREEN STYLES */
+#splashScreen {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #f3f3f3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
+}
+#splashScreen img { width: 120px; height: 120px; margin-bottom: 20px; animation: popIn 1s forwards; }
+.splash-title { display: flex; font-size: 2.5rem; font-weight: 700; color: #232323; }
+.letter { display: inline-block; opacity: 0; animation: dropIn 0.8s forwards; }
+
+@keyframes dropIn {
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+        
         * { box-sizing: border-box; }
         body { 
             background: #111111; 
@@ -882,10 +906,22 @@
 </head>
 <body>
 
+
+    <!-- স্প্ল্যাশ স্ক্রিন এখানে -->
+    <div id="splashScreen">
+        <img src="11512.png" alt="Logo">
+        <div class="splash-title" id="splashTitle"></div>
+    </div>
+
+    <div id="mainContainer" class="app-container">
+    <!-- আপনার বাকি সব কোড এর ভেতরে থাকবে -->    
+
+
+    
     <div id="mainContainer" class="app-container">
         
         <div id="welcomeSection" class="content-body">
-            <div class="neon-title">DailyDock</div>
+            
             <div class="btn-group-vertical">
                 <button onclick="navigateTo('loginSection')" class="btn-black" style="margin-top:0;">Sign in</button>
                 <button onclick="navigateTo('registerSection')" class="btn-outline">Register</button>
@@ -1267,6 +1303,28 @@
     <div id="paginationSandbox" style="position: absolute; top: -9999px; left: -9999px; width: 324px; padding: 0; visibility: hidden; white-space: pre-wrap; word-wrap: break-word;"></div>
 
     <script type="module">
+
+// স্প্ল্যাশ স্ক্রিন এনিমেশন লজিক
+const splashTitle = document.getElementById('splashTitle');
+const text = "DailyDock";
+text.split('').forEach((char, i) => {
+    const span = document.createElement('span');
+    span.textContent = char;
+    span.className = 'letter';
+    const randomX = (Math.random() - 0.5) * 400;
+    const randomY = (Math.random() - 0.5) * 400;
+    span.style.transform = `translate(${randomX}px, ${randomY}px)`;
+    span.style.animationDelay = `${i * 0.1}s`;
+    splashTitle.appendChild(span);
+});
+
+// ২ সেকেন্ড পর স্প্ল্যাশ স্ক্রিন সরিয়ে দেওয়া
+setTimeout(() => {
+    const splash = document.getElementById('splashScreen');
+    splash.style.opacity = '0';
+    setTimeout(() => splash.style.display = 'none', 500);
+}, 2000);
+        
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, sendPasswordResetEmail, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
